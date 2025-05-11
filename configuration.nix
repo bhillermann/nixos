@@ -5,12 +5,10 @@
 # NixOS-WSL specific options are documented on the NixOS-WSL repository:
 # https://github.com/nix-community/NixOS-WSL
 
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 {
   imports = [
-    # include NixOS-WSL modules
-    # <nixos-wsl/modules>
   ];
 
   # Enable the Flakes feature and the accompanying new nix command-line too
@@ -48,7 +46,7 @@
 
   wsl.enable = true;
   wsl.defaultUser = "brendon";
-  
+
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
