@@ -1,11 +1,16 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
+
+  imports = [
+    inputs.nixvim.homeManagerModules.nixvim
+  ]; 
+
   home.username = "brendon";
   home.homeDirectory = "/home/brendon";
 
-  # Packages that should be installed to the user profile.
-  home.packages = with pkgs; [
+    # Packages that should be installed to the user profile.
+    home.packages = with pkgs; [
     # here is some command line tools I use frequently
     # feel free to add your own or remove some of them
 
@@ -71,61 +76,19 @@
   ];
 
   # NVIM setup
-  programs.neovim = {
+  programs.nixvim = {
     enable = true;
     viAlias = true;
     vimAlias = true;
 
-    plugins = [
-        ## Treesitter
-        pkgs.vimPlugins.nvim-treesitter
-        pkgs.vimPlugins.nvim-treesitter.withAllGrammars
-        pkgs.vimPlugins.nvim-treesitter-textobjects
-        pkgs.vimPlugins.nvim-lspconfig
+    colorschemes.catppuccin.enable = true;
+    plugins.lualine.enable = true;
 
-        pkgs.vimPlugins.trouble-nvim
-        pkgs.vimPlugins.plenary-nvim
-        pkgs.vimPlugins.telescope-nvim
-        pkgs.vimPlugins.telescope-fzf-native-nvim
-        pkgs.vimPlugins.fidget-nvim
+   };
 
-        ## cmp
-        pkgs.vimPlugins.nvim-cmp
-        pkgs.vimPlugins.cmp-nvim-lsp
-        pkgs.vimPlugins.cmp-buffer
-        pkgs.vimPlugins.cmp-cmdline
-
-        pkgs.vimPlugins.clangd_extensions-nvim
-        pkgs.vimPlugins.luasnip
-        pkgs.vimPlugins.cmp_luasnip
-        pkgs.vimPlugins.lspkind-nvim
-        pkgs.vimPlugins.nvim-lint
-        pkgs.vimPlugins.vim-surround
-        pkgs.vimPlugins.vim-obsession
-        pkgs.vimPlugins.kommentary
-        pkgs.vimPlugins.neoformat
-        pkgs.vimPlugins.lazygit-nvim
-        pkgs.vimPlugins.gitsigns-nvim
-        pkgs.vimPlugins.rainbow
-        pkgs.vimPlugins.vim-sleuth
-        pkgs.vimPlugins.lualine-nvim
-        pkgs.vimPlugins.nvim-web-devicons
-        pkgs.vimPlugins.lightspeed-nvim
-        pkgs.vimPlugins.leap-nvim
-        pkgs.vimPlugins.vim-repeat
-        pkgs.vimPlugins.kanagawa-nvim
-
-        ## Debugging
-        pkgs.vimPlugins.nvim-dap
-        pkgs.vimPlugins.nvim-dap-ui
-        pkgs.vimPlugins.nvim-dap-virtual-text
-    ];
-  };
-
-  # basic configuration of git, please change to your own
-  programs.git = {
-    enable = true;
-    package = pkgs.gitFull;
+    programs.git = {
+      enable = true;
+      package = pkgs.gitFull;
     # config = {
     #   credential.helper = "libsecret";
     # };
@@ -176,7 +139,7 @@
       nd = "nix develop";
       ls = "eza --color=always --long --git --icons=always";
       cd = "z";
-      nixr = "sudo nixos-rebuild switch";
+      nixr = "sudo nixos-rebuild switch --flake ~/.nixos";
     };
     autosuggestion.enable = true;
     oh-my-zsh = {
