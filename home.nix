@@ -83,12 +83,17 @@
 
     colorschemes.catppuccin.enable = true;
     plugins.lualine.enable = true;
-
-   };
-
-    programs.git = {
+    plugins.guess-indent.enable = false;
+    plugins.treesitter = {
       enable = true;
-      package = pkgs.gitFull;
+      settings.highlight.enable = true;
+      settings.indent.enable = false;
+    };
+  };
+
+  programs.git = {
+    enable = true;
+    package = pkgs.gitFull;
     # config = {
     #   credential.helper = "libsecret";
     # };
@@ -131,7 +136,30 @@
     enableZshIntegration = true;
   };
 
+  programs.bat = {
+    enable = true;
+    themes = {
+      catppuccin-mocha = {	    
+        src = pkgs.fetchFromGitHub {
+          "owner"= "catppuccin";
+          "repo"= "bat";
+          "rev"= "699f60fc8ec434574ca7451b444b880430319941";
+          "hash"= "sha256-6fWoCH90IGumAMc4buLRWL0N61op+AuMNN9CAR9/OdI=";
+        };
+        file = "/themes/Catppuccin\ Mocha.tmTheme";
+      };
+    };
+    config = {
+      theme = "catppuccin-mocha";
+    };
+  };
+
   programs.fzf.enable = true;
+
+  programs.thefuck = {
+    enable = true;
+    enableZshIntegration = true;
+  };
 
   programs.zsh = {
     enable = true;
