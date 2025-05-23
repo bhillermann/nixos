@@ -36,6 +36,7 @@
             system.stateVersion = "24.05";
             wsl.enable = true;
           }
+          ./modules/wsl-winhost.nix
           ./configuration.nix
 
           home-manager.nixosModules.home-manager
