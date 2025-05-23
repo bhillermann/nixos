@@ -9,6 +9,7 @@
 
 {
   imports = [
+    ./modules/wsl-winhost.nix
   ];
 
   # Enable the Flakes feature and the accompanying new nix command-line too
@@ -19,12 +20,14 @@
     trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="];
   };
 
-  environment.systemPackages = with pkgs; [
+ environment.systemPackages = with pkgs; 
     # Flakes clones its dependencies through the git command,
     # so git must be install first
     vim
     wget
   ];
+
+  services.wslWinhost.enable = true;
 
   # Set the default editor to vim
   environment.variables.EDITOR = "vim";
