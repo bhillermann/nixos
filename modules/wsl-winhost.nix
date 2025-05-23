@@ -6,9 +6,9 @@ let
   cfg = config.services.wslWinhost;
 
   script = pkgs.writeShellScriptBin "wsl-winhost" ''
-    winip=$(${pkgs.coreutils}/bin/grep nameserver /etc/resolv.conf | ${pkgs.coreutils}/bin/awk '{ print $2 }')
+    winip=$(${pkgs.gnugrep}/bin/grep nameserver /etc/resolv.conf | ${pkgs.busybox}/bin/awk '{ print $2 }')
     host=$(${pkgs.hostname}/bin/hostname).${cfg.hostnameSuffix}
-    if ! ${pkgs.coreutils}/bin/grep -qP "[[:space:]]$winip" /etc/hosts; then
+    if ! ${pkgs.gnugrep}/bin/grep -qP "[[:space:]]$winip" /etc/hosts; then
       echo "$winip    $host" >> /etc/hosts
     fi
   '';
