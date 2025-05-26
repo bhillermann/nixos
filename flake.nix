@@ -31,6 +31,11 @@
     inputs.snowfall-lib.mkFlake {
       inherit inputs;
       src = ./.;
+
+      # Add a module to a specific host.
+      systems.hosts.nixos-wsl.modules = with inputs; [
+				nixos-wsl.nixosModules.default
+      ];
     };
 }
 
