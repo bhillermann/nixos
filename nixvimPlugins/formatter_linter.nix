@@ -71,8 +71,5 @@
       };
     };
 
-    tailwind-tools = {
-      enable = true;
-    };
   };
 }
