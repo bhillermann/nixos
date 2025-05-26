@@ -24,7 +24,7 @@
     wget
   ];
 
-  services.wslWinhost.enable = true;
+  # services.wslWinhost.enable = true;
 
   # Set the default editor to vim
   environment.variables.EDITOR = "vim";
