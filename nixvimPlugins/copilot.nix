@@ -1,7 +1,8 @@
 {
   programs.nixvim.plugins = {
-    copilot-vim = {
+    copilot-lua = {
       enable = true;
+      autoLoad = true;
     };
 
     copilot-chat = {
