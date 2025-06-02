@@ -1,37 +1,34 @@
 {
-    # Snowfall Lib provides a customized `lib` instance with access to your flake's library
-    # as well as the libraries available from your flake's inputs.
-    lib,
-    pkgs,
-    inputs,
-    config,
-    ...
-  }:
+  # Snowfall Lib provides a customized `lib` instance with access to your flake's library
+  # as well as the libraries available from your flake's inputs.
+  lib
+, pkgs
+, inputs
+, config
+, ...
+}: {
+  imports = [
+    inputs.nixvim.homeManagerModules.nixvim
+    ./../../../nixvimPlugins/cmp.nix
+    ./../../../nixvimPlugins/copilot.nix
+    ./../../../nixvimPlugins/formatter_linter.nix
+    ./../../../nixvimPlugins/luasnip.nix
+    ./../../../nixvimPlugins/preview.nix
+    ./../../../nixvimPlugins/telescope.nix
+    ./../../../nixvimPlugins/comment.nix
+    ./../../../nixvimPlugins/emmet.nix
+    ./../../../nixvimPlugins/nvim_ui.nix
+    ./../../../nixvimPlugins/syntax_color_highlight.nix
+    ./../../../nixvimPlugins/lsp.nix
+    ./../../../nixvimPlugins/git.nix
+    ./../../../nixvimPlugins/keymaps.nix
+  ];
 
-  {
+  home.username = "brendon";
+  home.homeDirectory = "/home/brendon";
 
-    imports = [
-      inputs.nixvim.homeManagerModules.nixvim
-      ./../../../nixvimPlugins/cmp.nix
-      ./../../../nixvimPlugins/copilot.nix
-      ./../../../nixvimPlugins/formatter_linter.nix
-      ./../../../nixvimPlugins/luasnip.nix
-      ./../../../nixvimPlugins/preview.nix
-      ./../../../nixvimPlugins/telescope.nix
-      ./../../../nixvimPlugins/comment.nix
-      ./../../../nixvimPlugins/emmet.nix
-      ./../../../nixvimPlugins/nvim_ui.nix
-#      ./../../../nixvimPlugins/syntax_color_highlight.nix
-      ./../../../nixvimPlugins/lsp.nix
-#      ./../../../nixvimPlugins/git.nix
-#      ./../../../nixvimPlugins/keymaps.nix
-    ];
-
-    home.username = "brendon";
-    home.homeDirectory = "/home/brendon";
-
-      # Packages that should be installed to the user profile.
-      home.packages = with pkgs; [
+  # Packages that should be installed to the user profile.
+  home.packages = with pkgs; [
     # here is some command line tools I use frequently
     # feel free to add your own or remove some of them
 
@@ -55,12 +52,12 @@
     # networking tools
     mtr # A network diagnostic tool
     iperf3
-    dnsutils  # `dig` + `nslookup`
+    dnsutils # `dig` + `nslookup`
     ldns # replacement of `dig`, it provide the command `drill`
     aria2 # A lightweight multi-protocol & multi-source command-line download utility
     socat # replacement of openbsd-netcat
     nmap # A utility for network discovery and security auditing
-    ipcalc  # it is a calculator for the IPv4/v6 addresses
+    ipcalc # it is a calculator for the IPv4/v6 addresses
 
     # misc
     cowsay
@@ -79,7 +76,7 @@
     # with more details log output
     nix-output-monitor
 
-    btop  # replacement of htop/nmon
+    btop # replacement of htop/nmon
     iotop # io monitoring
     iftop # network monitoring
 
@@ -112,11 +109,6 @@
     colorschemes.catppuccin.enable = true;
     plugins.lualine.enable = true;
     plugins.guess-indent.enable = false;
-    plugins.treesitter = {
-      enable = true;
-      settings.highlight.enable = true;
-      settings.indent.enable = false;
-    };
   };
 
   programs.zoxide = {
@@ -129,10 +121,10 @@
     themes = {
       catppuccin-mocha = {
         src = pkgs.fetchFromGitHub {
-          "owner"= "catppuccin";
-          "repo"= "bat";
-          "rev"= "699f60fc8ec434574ca7451b444b880430319941";
-          "hash"= "sha256-6fWoCH90IGumAMc4buLRWL0N61op+AuMNN9CAR9/OdI=";
+          "owner" = "catppuccin";
+          "repo" = "bat";
+          "rev" = "699f60fc8ec434574ca7451b444b880430319941";
+          "hash" = "sha256-6fWoCH90IGumAMc4buLRWL0N61op+AuMNN9CAR9/OdI=";
         };
         file = "/themes/Catppuccin\ Mocha.tmTheme";
       };
@@ -160,9 +152,9 @@
     extraConfig = {
       init.defaultBranch = "main";
     };
-  };  
+  };
 
-	  # starship - an customizable prompt for any shell
+  # starship - an customizable prompt for any shell
   programs.starship = {
     enable = true;
     # custom settings
