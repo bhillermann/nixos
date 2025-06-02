@@ -1,12 +1,7 @@
 {
-  # Snowfall Lib provides a customized `lib` instance with access to your flake's library
-  # as well as the libraries available from your flake's inputs.
-  lib
-, pkgs
-, inputs
-, config
-, ...
-}: {
+lib, pkgs, inputs, config, ...}: 
+
+{
   imports = [
     inputs.nixvim.homeManagerModules.nixvim
     ./../../../nixvimPlugins/cmp.nix
@@ -120,13 +115,13 @@
     enable = true;
     themes = {
       catppuccin-mocha = {
-        src = pkgs.fetchFromGitHub {
-          "owner" = "catppuccin";
-          "repo" = "bat";
-          "rev" = "699f60fc8ec434574ca7451b444b880430319941";
-          "hash" = "sha256-6fWoCH90IGumAMc4buLRWL0N61op+AuMNN9CAR9/OdI=";
-        };
-        file = "/themes/Catppuccin\ Mocha.tmTheme";
+	src = pkgs.fetchFromGitHub {
+	  "owner" = "catppuccin";
+	  "repo" = "bat";
+	  "rev" = "699f60fc8ec434574ca7451b444b880430319941";
+	  "hash" = "sha256-6fWoCH90IGumAMc4buLRWL0N61op+AuMNN9CAR9/OdI=";
+	};
+	file = "/themes/Catppuccin\ Mocha.tmTheme";
       };
     };
     config = {
@@ -178,12 +173,12 @@
     oh-my-zsh = {
       enable = true;
       plugins = [
-        "git"
-        "colorize"
-        "cp"
-        "vi-mode"
-        "last-working-dir"
-        "fancy-ctrl-z"
+	"git"
+	"colorize"
+	"cp"
+	"vi-mode"
+	"last-working-dir"
+	"fancy-ctrl-z"
       ];
     };
   };
