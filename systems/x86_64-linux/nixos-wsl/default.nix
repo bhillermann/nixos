@@ -17,17 +17,21 @@
   imports = [
   ];
 
-  # Enable the Flakes feature and the accompanying new nix command-line too
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
   nix.settings = {
     substituters = [ "https://nix-community.cachix.org" ];
     trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="];
+    experimental-features = [ "nix-command" "flakes" ];
+    trusted-users = ["@wheel"];
   };
 
  environment.systemPackages = with pkgs; [ 
     wget
   ];
+
+  programs.nix-ld = {
+    enable = true;
+    # package = pkgs.nix-ld-rs; # only for NixOS 24.05
+  };
 
   services.wslWinhost.enable = true;
 
@@ -44,9 +48,6 @@
     description = "Brendon Hillermann";
     extraGroups = [ "networkmanager" "wheel" ];
     uid = 1000;
-    packages = with pkgs; [
-      vim-full
-    ];
   };
 
   wsl.enable = true;
