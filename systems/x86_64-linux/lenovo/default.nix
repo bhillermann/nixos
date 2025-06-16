@@ -10,6 +10,8 @@
       ./hardware-configuration.nix
     ];
 
+  _module.args.hostname = config.networking.hostName;
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -87,13 +89,14 @@
     isNormalUser = true;
     description = "Brendon Hillermann";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      kdePackages.kate
-      stremio
-      bottles
-    #  thunderbird
-    ];
+    shell = pkgs.zsh;
   };
+
+  programs.zsh.enable = true;
+
+  fonts.packages = with pkgs; [ 
+    nerd-fonts.jetbrains-mono
+  ];
 
   # Install firefox.
   programs.firefox.enable = true;
@@ -115,6 +118,7 @@
   vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   wget
   git
+  stremio
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
