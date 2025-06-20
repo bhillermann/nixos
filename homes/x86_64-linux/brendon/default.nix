@@ -30,6 +30,9 @@ lib, pkgs, inputs, config, ...}:
     neofetch
     nnn # terminal file manager
 
+    # devenv
+    devenv
+
     # archives
     zip
     xz
@@ -106,6 +109,13 @@ lib, pkgs, inputs, config, ...}:
     plugins.guess-indent.enable = false;
   };
 
+  # nix-direnv
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+    enableZshIntegration = true;
+  };
+
   programs.zoxide = {
     enable = true;
     enableZshIntegration = true;
@@ -158,6 +168,15 @@ lib, pkgs, inputs, config, ...}:
       aws.disabled = true;
       gcloud.disabled = true;
       line_break.disabled = true;
+          directory = {
+          disabled = false;
+          home_symbol = "~";
+          truncate_to_repo = true;
+          truncation_length = 3;
+          truncation_symbol = "…/";
+          use_logical_path = true;
+          use_os_path_sep = true;
+        };
     };
   };
 
