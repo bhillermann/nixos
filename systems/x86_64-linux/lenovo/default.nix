@@ -35,7 +35,7 @@
   time.timeZone = "Australia/Melbourne";
 
   # Select internationalisation properties.
-  i18n.defaultLocale = "en_GB.UTF-8";
+  i18n.defaultLocale = "en_AU.UTF-8";
 
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "en_AU.UTF-8";
@@ -56,6 +56,12 @@
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
+
+  # Enable stylix
+  stylix = {
+    enable = true;
+    image = ../../../space.png;
+  };
 
   # Configure keymap in X11
   services.xserver.xkb = {
