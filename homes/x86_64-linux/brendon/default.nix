@@ -1,5 +1,9 @@
 {
-lib, pkgs, inputs, config, ...}: 
+lib, pkgs, inputs, config, hostname, ...}: 
+
+let
+  hostname = config._module.args.hostname or null;
+in
 
 {
   imports = [
@@ -56,6 +60,7 @@ lib, pkgs, inputs, config, ...}:
 
     # misc
     cowsay
+    lolcat
     file
     which
     tree
@@ -86,7 +91,14 @@ lib, pkgs, inputs, config, ...}:
     ethtool
     pciutils # lspci
     usbutils # lsusb
-  ];
+
+    
+  ] ++ lib.optionals (hostname == "lenovo") [
+      kdePackages.kate
+      stremio
+      bottles
+
+    ];
 
   # NVIM setup
   programs.nixvim = {
