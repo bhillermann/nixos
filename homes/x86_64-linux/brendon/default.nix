@@ -164,10 +164,11 @@ lib, pkgs, inputs, config, ...}:
     enable = true;
     # custom settings
     settings = {
-      add_newline = false;
+      format = "$all$directory$line_break$character";
+      add_newline = true;
       aws.disabled = true;
       gcloud.disabled = true;
-      line_break.disabled = true;
+      line_break.disabled = false;
           directory = {
           disabled = false;
           home_symbol = "~";
@@ -178,6 +179,7 @@ lib, pkgs, inputs, config, ...}:
           use_os_path_sep = true;
         };
     };
+
   };
 
   programs.zsh = {
