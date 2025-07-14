@@ -26,6 +26,7 @@
 
  environment.systemPackages = with pkgs; [ 
     wget
+    ollama
   ];
 
   programs.nix-ld = {
