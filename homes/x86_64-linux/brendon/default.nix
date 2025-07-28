@@ -37,6 +37,9 @@ in
     # devenv
     devenv
 
+    # Containers
+    podman
+
     # archives
     zip
     xz
@@ -175,23 +178,14 @@ in
   programs.starship = {
     enable = true;
     # custom settings
-    settings = {
-      format = "$all$directory$line_break$character";
-      add_newline = true;
-      aws.disabled = true;
-      gcloud.disabled = true;
-      line_break.disabled = false;
-          directory = {
-          disabled = false;
-          home_symbol = "~";
-          truncate_to_repo = true;
-          truncation_length = 3;
-          truncation_symbol = "…/";
-          use_logical_path = true;
-          use_os_path_sep = true;
-        };
-    };
-
+    settings = lib.mkMerge [
+      (builtins.fromTOML
+	(builtins.readFile "${pkgs.starship}/share/starship/presets/catppuccin-powerline.toml")
+      )
+      {
+	line_break.disabled = lib.mkForce false;
+      }
+    ];
   };
 
   programs.zsh = {
