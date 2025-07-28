@@ -24,7 +24,9 @@
     trusted-users = ["@wheel"];
   };
 
- environment.systemPackages = with pkgs; [ 
+  time.timeZone = "Australia/Melbourne";
+
+  environment.systemPackages = with pkgs; [ 
     wget
     ollama
   ];
@@ -34,10 +36,26 @@
     # package = pkgs.nix-ld-rs; # only for NixOS 24.05
   };
 
+  # BEGIN: Docker Desktop WSL Integration
+  wsl.extraBin = with pkgs; [
+    {src = "${uutils-coreutils-noprefix}/bin/cat";}
+    {src = "${uutils-coreutils-noprefix}/bin/whoami";}
+    {src = "${busybox}/bin/addgroup";}
+    {src = "${su}/bin/groupadd";}
+  ];
+  # END: Docker Desktop WSL Integration
+
+  programs.nh = {
+    enable = true;
+    clean.enable = true;
+    clean.extraArgs = "--keep-since 4d --keep 3";
+    flake = "/home/brendon/.nixos";
+  };
+
   services.wslWinhost.enable = true;
 
   # Set the default editor to vim
-  environment.variables.EDITOR = "vim";
+  environment.variables.EDITOR = "nvim";
 
   # Enable ZSH for all users
   programs.zsh.enable = true;
