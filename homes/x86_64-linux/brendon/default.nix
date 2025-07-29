@@ -37,9 +37,6 @@ in
     # devenv
     devenv
 
-    # Containers
-    podman
-
     # archives
     zip
     xz
