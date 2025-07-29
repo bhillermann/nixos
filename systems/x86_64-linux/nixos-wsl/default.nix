@@ -17,6 +17,8 @@
   imports = [
   ];
 
+  boot.kernelParams = [ "cgroup_no_v1=all" "systemd.unified_cgroup_hierarchy=1" ];
+
   nix.settings = {
     substituters = [ "https://nix-community.cachix.org" ];
     trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="];
@@ -28,7 +30,8 @@
 
   environment.systemPackages = with pkgs; [ 
     wget
-    ollama
+    podman
+    podman-compose
   ];
 
   programs.nix-ld = {
@@ -36,14 +39,19 @@
     # package = pkgs.nix-ld-rs; # only for NixOS 24.05
   };
 
-  # BEGIN: Docker Desktop WSL Integration
-  wsl.extraBin = with pkgs; [
-    {src = "${uutils-coreutils-noprefix}/bin/cat";}
-    {src = "${uutils-coreutils-noprefix}/bin/whoami";}
-    {src = "${busybox}/bin/addgroup";}
-    {src = "${su}/bin/groupadd";}
-  ];
-  # END: Docker Desktop WSL Integration
+  # Container configuration
+  virtualisation.containers.enable = true;
+  virtualisation = {
+    podman = {
+      enable = true;
+
+      # Create a `docker` alias for podman, to use it as a drop-in replacement
+      # dockerCompat = true;
+
+      # Required for containers under podman-compose to be able to talk to each other.
+      defaultNetwork.settings.dns_enabled = true;
+    };
+  };
 
   programs.nh = {
     enable = true;
@@ -66,6 +74,7 @@
     isNormalUser = true;
     description = "Brendon Hillermann";
     extraGroups = [ "networkmanager" "wheel" ];
+    linger = true;
     uid = 1000;
   };
 
