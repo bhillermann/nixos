@@ -1,7 +1,7 @@
-{ config, lib, pkgs, ... }:
+{ options, config, lib, pkgs, ... }:
 
 with lib;
-
+#with lib.custom; 
 let
   cfg = config.services.wslWinhost;
 
