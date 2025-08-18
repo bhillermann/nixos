@@ -181,6 +181,17 @@ in
       )
       {
 	line_break.disabled = lib.mkForce false;
+
+	username = lib.mkForce {
+	    format = "[ $user@$hostname]($style)";
+	    show_always = true;
+	    style_root = "bg:red fg:crust";
+	    style_user = "bg:red fg:crust";
+	};
+
+	hostname = {
+	  disabled = false;
+	};
       }
     ];
   };
