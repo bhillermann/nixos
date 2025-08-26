@@ -182,16 +182,23 @@ in
       {
 	line_break.disabled = lib.mkForce false;
 
+	format = lib.mkForce "[](red)$os$username$hostname[](bg:peach fg:red)$directory[](bg:yellow fg:peach)$git_branch$git_status[](fg:yellow bg:green)$c$rust$golang$nodejs$php$java$kotlin$haskell$python[](fg:green bg:sapphire)$conda[](fg:sapphire bg:lavender)$time[ ](fg:lavender)$cmd_duration$line_break$character";
+
 	username = lib.mkForce {
-	    format = "[ $user@$hostname]($style)";
+	    format = "[ $user]($style)";
 	    show_always = true;
 	    style_root = "bg:red fg:crust";
 	    style_user = "bg:red fg:crust";
 	};
 
-	hostname = {
-	  disabled = false;
+	hostname = lib.mkForce {
+	    format = "[ $hostname]($style)";
+	    style = "bg:red fg:crust";
+	    disabled = false;
+	    ssh_only = true;
+	    ssh_symbol = "🌐";
 	};
+
       }
     ];
   };
