@@ -43,20 +43,11 @@
       inherit inputs;
       src = ./.;
       
-      packages = {
-	db-nvrmap = { pkgs, ... }: inputs.db-nvrmap.packages.${pkgs.system}.default;
-      };
-
-      systems.hosts.vegetationlink.extraArgs = { pkgs, ... }: {
-	db-nvrmap = inputs.db-nvrmap.packages.${pkgs.system}.default;
-      };
-
       # Add a module to a specific host.
       systems.hosts.nixos-wsl.modules = with inputs; [
 	nixos-wsl.nixosModules.default
       ];
 
-      
       channels-config = {
       # Allow unfree packages.
 	allowUnfree = true;
