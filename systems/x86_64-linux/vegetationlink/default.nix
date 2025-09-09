@@ -51,6 +51,14 @@
     variant = "";
   };
 
+  # setup nh 
+  programs.nh = {
+    enable = true;
+    clean.enable = true;
+    clean.extraArgs = "--keep-since 4d --keep 3";
+    flake = "/home/brendon/.nixos";
+  };
+
   # Enable zsh for all users
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
@@ -61,7 +69,6 @@
     description = "Brendon Hillermann";
     extraGroups = [ "networkmanager" "wheel" ];
     shell = pkgs.zsh;
-    packages = with pkgs; [];
   };
 
   # Allow unfree packages
@@ -76,6 +83,7 @@
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     git
+    db-nvrmap
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
