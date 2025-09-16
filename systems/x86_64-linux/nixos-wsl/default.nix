@@ -32,6 +32,7 @@
     wget
     podman
     podman-compose
+    db-nvrmap
   ];
 
   programs.nix-ld = {
