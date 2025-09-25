@@ -215,12 +215,12 @@ in
     oh-my-zsh = {
       enable = true;
       plugins = [
-	"git"
-	"colorize"
-	"cp"
-	"vi-mode"
-	"last-working-dir"
-	"fancy-ctrl-z"
+        "git"
+        "colorize"
+        "cp"
+        "vi-mode"
+        "last-working-dir"
+        "fancy-ctrl-z"
       ];
     };
   };
