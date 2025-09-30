@@ -10,8 +10,7 @@
         };
     };
 
-    config = lib.mkIf config = {
-        core.enable {
+    config = lib.mkIf options.core.enable {
             home.packages = with pkgs; [
                 fastfetch
                 nnn # terminal file manager
@@ -68,6 +67,104 @@
                 pciutils # lspci
                 usbutils # lsusb
             ];
+
+            programs.zoxide = {
+                enable = true;
+                enableZshIntegration = true;
+            };
+
+            programs.bat = {
+                enable = true;
+                themes = {
+                catppuccin-mocha = {
+                src = pkgs.fetchFromGitHub {
+                "owner" = "catppuccin";
+                "repo" = "bat";
+                "rev" = "699f60fc8ec434574ca7451b444b880430319941";
+                "hash" = "sha256-6fWoCH90IGumAMc4buLRWL0N61op+AuMNN9CAR9/OdI=";
+                };
+                file = "/themes/Catppuccin\ Mocha.tmTheme";
+                };
+                };
+                config = {
+                theme = "catppuccin-mocha";
+                };
+            };
+
+            programs.fzf.enable = true;
+
+            programs.thefuck = {
+                enable = true;
+                enableZshIntegration = true;
+            };
+
+            programs.git = {
+                enable = true;
+                package = pkgs.gitFull;
+                # config = {
+                #   credential.helper = "libsecret";
+                # };
+                userName = "bhillermann";
+                userEmail = "bhillermann@gmail.com";
+                extraConfig = {
+                init.defaultBranch = "main";
+                };
+            };
+
+            # starship - an customizable prompt for any shell
+            programs.starship = {
+                enable = true;
+                # custom settings
+                settings = lib.mkMerge [
+                (builtins.fromTOML
+                (builtins.readFile "${pkgs.starship}/share/starship/presets/catppuccin-powerline.toml")
+                )
+                {
+                line_break.disabled = lib.mkForce false;
+
+                format = lib.mkForce "[](red)$os$username$hostname[](bg:peach fg:red)$directory[](bg:yellow fg:peach)$git_branch$git_status[](fg:yellow bg:green)$c$rust$golang$nodejs$php$java$kotlin$haskell$python[](fg:green bg:sapphire)$conda[](fg:sapphire bg:lavender)$time[ ](fg:lavender)$cmd_duration$line_break$character";
+
+                username = lib.mkForce {
+                    format = "[ $user]($style)";
+                    show_always = true;
+                    style_root = "bg:red fg:crust";
+                    style_user = "bg:red fg:crust";
+                };
+
+                hostname = lib.mkForce {
+                    format = "[ $hostname]($style)";
+                    style = "bg:red fg:crust";
+                    disabled = false;
+                    ssh_only = true;
+                    ssh_symbol = "🌐";
+                };
+
+                }
+                ];
+            };
+
+            programs.zsh = {
+                enable = true;
+                shellAliases = {
+                    nd = "nix develop";
+                    ls = "eza --color=always --long --git --icons=always";
+                    cd = "z";
+                    nixr = "sudo nixos-rebuild switch --flake ~/.nixos";
+                };
+
+                autosuggestion.enable = true;
+                oh-my-zsh = {
+                    enable = true;
+                    plugins = [
+                        "git"
+                        "colorize"
+                        "cp"
+                        "vi-mode"
+                        "last-working-dir"
+                        "fancy-ctrl-z"
+                    ];
+                };
+            };
         };
     };
 
