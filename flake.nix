@@ -45,12 +45,12 @@
       
       # Add a module to a specific host.
       systems.hosts.nixos-wsl.modules = with inputs; [
-	nixos-wsl.nixosModules.default
+	      nixos-wsl.nixosModules.default
       ];
 
       channels-config = {
       # Allow unfree packages.
-	allowUnfree = true;
+	      allowUnfree = true;
       };
       
     };
