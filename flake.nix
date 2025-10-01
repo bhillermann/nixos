@@ -50,7 +50,7 @@
 
       # Add modules to all homes.
       homes.modules = with inputs; [
-        cli.homeModules.default
+        inputs.nixvim.homeManagerModules.nixvim
       ];
 
       channels-config = {
