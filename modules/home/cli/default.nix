@@ -19,8 +19,8 @@
     };
   };
 
-  config = lib.mkIf config {
-    core.enable  = {
+  config = lib.mkMerge [
+	(lib.mkIf config.core.enable {
       home.packages = with pkgs; [
 	fastfetch
 	nnn # terminal file manager
@@ -175,9 +175,9 @@
 	  ];
 	};
       };
-    };
+	})
 
-    dev.enable = {
+    (lib.mkIf config.dev.enable {
       home.packages = with pkgs; [
 	# devenv - ony trialling this
 	devenv
@@ -189,7 +189,6 @@
 	nix-direnv.enable = true;
 	enableZshIntegration = true;
       };
-    };
-  };
-
+    })
+  ];
 }
