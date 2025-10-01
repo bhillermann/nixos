@@ -27,7 +27,7 @@ in
   home.homeDirectory = "/home/brendon";
 
   # enable core cli packages and settings
-  cli.core.enable = true;
+  core.enable = true;
 
   # enable extra dev packages and settings
   dev.enable = true; 
