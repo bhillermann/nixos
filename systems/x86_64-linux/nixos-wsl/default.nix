@@ -29,6 +29,7 @@
   time.timeZone = "Australia/Melbourne";
 
   environment.systemPackages = with pkgs; [ 
+    git
     wget
     podman
     podman-compose

@@ -48,6 +48,11 @@
 	      nixos-wsl.nixosModules.default
       ];
 
+      # Add modules to all homes.
+      homes.modules = with inputs; [
+        cli.homeModules.default
+      ];
+
       channels-config = {
       # Allow unfree packages.
 	      allowUnfree = true;
