@@ -7,20 +7,6 @@ in
 
 {
   imports = [
-    inputs.nixvim.homeManagerModules.nixvim
-    ./../../../nixvimPlugins/cmp.nix
-    ./../../../nixvimPlugins/copilot.nix
-    ./../../../nixvimPlugins/formatter_linter.nix
-    ./../../../nixvimPlugins/luasnip.nix
-    ./../../../nixvimPlugins/preview.nix
-    ./../../../nixvimPlugins/telescope.nix
-    ./../../../nixvimPlugins/comment.nix
-    ./../../../nixvimPlugins/emmet.nix
-    ./../../../nixvimPlugins/nvim_ui.nix
-    ./../../../nixvimPlugins/syntax_color_highlight.nix
-    ./../../../nixvimPlugins/lsp.nix
-    ./../../../nixvimPlugins/git.nix
-    ./../../../nixvimPlugins/keymaps.nix
   ];
 
   home.username = "brendon";
@@ -31,6 +17,9 @@ in
 
   # enable extra dev packages and settings
   dev.enable = true; 
+
+  # enable nixvim
+  nixvim.enable = true;
 
   # This value determines the home Manager release that your
   # configuration is compatible with. This helps avoid breakage
