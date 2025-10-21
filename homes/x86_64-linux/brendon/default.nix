@@ -1,9 +1,5 @@
-{
-lib, pkgs, inputs, config, hostname, ...}: 
+{ lib, pkgs, inputs, config, ...}: 
 
-let
-  hostname = config._module.args.hostname or null;
-in
 
 {
   imports = [
