@@ -63,33 +63,10 @@
     uid = 1000;
   };
 
-  # Add user 'podman'
-  users.users.podman = {
-    isSystemUser = true;
-    description = "Podman User";
-    group = "podman";
-    extraGroups = [ "networkmanager" ];
-    home = "/var/lib/podman";
-    shell = pkgs.zsh;
-    linger = true;
-  };
-
-    # Enable 1password cli
+  # Enable 1password cli
   programs._1password.enable = true;
 
-  services.onepassword-secrets = {
-    enable = true;
-    tokenFile = "/etc/opnix-token";
-  
-    secrets = {
-      postgisPassword = {
-        reference = "op://nixos-services/postgis/password";
-        owner = "podman";
-        group = "podman";
-        mode = "0600";
-      };
-    };
-  };
+  postgis.enable = true;
 
   wsl.enable = true;
   wsl.defaultUser = "brendon";
