@@ -9,17 +9,17 @@
 {
 
   options = {
-    podman = {
+    postgis = {
       enable = lib.mkOption {
-	      description = "Enable podman and tools.";
-	      type = lib.types.bool;
-	      default = false;
+        description = "Enable postgis as a podman systemd service.";
+        type = lib.types.bool;
+        default = false;
       };
     };
   };
 
-  config = lib.mkIf config.podman.enable {
-
+  config = lib.mkIf config.postgis.enable {
+    
     virtualisation.oci-containers.containers = {
         # Define a service named 'my-web-app'
         my-web-app = {
@@ -43,6 +43,5 @@
         #   ports = [ "9000:8000" ];
         # };
     };
-    }
   };
 }
