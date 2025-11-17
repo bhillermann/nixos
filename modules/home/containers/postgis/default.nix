@@ -26,20 +26,20 @@ in {
 
   config = lib.mkIf config.postgis.enable {
 
-    virtualisation.oci-containers.containers = {
-      postgis-db = {
-        image = "docker.io/postgis/postgis"; # Example: official PostGIS image
-        autoStart = true;
-        environment = {
-          POSTGRES_DB = "${postgresDb}";
-          POSTGRES_USER = "${postgresUser}";
-          POSTGRES_PASSWORD = "${postgresPassword}";
-        };
-        ports = [ "5432:5432" ];
-        volumes = [ "${dataDir}:/var/lib/postgresql/data" ];
-        podman.user = "nobody";
+    systemd.user.services.postgis = {
+      wantedBy = [ "default.target" ];
+      serviceConfig = {
+        ExecStart = "${pkgs.podman}/bin/podman run --rm --name postgis \
+          -p 5432:5432 \
+          -v ${dataDir}:/var/lib/postgresql/data \
+          -e POSTGRES_USER=${postgresUser} \
+          -e POSTGRES_PASSWORD=${postgresPassword} \
+          -e POSTGRES_DB=${postgresDb} \
+          docker.io:postgis/postgis";
+        Restart = "always";
       };
     };
+
 
   };
 }
