@@ -28,7 +28,7 @@
     podman-compose
     db-nvrmap
     llama-cpp
-    sops
+    opnix
   ];
 
   programs.nix-ld = {
