@@ -6,6 +6,8 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
 
+    # 1Password nixos secrets management
+    opnix.url = "github:brizzbuzz/opnix";
 
    # home-manager, user for managing user configuration
    home-manager = {
@@ -46,6 +48,7 @@
       # Add a module to a specific host.
       systems.hosts.nixos-wsl.modules = with inputs; [
 	      nixos-wsl.nixosModules.default
+        opnix.nixosModules.default
       ];
 
       # Add modules to all homes.
