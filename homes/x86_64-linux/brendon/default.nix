@@ -8,6 +8,21 @@
   home.username = "brendon";
   home.homeDirectory = "/home/brendon";
 
+  # Enable OpNix for Home Manager
+  programs.onepassword-secrets = {
+    enable = true;
+    tokenFile = "/etc/opnix-token";
+
+    secrets = {
+      postgisPassword = {
+        reference = "op://nixos-services/postgis/password";
+        owner = "brendon";
+        group = "users";
+        mode = "0600";
+      };
+    };
+  };
+
   # enable core cli packages and settings
   core.enable = true;
 
@@ -17,7 +32,7 @@
   # enable nixvim
   nixvim.enable = true;
 
-  postgis.enable = true;
+  postgis.enable = false;
 
   # This value determines the home Manager release that your
   # configuration is compatible with. This helps avoid breakage
