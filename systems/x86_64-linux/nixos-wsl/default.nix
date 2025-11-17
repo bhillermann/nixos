@@ -28,6 +28,7 @@
     podman-compose
     db-nvrmap
     llama-cpp
+    sops
   ];
 
   programs.nix-ld = {
@@ -60,6 +61,32 @@
     extraGroups = [ "networkmanager" "wheel" "podman" ];
     linger = true;
     uid = 1000;
+  };
+
+  # Add user 'podman'
+  users.users.podman = {
+    isSystemUser = true;
+    description = "Podman User";
+    group = "podman";
+    initialPassword = "changeitnow";
+    extraGroups = [ "networkmanager" ];
+  };
+
+    # Enable 1password cli
+  programs._1password.enable = true;
+
+  services.onepassword-secrets = {
+    enable = true;
+    tokenFile = "/etc/opnix-token";
+  
+    secrets = {
+      postgisPassword = {
+        reference = "op://nixos-services/postgis/password";
+        owner = "podman";
+        group = "podman";
+        mode = "0600";
+      };
+    };
   };
 
   wsl.enable = true;
