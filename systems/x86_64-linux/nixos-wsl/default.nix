@@ -58,7 +58,7 @@
   users.users.brendon = {
     isNormalUser = true;
     description = "Brendon Hillermann";
-    extraGroups = [ "networkmanager" "wheel" "podman" ];
+    extraGroups = [ "networkmanager" "wheel" "podman" "onepassword-secrets" ];
     linger = true;
     uid = 1000;
   };
@@ -66,7 +66,19 @@
   # Enable 1password cli
   programs._1password.enable = true;
 
-  postgis.enable = true;
+  # Enable OpNix for NixOS
+  services.onepassword-secrets = {
+    enable = true;
+    tokenFile = "/etc/opnix-token";
+    secrets = {
+      postgisPassword = {
+        reference = "op://nixos-services/postgis/password";
+        owner = "brendon";
+        group = "users";
+        mode = "0600";
+      };
+    };
+  };
 
   wsl.enable = true;
   wsl.defaultUser = "brendon";

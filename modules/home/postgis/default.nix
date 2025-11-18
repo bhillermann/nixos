@@ -9,9 +9,9 @@
 
 let
   postgresUser = "gisuser";
-  postgresPassword = "'$(cat ${config.programs.onepassword-secrets.secretPaths."postgisPassword"})'";
+  postgresPassword = "$(cat ${config.home.homeDirectory}/.config/opnix/secrets/postgisPassword)";
   postgresDb = "gisdb";
-  dataDir = "/home/brendon/Development/docker-builds/postgis/data/postgis";
+  dataDir = "${config.home.homeDirectory}/Development/docker-builds/postgis/data/postgis";
 in {
 
   options = {
@@ -25,21 +25,26 @@ in {
   };
 
   config = lib.mkIf config.postgis.enable {
-
     systemd.user.services.postgis = {
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        ExecStart = "${pkgs.podman}/bin/podman run --rm --name postgis \
+      Unit = {
+        Description = "Postgis container for GIS work.";
+        After = [ "network-online.target" ];
+      };
+      Service = {
+        ExecStart = ''
+          ${pkgs.podman}/bin/podman run --replace --name postgis \
           -p 5432:5432 \
           -v ${dataDir}:/var/lib/postgresql/data \
           -e POSTGRES_USER=${postgresUser} \
-          -e POSTGRES_PASSWORD=${postgresPassword} \
+          -e POSTGRES_PASSWORD="${postgresPassword}" \
           -e POSTGRES_DB=${postgresDb} \
-          docker.io:postgis/postgis";
+          docker.io/postgis/postgis
+          '';
         Restart = "always";
       };
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
     };
-
-
   };
 }
