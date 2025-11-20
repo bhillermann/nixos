@@ -29,6 +29,7 @@
     db-nvrmap
     llama-cpp
     opnix
+    su
   ];
 
   programs.nix-ld = {
