@@ -23,9 +23,6 @@
     };
   };
 
-  # Create token directory
-  home.file.".config/opnix/.keep".text = "";
-
   # enable core cli packages and settings
   core.enable = true;
 
