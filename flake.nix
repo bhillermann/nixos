@@ -35,12 +35,13 @@
 
     # db-nvrmap install
     db-nvrmap = {
-      url = "git+ssh://git@github.com/bhillermann/db-ensym.git?ref=main";
+      url = "github:bhillermann/db-ensym?ref=v1.1";
     };
 
   };
 
   outputs = inputs:
+
     inputs.snowfall-lib.mkFlake {
       inherit inputs;
       src = ./.;
@@ -61,7 +62,7 @@
       # Allow unfree packages.
 	      allowUnfree = true;
       };
-      
+
     };
 }
 
