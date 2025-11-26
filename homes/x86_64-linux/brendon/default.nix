@@ -1,12 +1,18 @@
-{ lib, pkgs, inputs, config, ...}: 
+{ lib, pkgs, inputs, config, ... }:
 
 
 {
   imports = [
   ];
 
-  home.username = "brendon";
-  home.homeDirectory = "/home/brendon";
+  home = {
+    username = "brendon";
+    homeDirectory = "/home/brendon";
+  };
+
+  home.packages = with pkgs; [
+    geodiff
+  ];
 
   # Enable OpNix for Home Manager
   programs.onepassword-secrets = {

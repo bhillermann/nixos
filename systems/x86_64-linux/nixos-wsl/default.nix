@@ -27,7 +27,6 @@
     podman
     podman-compose
     db-nvrmap
-    llama-cpp
     opnix
     su
   ];
