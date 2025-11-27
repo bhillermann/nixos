@@ -214,11 +214,10 @@ in
       };
     })
 
-	(lib.mkIf config.vscode-server.enable {
-
-		# enable the systemd service
-		services.vscode-server.enable = true;
-    })
+	{
+	# enable the systemd service
+	services.vscode-server.enable = config.vscode-server.enable;
+	}
 
   ];
 }
