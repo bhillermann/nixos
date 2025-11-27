@@ -17,6 +17,14 @@
 	default = false;
       };
     };
+
+	vscode-server = {
+		enable = lib.mkOption {
+			desciption = "Enable the vscode-server per user home-configuration";
+			type = lib.types.bool;
+			default = false;
+		}
+	}
   };
 
   config = lib.mkMerge [
@@ -190,5 +198,16 @@
 	enableZshIntegration = true;
       };
     })
+
+	(lib.mkIf config.vscode-server.enable {
+		# Import vscode-server for home-manager
+		imports = [
+			"${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/master"}/modules/vscode-server/home.nix"
+		];
+
+		# enable the systemd service
+		services.vscode-server.enable = true;
+    })
+
   ];
 }
