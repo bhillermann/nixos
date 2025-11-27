@@ -1,6 +1,21 @@
 { lib, pkgs, config, ... }:
 
+
+let
+	# Define vscode-server source for home-manager
+	vscode-server-src = pkgs.fetchgit  {
+		url = "https://github.com/msteen/nixos-vscode-server";
+		rev = "7943271335904017d3fafbf6fea395beebe42239";
+		sha256 = "sha256-Bx7DOPLhkr8Z60U9Qw4l0OidzHoqLDKQH5rDV5ef59A=";
+	};
+in
 {
+
+	# Import vscode-server for home-manager
+	imports = [
+		"${vscode-server-src}/modules/vscode-server/home.nix"
+	];
+
   options = {
     core = {
       enable = lib.mkOption {
@@ -20,11 +35,11 @@
 
 	vscode-server = {
 		enable = lib.mkOption {
-			desciption = "Enable the vscode-server per user home-configuration";
+			description = "Enable the vscode-server per user home-configuration";
 			type = lib.types.bool;
 			default = false;
-		}
-	}
+		};
+	};
   };
 
   config = lib.mkMerge [
@@ -200,10 +215,6 @@
     })
 
 	(lib.mkIf config.vscode-server.enable {
-		# Import vscode-server for home-manager
-		imports = [
-			"${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/master"}/modules/vscode-server/home.nix"
-		];
 
 		# enable the systemd service
 		services.vscode-server.enable = true;
