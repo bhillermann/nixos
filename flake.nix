@@ -38,6 +38,9 @@
       url = "github:bhillermann/db-ensym?ref=v1.1";
     };
 
+    # vs-code server
+    vscode-server.url = "github:nix-community/nixos-vscode-server";
+
   };
 
   outputs = inputs:
@@ -51,6 +54,12 @@
 	      nixos-wsl.nixosModules.default
         opnix.nixosModules.default
       ];
+
+      # Add a module to a specific host.
+      systems.hosts.vegetationlink.modules = with inputs; [
+        opnix.nixosModules.default
+        vscode-server.nixosModules.default
+      ];      
 
       # Add modules to all homes.
       homes.modules = with inputs; [
