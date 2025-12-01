@@ -23,7 +23,8 @@
         mode = "0600";
       };
       sshPrivateKey = {
-        reference = "op://nixos-services/nixos-wsl-ssh-private/private key";
+        reference =
+          "op://nixos-services/nixos-wsl-ssh-private/private key?ssh-format=openssh";
         path = ".ssh/id_ed25519";
         mode = "0600";
       };
