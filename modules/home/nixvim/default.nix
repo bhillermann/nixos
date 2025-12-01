@@ -456,7 +456,8 @@
         };
 
         oil = { enable = true; };
-        oil-git-status { enable = true; };
+        oil-git-status = { enable = true; };
+      };
     };
   };
 }
