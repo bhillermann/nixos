@@ -183,7 +183,7 @@ in
 			ls = "eza --color=always --long --git --icons=always";
 			cd = "z";
 			nixr = "sudo nixos-rebuild switch --flake ~/.nixos";
-			cat = "bat -pp"
+			cat = "bat -pp";
 		};
 
 		autosuggestion.enable = true;
