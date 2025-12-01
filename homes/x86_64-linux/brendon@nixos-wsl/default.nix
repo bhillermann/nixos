@@ -1,18 +1,14 @@
 { lib, pkgs, inputs, config, ... }:
 
-
 {
-  imports = [
-  ];
+  imports = [ ];
 
   home = {
     username = "brendon";
     homeDirectory = "/home/brendon";
   };
 
-  home.packages = with pkgs; [
-    geodiff
-  ];
+  home.packages = with pkgs; [ geodiff ];
 
   # Enable OpNix for Home Manager
   programs.onepassword-secrets = {
@@ -26,6 +22,11 @@
         group = "users";
         mode = "0600";
       };
+      sshPrivateKey = {
+        reference = "op://nixos-services/nixos-wsl-ssh-private/private-key";
+        path = ".ssh/id_rsa";
+        mode = "0600";
+      };
     };
   };
 
@@ -33,7 +34,7 @@
   core.enable = true;
 
   # enable extra dev packages and settings
-  dev.enable = true; 
+  dev.enable = true;
 
   # enable nixvim
   nixvim.enable = true;
