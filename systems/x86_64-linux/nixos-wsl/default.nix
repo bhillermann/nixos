@@ -1,27 +1,23 @@
-{ 
-  config, 
-  lib, 
-  pkgs, 
-  inputs, 
-  ... 
-}:
+{ config, lib, pkgs, inputs, ... }:
 
 {
-  imports = [
-  ];
+  imports = [ ];
 
-  boot.kernelParams = [ "cgroup_no_v1=all" "systemd.unified_cgroup_hierarchy=1" ];
+  boot.kernelParams =
+    [ "cgroup_no_v1=all" "systemd.unified_cgroup_hierarchy=1" ];
 
   nix.settings = {
     substituters = [ "https://nix-community.cachix.org" ];
-    trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="];
+    trusted-public-keys = [
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+    ];
     experimental-features = [ "nix-command" "flakes" ];
-    trusted-users = ["@wheel"];
+    trusted-users = [ "@wheel" ];
   };
 
   time.timeZone = "Australia/Melbourne";
 
-  environment.systemPackages = with pkgs; [ 
+  environment.systemPackages = with pkgs; [
     git
     wget
     podman
@@ -59,6 +55,9 @@
     isNormalUser = true;
     description = "Brendon Hillermann";
     extraGroups = [ "networkmanager" "wheel" "podman" "onepassword-secrets" ];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAB3NzaC1lZDI1NTE5AAAAIIIia4jZ/7YW4d4IGAnYX9hWF2bzvR7rReC8KVg6D3Jr your_email@example.com"
+    ];
     linger = true;
     uid = 1000;
   };
@@ -83,7 +82,7 @@
   wsl.enable = true;
   wsl.defaultUser = "brendon";
 
-   # This value determines the NixOS release from which the default
+  # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It's perfectly fine and recommended to leave
   # this value at the release version of the first install of this system.
