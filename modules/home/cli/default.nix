@@ -177,26 +177,33 @@ in
       };
 
       programs.zsh = {
-	enable = true;
-	shellAliases = {
-	  nd = "nix develop";
-	  ls = "eza --color=always --long --git --icons=always";
-	  cd = "z";
-	  nixr = "sudo nixos-rebuild switch --flake ~/.nixos";
-	};
+		enable = true;
+		shellAliases = {
+			nd = "nix develop";
+			ls = "eza --color=always --long --git --icons=always";
+			cd = "z";
+			nixr = "sudo nixos-rebuild switch --flake ~/.nixos";
+			cat = "bat -pp"
+		};
 
-	autosuggestion.enable = true;
-	oh-my-zsh = {
-	  enable = true;
-	  plugins = [
-	    "git"
-	    "colorize"
-	    "cp"
-	    "vi-mode"
-	    "last-working-dir"
-	    "fancy-ctrl-z"
-	  ];
-	};
+		autosuggestion.enable = true;
+
+		sessionVariables = {
+			EDITOR = "nvim";
+			MANPAGER="bat -l man -p ";
+		};
+
+		oh-my-zsh = {
+		enable = true;
+		plugins = [
+			"git"
+			"colorize"
+			"cp"
+			"vi-mode"
+			"last-working-dir"
+			"fancy-ctrl-z"
+		];
+		};
       };
 	})
 
