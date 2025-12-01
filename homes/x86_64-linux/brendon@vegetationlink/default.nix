@@ -39,7 +39,7 @@
   nixvim.enable = true;
 
   # Enable posgis container via systemd
-  postgis.enable = false;
+  postgis.enable = true;
 
   # Enable vscode-server for this user
   vscode-server.enable = true;

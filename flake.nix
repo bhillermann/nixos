@@ -9,11 +9,11 @@
     # 1Password nixos secrets management
     opnix.url = "github:brizzbuzz/opnix";
 
-   # home-manager, user for managing user configuration
-   home-manager = {
-     url = "github:nix-community/home-manager/release-25.05";
-     inputs.nixpkgs.follows = "nixpkgs";
-   };
+    # home-manager, user for managing user configuration
+    home-manager = {
+      url = "github:nix-community/home-manager/release-25.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # nixvim: configure neovim in nix
     nixvim = {
@@ -22,7 +22,7 @@
     };
 
     # snowfall-lib for modularising nix config
-    snowfall-lib = { 
+    snowfall-lib = {
       url = "github:snowfallorg/lib";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -34,9 +34,7 @@
     };
 
     # db-nvrmap install
-    db-nvrmap = {
-      url = "github:bhillermann/db-ensym?ref=v1.1";
-    };
+    db-nvrmap = { url = "github:bhillermann/db-ensym?ref=v1.1"; };
 
   };
 
@@ -45,17 +43,16 @@
     inputs.snowfall-lib.mkFlake {
       inherit inputs;
       src = ./.;
-      
+
       # Add a module to a specific host.
       systems.hosts.nixos-wsl.modules = with inputs; [
-	      nixos-wsl.nixosModules.default
+        nixos-wsl.nixosModules.default
         opnix.nixosModules.default
       ];
 
       # Add a module to a specific host.
-      systems.hosts.vegetationlink.modules = with inputs; [
-        opnix.nixosModules.default
-      ];      
+      systems.hosts.vegetationlink.modules = with inputs;
+        [ opnix.nixosModules.default ];
 
       # Add modules to all homes.
       homes.modules = with inputs; [
@@ -64,8 +61,8 @@
       ];
 
       channels-config = {
-      # Allow unfree packages.
-	      allowUnfree = true;
+        # Allow unfree packages.
+        allowUnfree = true;
       };
 
     };
