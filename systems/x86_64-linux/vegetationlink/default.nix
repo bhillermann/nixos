@@ -27,6 +27,17 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
+  networking = { 
+    interfaces.eth0 = {
+      ipv4.addresses = [{
+        address = "192.168.128.99";
+        prefixLength = 24;
+      }];
+    };
+  defaultGateway = "192.168.128.1";
+  nameservers = [ "1.1.1.1" "8.8.8.8" ];
+  
+
   # Set your time zone.
   time.timeZone = "Australia/Melbourne";
 
