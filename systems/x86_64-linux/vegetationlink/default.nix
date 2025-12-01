@@ -79,6 +79,10 @@
     description = "Brendon Hillermann";
     extraGroups = [ "networkmanager" "wheel" "podman" ];
     shell = pkgs.zsh;
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAB3NzaC1lZDI1NTE5AAAAIIIia4jZ/7YW4d4IGAnYX9hWF2bzvR7rReC8KVg6D3Jr your_email@example.com"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ0rUMiJZwSg4YeZxXuPuI5Sur5ZJO21EIw+S4CdSGGl azuread\\brendonhillermann@VL-8VW7284"
+    ];
   };
 
   # Allow unfree packages

@@ -55,9 +55,6 @@
     isNormalUser = true;
     description = "Brendon Hillermann";
     extraGroups = [ "networkmanager" "wheel" "podman" "onepassword-secrets" ];
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAB3NzaC1lZDI1NTE5AAAAIIIia4jZ/7YW4d4IGAnYX9hWF2bzvR7rReC8KVg6D3Jr your_email@example.com"
-    ];
     linger = true;
     uid = 1000;
   };
