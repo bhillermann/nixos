@@ -1,11 +1,12 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ config, pkgs, ... }:
-
-{
-  imports = [ # Include the results of the hardware scan.
+{ config
+, pkgs
+, ...
+}: {
+  imports = [
+    # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
 
@@ -28,17 +29,15 @@
 
   networking = {
     interfaces.eth0 = {
-      ipv4.addresses = [{
-        address = "192.168.128.99";
-        prefixLength = 24;
-      }];
+      ipv4.addresses = [
+        {
+          address = "192.168.128.99";
+          prefixLength = 24;
+        }
+      ];
     };
     defaultGateway = "192.168.128.1";
     nameservers = [ "1.1.1.1" "8.8.8.8" ];
-    networking.firewall = {
-      enable = true;
-      allowedTCPPorts = [ 5432 ];
-    };
   };
 
   # Set your time zone.
@@ -65,7 +64,7 @@
     variant = "";
   };
 
-  # setup nh 
+  # setup nh
   programs.nh = {
     enable = true;
     clean.enable = true;
@@ -81,7 +80,7 @@
   users.users.brendon = {
     isNormalUser = true;
     description = "Brendon Hillermann";
-    extraGroups = [ "networkmanager" "wheel" "podman" "onepassword-secrets"];
+    extraGroups = [ "networkmanager" "wheel" "podman" "onepassword-secrets" ];
     shell = pkgs.zsh;
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAB3NzaC1lZDI1NTE5AAAAIIIia4jZ/7YW4d4IGAnYX9hWF2bzvR7rReC8KVg6D3Jr your_email@example.com"
@@ -135,7 +134,7 @@
   };
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 22 ];
+  networking.firewall.allowedTCPPorts = [ 22 5432 ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
@@ -147,5 +146,4 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.05"; # Did you read the comment?
-
 }
