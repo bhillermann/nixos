@@ -35,6 +35,10 @@
     };
     defaultGateway = "192.168.128.1";
     nameservers = [ "1.1.1.1" "8.8.8.8" ];
+    networking.firewall = {
+      enable = true;
+      allowedTCPPorts = [ 5432 ];
+    };
   };
 
   # Set your time zone.
@@ -77,7 +81,7 @@
   users.users.brendon = {
     isNormalUser = true;
     description = "Brendon Hillermann";
-    extraGroups = [ "networkmanager" "wheel" "podman" ];
+    extraGroups = [ "networkmanager" "wheel" "podman" "onepassword-secrets"];
     shell = pkgs.zsh;
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAB3NzaC1lZDI1NTE5AAAAIIIia4jZ/7YW4d4IGAnYX9hWF2bzvR7rReC8KVg6D3Jr your_email@example.com"
@@ -112,6 +116,23 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+
+  #Enable podman
+  podman.enable = true;
+
+  # Enable OpNix for NixOS
+  services.onepassword-secrets = {
+    enable = true;
+    tokenFile = "/etc/opnix-token";
+    secrets = {
+      postgisPassword = {
+        reference = "op://nixos-services/postgis/password";
+        owner = "brendon";
+        group = "users";
+        mode = "0600";
+      };
+    };
+  };
 
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [ 22 ];
