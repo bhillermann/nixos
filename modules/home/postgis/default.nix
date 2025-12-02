@@ -1,32 +1,28 @@
-{ 
-  config, 
-  lib, 
-  pkgs, 
-  inputs, 
-  ... 
+{ config
+, lib
+, pkgs
+, inputs
+, ...
 }:
-
 
 let
   postgresUser = "gisuser";
-  postgresPassword = "$(cat ${config.home.homeDirectory}/.config/opnix/secrets/postgisPassword)";
+  secretPath = "${config.home.homeDirectory}/.config/opnix/secrets/postgisPassword";
   postgresDb = "gisdb";
   dataDir = "${config.home.homeDirectory}/Development/docker-builds/postgis/data/postgis";
 
-  
   startScript = pkgs.writeShellScript "start-postgis" ''
     ${pkgs.busybox}/bin/echo PATH=$PATH
     exec ${pkgs.podman}/bin/podman run --replace --name postgis \
       -p 5432:5432 \
       -qv ${dataDir}:/var/lib/postgresql/data \
       -e POSTGRES_USER=${postgresUser} \
-      -e POSTGRES_PASSWORD="$(${pkgs.coreutils}/bin/cat /home/brendon/.config/opnix/secrets/postgisPassword)" \
+      -e POSTGRES_PASSWORD="$(${pkgs.coreutils}/bin/cat ${secretPath})" \
       -e POSTGRES_DB=${postgresDb} \
       docker.io/postgis/postgis
   '';
-
-in {
-
+in
+{
   options = {
     postgis = {
       enable = lib.mkOption {
