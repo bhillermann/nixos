@@ -76,11 +76,14 @@
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
 
+  # add rclone group
+  users.groups.rclone = {};
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.brendon = {
     isNormalUser = true;
     description = "Brendon Hillermann";
-    extraGroups = [ "networkmanager" "wheel" "podman" "onepassword-secrets" ];
+    extraGroups = [ "networkmanager" "wheel" "podman" "onepassword-secrets" "rclone" ];
     shell = pkgs.zsh;
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAB3NzaC1lZDI1NTE5AAAAIIIia4jZ/7YW4d4IGAnYX9hWF2bzvR7rReC8KVg6D3Jr your_email@example.com"
@@ -134,6 +137,15 @@
     };
   };
 
+  # rclone setup 
+  ## NB!! You have to manually run rclone config for new builds. rclone.conf has to be writable for all users that need it. put the rclone.conf in the /rclone folder
+  ## to setup ssh to the remote server with port forwarding
+  ## $ ssh -L localhost:53682:localhost:53682 brendon@192.168.128.99
+  ## $ sudo mkdir /rclone
+  ## $ sudo rclone --config=/rclone/rclone.conf config
+  ## setup CS Docs folder as 'cs-docs'
+  ## setup GIS folder as 'gis'
+  
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [ 22 5432 ];
   # networking.firewall.allowedUDPPorts = [ ... ];
