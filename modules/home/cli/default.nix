@@ -96,6 +96,9 @@ in {
         ethtool
         pciutils # lspci
         usbutils # lsusb
+
+        # GIS Tools
+        gdal
       ];
 
       programs.zoxide = {
