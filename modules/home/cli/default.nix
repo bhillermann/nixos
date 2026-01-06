@@ -96,6 +96,7 @@ in {
         ethtool
         pciutils # lspci
         usbutils # lsusb
+        rclone
 
         # GIS Tools
         gdal

@@ -101,6 +101,7 @@
     wget
     git
     db-nvrmap
+    rclone
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
