@@ -43,7 +43,7 @@
   postgis.enable = true;
 
   # Enable vscode-server for this user
-  vscode-server.enable = true;
+  vscode-server.enable = false;
 
   # This value determines the home Manager release that your
   # configuration is compatible with. This helps avoid breakage

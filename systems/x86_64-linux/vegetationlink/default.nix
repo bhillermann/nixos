@@ -1,10 +1,19 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{ config
-, pkgs
-, ...
-}: {
+{ config, pkgs, ... }:
+
+let
+  postgresUser = "gisuser";
+  secretPath =
+    "${config.services.onepassword-secrets.secretPaths.postgisPassword}";
+  postgresDb = "gisdb";
+
+  landowner_script = pkgs.writeShellScript "landowner_script" ''
+    ${pkgs.coreutils}/bin/echo "Hello Landowners!"
+  '';
+
+in {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -29,12 +38,10 @@
 
   networking = {
     interfaces.eth0 = {
-      ipv4.addresses = [
-        {
-          address = "192.168.128.99";
-          prefixLength = 24;
-        }
-      ];
+      ipv4.addresses = [{
+        address = "192.168.128.99";
+        prefixLength = 24;
+      }];
     };
     defaultGateway = "192.168.128.1";
     nameservers = [ "1.1.1.1" "8.8.8.8" ];
@@ -72,19 +79,24 @@
     flake = "/home/brendon/.nixos";
   };
 
+  # Enable nix-ls (vscode-server doesn't work as well)
+  programs.nix-ld.enable = true;
+
   # Enable zsh for all users
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
 
   # add rclone group
-  users.groups.rclone = {};
+  users.groups.rclone = { };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.brendon = {
     isNormalUser = true;
     description = "Brendon Hillermann";
-    extraGroups = [ "networkmanager" "wheel" "podman" "onepassword-secrets" "rclone" ];
+    extraGroups =
+      [ "networkmanager" "wheel" "podman" "onepassword-secrets" "rclone" ];
     shell = pkgs.zsh;
+    linger = true;
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAB3NzaC1lZDI1NTE5AAAAIIIia4jZ/7YW4d4IGAnYX9hWF2bzvR7rReC8KVg6D3Jr your_email@example.com"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ0rUMiJZwSg4YeZxXuPuI5Sur5ZJO21EIw+S4CdSGGl azuread\\brendonhillermann@VL-8VW7284"
@@ -99,13 +111,7 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    vim
-    wget
-    git
-    db-nvrmap
-    rclone
-  ];
+  environment.systemPackages = with pkgs; [ vim wget git db-nvrmap rclone ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -145,7 +151,29 @@
   ## $ sudo rclone --config=/rclone/rclone.conf config
   ## setup CS Docs folder as 'cs-docs'
   ## setup GIS folder as 'gis'
-  
+
+  # sync VegLink Landowner layer from posgis instance to shapefile for others to use
+  systemd.timers."landowner_sync" = {
+    timerConfig = {
+      OnCalendar = "*-*-* 05:00:00";
+      Persistent = true;
+      Unit = "landowner_sync.service";
+    };
+    enable = true;
+  };
+
+  systemd.services."landowner_sync" = {
+    description =
+      "Sync VegLink Landowner layer from posgis instance to shapefile using rclone";
+    script = "${landowner_script}";
+
+    serviceConfig = {
+      Type = "oneshot";
+      User = "brendon";
+    };
+    enable = true;
+  };
+
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [ 22 5432 ];
   # networking.firewall.allowedUDPPorts = [ ... ];
