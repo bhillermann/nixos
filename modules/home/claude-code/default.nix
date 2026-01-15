@@ -1,5 +1,6 @@
 { lib, pkgs, config, ... }:
 
+{
   options = {
     claude-code = {
       enable = lib.mkOption {
@@ -12,7 +13,6 @@
   };
 
   config = lib.mkIf config.claude-code.enable {
-      home.packages = with pkgs; [
-        claude-code
-      ];
+    home.packages = with pkgs; [ claude-code ];
+  };
 }
