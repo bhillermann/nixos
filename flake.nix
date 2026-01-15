@@ -36,6 +36,9 @@
     # db-nvrmap install
     db-nvrmap = { url = "github:bhillermann/db-ensym?ref=v1.1"; };
 
+    # Claude Code
+    claude-code.url = "github:sadjow/claude-code-nix";
+
   };
 
   outputs = inputs:
