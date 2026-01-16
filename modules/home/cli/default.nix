@@ -80,6 +80,7 @@ in {
         gawk
         zstd
         gnupg
+        jq
 
         btop # replacement of htop/nmon
         iotop # io monitoring
