@@ -111,7 +111,14 @@ in {
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [ vim wget git db-nvrmap rclone ];
+  environment.systemPackages = with pkgs; [
+    vim
+    wget
+    git
+    db-nvrmap
+    rclone
+    trade-analysis
+  ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

@@ -469,6 +469,22 @@
         "type": "github"
       }
     },
+    "nixpkgs_6": {
+      "locked": {
+        "lastModified": 1755027561,
+        "narHash": "sha256-IVft239Bc8p8Dtvf7UAACMG5P3ZV+3/aO28gXpGtMXI=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "005433b926e16227259a1843015b5b2b7f7d1fc3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixvim": {
       "inputs": {
         "flake-parts": "flake-parts",
@@ -571,7 +587,8 @@
         "nixvim": "nixvim",
         "opnix": "opnix",
         "snowfall-lib": "snowfall-lib",
-        "stylix": "stylix"
+        "stylix": "stylix",
+        "trade-analysis": "trade-analysis"
       }
     },
     "snowfall-lib": {
@@ -799,6 +816,24 @@
       "original": {
         "owner": "tinted-theming",
         "repo": "base16-zed",
+        "type": "github"
+      }
+    },
+    "trade-analysis": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_6"
+      },
+      "locked": {
+        "lastModified": 1768534733,
+        "narHash": "sha256-j3f1zTttNVp+KrniQs1FpbEqDdf0iy/YmZUkdRGClvA=",
+        "owner": "bhillermann",
+        "repo": "trade_analysis",
+        "rev": "8e08523ae9bc9ad5401dc8a20d5138da5818c8bb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "bhillermann",
+        "repo": "trade_analysis",
         "type": "github"
       }
     },
