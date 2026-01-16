@@ -1,5 +1,5 @@
 { inputs, ... }:
 
 final: prev: {
-  trade-analysis = inputs.self.packages.${prev.system}.trade-analysis;
+  trade-analysis = inputs.trade-analysis.packages.${prev.system}.default;
 }
