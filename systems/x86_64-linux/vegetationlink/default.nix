@@ -5,12 +5,20 @@
 
 let
   postgresUser = "gisuser";
-  secretPath =
+  postgresSecretPath =
     "${config.services.onepassword-secrets.secretPaths.postgisPassword}";
   postgresDb = "gisdb";
+  postgresHost = "localhost";
 
   landowner_script = pkgs.writeShellScript "landowner_script" ''
     ${pkgs.coreutils}/bin/echo "Hello Landowners!"
+    NVRMAP_DB_TYPE=postgresql+psycopg2
+    NVRMAP_DB_USER=${postgresUser}
+    NVRMAP_DB_PASSWORD=`${pkgs.coreutils}/bin/cat ${postgresSecretPath}
+    NVRMAP_DB_HOST=${postgresHost}
+    NVRMAP_DB_NAME=${postgresDb}
+
+    ${pkgs.coreutils}/bin/env
   '';
 
 in {
