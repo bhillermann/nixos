@@ -11,12 +11,13 @@ let
   postgresHost = "localhost";
 
   landowner_script = pkgs.writeShellScript "landowner_script" ''
+    #!${pkgs.bash}/bin/bash
     ${pkgs.coreutils}/bin/echo "Hello Landowners!"
-    NVRMAP_DB_TYPE=postgresql+psycopg2
-    NVRMAP_DB_USER=${postgresUser}
-    NVRMAP_DB_PASSWORD=`${pkgs.coreutils}/bin/cat ${postgresSecretPath}
-    NVRMAP_DB_HOST=${postgresHost}
-    NVRMAP_DB_NAME=${postgresDb}
+    export NVRMAP_DB_TYPE=postgresql+psycopg2
+    export NVRMAP_DB_USER=${postgresUser}
+    export NVRMAP_DB_PASSWORD=`${pkgs.coreutils}/bin/cat ${postgresSecretPath}`
+    export NVRMAP_DB_HOST=${postgresHost}
+    export NVRMAP_DB_NAME=${postgresDb}
 
     ${pkgs.coreutils}/bin/env
   '';
