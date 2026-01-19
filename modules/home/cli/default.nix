@@ -170,6 +170,9 @@ in {
               ssh_symbol = "🌐";
             };
 
+            command_timeout = lib.mkForce 500;
+            scan_timeout = lib.mkForce 10;
+            git_status = lib.mkForce { disabled = true; };
           }
         ];
       };
@@ -178,7 +181,7 @@ in {
         enable = true;
         shellAliases = {
           nd = "nix develop";
-          ls = "eza --color=always --long --git --icons=always";
+          ls = "eza --color=always --long --icons=always";
           cd = "z";
           nixr = "sudo nixos-rebuild switch --flake ~/.nixos";
           cat = "bat -pp";
