@@ -118,6 +118,7 @@ in {
     db-nvrmap
     rclone
     trade-analysis
+    geodiff
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

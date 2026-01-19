@@ -22,14 +22,11 @@
     wget
     podman
     podman-compose
-    db-nvrmap
     opnix
     su
   ];
 
-  programs.nix-ld = {
-    enable = true;
-  };
+  programs.nix-ld = { enable = true; };
 
   programs.nh = {
     enable = true;

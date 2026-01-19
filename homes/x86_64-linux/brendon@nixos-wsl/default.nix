@@ -3,6 +3,8 @@
 {
   imports = [ ../brendon/core.nix ];
 
+  home.packages = with pkgs; [ geodiff trade-analysis db-nvrmap ];
+
   # enable core cli packages and settings
   core.enable = true;
 

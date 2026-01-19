@@ -8,8 +8,6 @@
     homeDirectory = "/home/brendon";
   };
 
-  home.packages = with pkgs; [ geodiff trade-analysis ];
-
   # Enable OpNix for Home Manager
   programs.onepassword-secrets = {
     enable = true;
