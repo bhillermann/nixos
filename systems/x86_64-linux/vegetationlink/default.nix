@@ -19,7 +19,7 @@ let
     export NVRMAP_DB_HOST=${postgresHost}
     export NVRMAP_DB_NAME=${postgresDb}
 
-    ${pkgs.coreutils}/bin/env
+    ${pkgs.gdal}/bin/ogr2ogr -f "ESRI Shapefile" /home/brendon/Downloads/landowners.shp PG:"host=$NVRMAP_DB_HOST dbname=$NVRMAP_DB_NAME user=$NVRMAP_DB_USER password=$NVRMAP_DB_PASSWORD" "veglink_landowners"
   '';
 
 in {
