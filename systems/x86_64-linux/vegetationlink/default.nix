@@ -9,17 +9,19 @@ let
     "${config.services.onepassword-secrets.secretPaths.postgisPassword}";
   postgresDb = "gisdb";
   postgresHost = "localhost";
+  dbType = "postgresql+psycopg2";
+  tmp = "/var/tmp/landowner_sync";
+  rcloneConfigPath = "/rclone/rclone.conf";
+  rcloneRemote = "gis:";
 
   landowner_script = pkgs.writeShellScript "landowner_script" ''
     #!${pkgs.bash}/bin/bash
     ${pkgs.coreutils}/bin/echo "Hello Landowners!"
-    export NVRMAP_DB_TYPE=postgresql+psycopg2
-    export NVRMAP_DB_USER=${postgresUser}
     export NVRMAP_DB_PASSWORD=`${pkgs.coreutils}/bin/cat ${postgresSecretPath}`
-    export NVRMAP_DB_HOST=${postgresHost}
-    export NVRMAP_DB_NAME=${postgresDb}
-
-    ${pkgs.gdal}/bin/ogr2ogr -f "ESRI Shapefile" /home/brendon/Downloads/landowners.shp PG:"host=$NVRMAP_DB_HOST dbname=$NVRMAP_DB_NAME user=$NVRMAP_DB_USER password=$NVRMAP_DB_PASSWORD" "veglink_landowners"
+    mkdir -p ${tmp}
+    cd ${tmp}
+    ${pkgs.gdal}/bin/ogr2ogr -f "ESRI Shapefile" 'VegLink Landowners.shp' PG:"host=${postgresHost} dbname=${postgresDb} user=${postgresUser} password=$NVRMAP_DB_PASSWORD" "veglink_landowners"
+    ${pkgs.rclone}/bin/rclone --config=${rcloneConfigPath} move ${tmp} ${rcloneRemote}:
   '';
 
 in {
