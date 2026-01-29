@@ -15,6 +15,8 @@
 
   postgis.enable = true;
 
+  nvrmap-web.enable = true;
+
   # Enable vscode-server for this user
   vscode-server.enable = false;
 
