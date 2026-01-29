@@ -9,7 +9,6 @@ let
     "${config.services.onepassword-secrets.secretPaths.postgisPassword}";
   postgresDb = "gisdb";
   postgresHost = "localhost";
-  dbType = "postgresql+psycopg2";
   tmp = "/var/tmp/landowner_sync";
   rcloneConfigPath = "/rclone/rclone.conf";
   rcloneRemote = "gis:";
@@ -21,7 +20,7 @@ let
     mkdir -p ${tmp}
     cd ${tmp}
     ${pkgs.gdal}/bin/ogr2ogr -f "ESRI Shapefile" 'VegLink Landowners.shp' PG:"host=${postgresHost} dbname=${postgresDb} user=${postgresUser} password=$NVRMAP_DB_PASSWORD" "veglink_landowners"
-    ${pkgs.rclone}/bin/rclone --config=${rcloneConfigPath} move ${tmp} ${rcloneRemote}:
+    ${pkgs.rclone}/bin/rclone --config=${rcloneConfigPath} move ${tmp} ${rcloneRemote}
   '';
 
 in {
