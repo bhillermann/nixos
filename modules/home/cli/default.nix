@@ -139,7 +139,10 @@ in {
         # };
         userName = "bhillermann";
         userEmail = "bhillermann@gmail.com";
-        extraConfig = { init.defaultBranch = "main"; };
+        extraConfig = {
+          init.defaultBranch = "main";
+          url."git@github.com:".insteadOf = "https://github.com/";
+        };
       };
 
       # starship - an customizable prompt for any shell
