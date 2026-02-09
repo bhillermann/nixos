@@ -20,6 +20,13 @@
         group = "users";
         mode = "0600";
       };
+      githubToken = {
+        reference = "op://nixos-services/github-cli-token/password";
+        path = ".config/opnix/secrets/githubToken";
+        owner = "brendon";
+        group = "users";
+        mode = "0600";
+      };
       sshPrivateKey = {
         reference =
           "op://nixos-services/nixos-wsl-ssh-private/private key?ssh-format=openssh";

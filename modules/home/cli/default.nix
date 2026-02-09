@@ -1,6 +1,10 @@
 { lib, pkgs, config, ... }:
 
 let
+  # Definte github CLI token secret for home-manager
+  githubTokenSecret =
+    "${config.home.homeDirectory}/.config/opnix/secrets/githubToken";
+
   # Define vscode-server source for home-manager
   vscode-server-src = pkgs.fetchgit {
     url = "https://github.com/msteen/nixos-vscode-server";
@@ -144,6 +148,17 @@ in {
           url."git@github.com:".insteadOf = "https://github.com/";
         };
       };
+
+      # GitHub CLI
+      programs.gh = {
+        enable = true;
+        settings = { git_protocol = "ssh"; };
+      };
+
+      # Set GH_TOKEN environment variable for GitHub CLI auth
+      home.sessionVariablesExtra = ''
+        export GH_TOKEN="$(${pkgs.coreutils}/bin/cat ${githubTokenSecret})"
+      '';
 
       # starship - an customizable prompt for any shell
       programs.starship = {

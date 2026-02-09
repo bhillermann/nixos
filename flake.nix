@@ -34,7 +34,7 @@
     };
 
     # db-nvrmap install
-    db-nvrmap = { url = "github:bhillermann/db-ensym?ref=v1.2"; };
+    db-nvrmap = { url = "github:bhillermann/db-ensym"; };
 
     # trade-analysis install
     trade-analysis.url = "github:bhillermann/trade_analysis";
