@@ -36,6 +36,13 @@ in {
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  # setup intel graphics drivers
+  hardware.graphics.enable = true;
+  hardware.graphics.extraPackages = with pkgs; [
+    intel-compute-runtime
+    intel-media-driver
+  ];
+
   networking.hostName = "vegetationlink"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -129,6 +136,7 @@ in {
     rclone
     trade-analysis
     geodiff
+    clinfo
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
