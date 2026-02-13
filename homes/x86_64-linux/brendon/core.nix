@@ -34,7 +34,7 @@
         mode = "0600";
       };
       msTenantID = {
-        reference = "op://nixos-services/receipt_tracker_api/tenant-id";
+        reference = "op://nixos-services/receipt_tracker_api/tenant_id";
         path = ".config/opnix/secrets/msTenantID";
         owner = "brendon";
         group = "users";
