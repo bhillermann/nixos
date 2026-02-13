@@ -33,6 +33,27 @@
         path = ".ssh/id_ed25519";
         mode = "0600";
       };
+      msTenantID = {
+        reference = "op://nixos-services/receipt_tracker_api/tenant-id";
+        path = ".config/opnix/secrets/msTenantID";
+        owner = "brendon";
+        group = "users";
+        mode = "0600";
+      };
+      msAppID = {
+        reference = "op://nixos-services/receipt_tracker_api/username";
+        path = ".config/opnix/secrets/msAppID";
+        owner = "brendon";
+        group = "users";
+        mode = "0600";
+      };
+      msAppSecret = {
+        reference = "op://nixos-services/receipt_tracker_api/password";
+        path = ".config/opnix/secrets/msAppSecret";
+        owner = "brendon";
+        group = "users";
+        mode = "0600";
+      };
     };
   };
 
