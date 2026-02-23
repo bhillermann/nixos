@@ -41,6 +41,7 @@ in {
   hardware.graphics.extraPackages = with pkgs; [
     intel-compute-runtime
     intel-media-driver
+    level-zero
   ];
 
   networking.hostName = "vegetationlink"; # Define your hostname.
