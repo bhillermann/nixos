@@ -111,7 +111,7 @@ in {
     isNormalUser = true;
     description = "Brendon Hillermann";
     extraGroups =
-      [ "networkmanager" "wheel" "podman" "onepassword-secrets" "rclone" ];
+      [ "networkmanager" "wheel" "podman" "onepassword-secrets" "rclone" "render" ];
     shell = pkgs.zsh;
     linger = true;
     openssh.authorizedKeys.keys = [
