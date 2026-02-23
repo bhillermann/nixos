@@ -35,6 +35,8 @@ in {
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  # enable compute on igpu
+  boot.kernelParams = [ "i915.enable_guc=3" ];
 
   # setup intel graphics drivers
   hardware.graphics.enable = true;
