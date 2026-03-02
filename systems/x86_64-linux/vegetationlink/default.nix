@@ -67,6 +67,29 @@ in {
     nameservers = [ "1.1.1.1" "8.8.8.8" ];
   };
 
+  # Enable Samba
+  services.samba = {
+    enable = true;
+    syncPasswordsByPam = true; # Use system password for SMB
+    openFirewall = true; # Open firewall ports 445/139
+    extraConfig = ''
+      workgroup = WORKGROUP
+      server string = smbnix
+      netbios name = smbnix
+      security = user
+      # Improve compatibility with macOS/Windows
+      client min protocol = CORE
+      server min protocol = CORE
+    '';
+  };
+
+  # Optional: For network discovery
+  services.gvfs.enable = true;
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+  };
+
   # Set your time zone.
   time.timeZone = "Australia/Melbourne";
 
@@ -116,18 +139,31 @@ in {
   # add rclone group
   users.groups.rclone = { };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # Define brendon's user account. Don't forget to set a password with ‘passwd’.
   users.users.brendon = {
     isNormalUser = true;
     description = "Brendon Hillermann";
-    extraGroups =
-      [ "networkmanager" "wheel" "podman" "onepassword-secrets" "rclone" "render" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "podman"
+      "onepassword-secrets"
+      "rclone"
+      "render"
+    ];
     shell = pkgs.zsh;
     linger = true;
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAB3NzaC1lZDI1NTE5AAAAIIIia4jZ/7YW4d4IGAnYX9hWF2bzvR7rReC8KVg6D3Jr your_email@example.com"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ0rUMiJZwSg4YeZxXuPuI5Sur5ZJO21EIw+S4CdSGGl azuread\\brendonhillermann@VL-8VW7284"
     ];
+  };
+
+  # Define Lani's account. Don't forget to set a password with ‘passwd’.
+  users.users.lani = {
+    isNormalUser = true;
+    description = "Lani Mott";
+    shell = pkgs.bash;
   };
 
   # Allow unfree packages
