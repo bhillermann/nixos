@@ -99,8 +99,15 @@ in {
     flake = "/home/brendon/.nixos";
   };
 
-  # Enable nix-ls (vscode-server doesn't work as well)
+  # Enable nix-ld (vscode-server doesn't work as well)
   programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+    intel-compute-runtime
+    level-zero
+    stdenv.cc.cc
+    glibc
+    libz
+  ];
 
   # Enable zsh for all users
   programs.zsh.enable = true;
