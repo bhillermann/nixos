@@ -69,8 +69,9 @@ in {
 
   systemd.tmpfiles.rules = [
     "d /mnt 0755 root root - -"
-    "d /mnt/Shares 0755 root root - -"
-    "d /mnt/Shares/Public 0770 brendon samba - -"
+    "d /mnt/shares 0755 root root - -"
+    "d /mnt/shares/Public 0770 brendon samba - -"
+    "d /mnt/shares/contact_db 0770 brendon users - -"
   ];
 
   # Enable Samba
@@ -89,7 +90,7 @@ in {
         "map to guest" = "bad user";
       };
       "public" = {
-        "path" = "/mnt/Shares/Public";
+        "path" = "/mnt/shares/Public";
         "browseable" = "yes";
         "read only" = "no";
         "guest ok" = "yes";
@@ -215,6 +216,12 @@ in {
     geodiff
     clinfo
   ];
+
+  environment.variables = {
+    # set the default editor to vim
+    EDITOR = "vim";
+    CONTACTS_DB = "/mnt/shares/contact_db/contacts.db";
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
