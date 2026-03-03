@@ -208,8 +208,9 @@ in {
     vim
     wget
     git
-    db-nvrmap
     rclone
+    db-nvrmap
+    title-search
     trade-analysis
     geodiff
     clinfo
