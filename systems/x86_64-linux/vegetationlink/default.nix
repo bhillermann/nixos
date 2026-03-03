@@ -67,27 +67,52 @@ in {
     nameservers = [ "1.1.1.1" "8.8.8.8" ];
   };
 
+  systemd.tmpfiles.rules = [
+    "d /mnt 0755 root root - -"
+    "d /mnt/Shares 0755 root root - -"
+    "d /mnt/Shares/Public 0770 brendon samba - -"
+  ];
+
   # Enable Samba
   services.samba = {
     enable = true;
-    syncPasswordsByPam = true; # Use system password for SMB
-    openFirewall = true; # Open firewall ports 445/139
-    extraConfig = ''
-      workgroup = WORKGROUP
-      server string = smbnix
-      netbios name = smbnix
-      security = user
-      # Improve compatibility with macOS/Windows
-      client min protocol = CORE
-      server min protocol = CORE
-    '';
+    openFirewall = true;
+    settings = {
+      global = {
+        "workgroup" = "WORKGROUP";
+        "server string" = "smbnix";
+        "netbios name" = "smbnix";
+        "security" = "user";
+        "hosts allow" = "192.168.128. 127.0.0.1 localhost";
+        "hosts deny" = "0.0.0.0/0";
+        "guest account" = "nobody";
+        "map to guest" = "bad user";
+      };
+      "public" = {
+        "path" = "/mnt/Shares/Public";
+        "browseable" = "yes";
+        "read only" = "no";
+        "guest ok" = "yes";
+        "create mask" = "0644";
+        "directory mask" = "0755";
+      };
+    };
   };
 
-  # Optional: For network discovery
-  services.gvfs.enable = true;
-  services.avahi = {
+  services.samba-wsdd = {
     enable = true;
+    openFirewall = true;
+    extraOptions = [ "--interface" "eth0" ];
+  };
+
+  services.avahi = {
+    publish.enable = true;
+    publish.userServices = true;
+    # ^^ Needed to allow samba to automatically register mDNS records (without the need for an `extraServiceFile`
     nssmdns4 = true;
+    # ^^ Not one hundred percent sure if this is needed- if it aint broke, don't fix it
+    enable = true;
+    openFirewall = true;
   };
 
   # Set your time zone.
@@ -136,8 +161,11 @@ in {
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
 
-  # add rclone group
+  # add extra groups
   users.groups.rclone = { };
+  users.groups.render = { };
+  users.groups.samba = { };
+  users.groups.onepassword-secrets = { };
 
   # Define brendon's user account. Don't forget to set a password with ‘passwd’.
   users.users.brendon = {
@@ -150,6 +178,7 @@ in {
       "onepassword-secrets"
       "rclone"
       "render"
+      "samba"
     ];
     shell = pkgs.zsh;
     linger = true;
@@ -163,6 +192,7 @@ in {
   users.users.lani = {
     isNormalUser = true;
     description = "Lani Mott";
+    extraGroups = [ "samba" ];
     shell = pkgs.bash;
   };
 
