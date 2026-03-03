@@ -503,6 +503,22 @@
     },
     "nixpkgs_6": {
       "locked": {
+        "lastModified": 1749285348,
+        "narHash": "sha256-frdhQvPbmDYaScPFiCnfdh3B/Vh81Uuoo0w5TkWmmjU=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "3e3afe5174c561dee0df6f2c2b2236990146329f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_7": {
+      "locked": {
         "lastModified": 1768305791,
         "narHash": "sha256-AIdl6WAn9aymeaH/NvBj0H9qM+XuAuYbGMZaP0zcXAQ=",
         "owner": "nixos",
@@ -620,6 +636,7 @@
         "opnix": "opnix",
         "snowfall-lib": "snowfall-lib",
         "stylix": "stylix",
+        "title-search": "title-search",
         "trade-analysis": "trade-analysis"
       }
     },
@@ -851,10 +868,28 @@
         "type": "github"
       }
     },
+    "title-search": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_6"
+      },
+      "locked": {
+        "lastModified": 1772425399,
+        "narHash": "sha256-lJXWhL4JSjTQfgjaxVpYUGSoeZnG19gRzR1XPThTnQc=",
+        "ref": "refs/heads/main",
+        "rev": "eb46031ef19a9fe9097e3564af49dae31cc09156",
+        "revCount": 45,
+        "type": "git",
+        "url": "ssh://git@github.com/bhillermann/title-search"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com/bhillermann/title-search"
+      }
+    },
     "trade-analysis": {
       "inputs": {
         "flake-parts": "flake-parts_3",
-        "nixpkgs": "nixpkgs_6"
+        "nixpkgs": "nixpkgs_7"
       },
       "locked": {
         "lastModified": 1768539298,
