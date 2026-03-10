@@ -8,6 +8,15 @@
     homeDirectory = "/home/brendon";
   };
 
+  home.sessionVariables = {
+    MS_APP_ID =
+      "$(${pkgs.coreutils}/bin/cat /mnt/shares/contact_db/secrets/msAppID)";
+    MS_APP_SECRET =
+      "$(${pkgs.coreutils}/bin/cat /mnt/shares/contact_db/secrets/msAppSecret)";
+    MS_TENANT_ID =
+      "$(${pkgs.coreutils}/bin/cat /mnt/shares/contact_db/secrets/msTenantID)";
+  };
+
   # Enable OpNix for Home Manager
   programs.onepassword-secrets = {
     enable = true;
@@ -35,24 +44,24 @@
       };
       msTenantID = {
         reference = "op://nixos-services/receipt_tracker_api/tenant_id";
-        path = ".config/opnix/secrets/msTenantID";
+        path = "/mnt/shares/contact_db/secrets/msTenantID";
         owner = "brendon";
         group = "users";
-        mode = "0600";
+        mode = "0440";
       };
       msAppID = {
         reference = "op://nixos-services/receipt_tracker_api/username";
-        path = ".config/opnix/secrets/msAppID";
+        path = "/mnt/shares/contact_db/secrets/msAppID";
         owner = "brendon";
         group = "users";
-        mode = "0600";
+        mode = "0440";
       };
       msAppSecret = {
         reference = "op://nixos-services/receipt_tracker_api/password";
-        path = ".config/opnix/secrets/msAppSecret";
+        path = "/mnt/shares/contact_db/secrets/msAppSecret";
         owner = "brendon";
         group = "users";
-        mode = "0600";
+        mode = "0440";
       };
     };
   };
