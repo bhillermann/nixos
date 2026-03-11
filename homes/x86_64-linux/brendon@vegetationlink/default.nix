@@ -12,7 +12,7 @@
       "$(${pkgs.coreutils}/bin/cat /mnt/shares/contact_db/secrets/msTenantID)";
   };
 
- # Enable OpNix for Home Manager
+  # Enable OpNix for Home Manager
   programs.onepassword-secrets = {
     secrets = {
       msTenantID = {
@@ -37,6 +37,7 @@
         mode = "0440";
       };
     };
+  };
 
   # enable core cli packages and settings
   core.enable = true;
