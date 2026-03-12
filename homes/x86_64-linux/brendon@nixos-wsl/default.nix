@@ -3,6 +3,12 @@
 {
   imports = [ ../brendon/core.nix ];
 
+  home.sessionVariables = {
+    NVRMAP_CONFIG = "/home/brendon/.config/nvrmap/";
+    NVRMAP_DB_PASSWORD =
+      "$(${pkgs.coreutils}/bin/cat /home/brendon/.config/opnix/secrets/postgisPassword)";
+  };
+
   home.packages = with pkgs; [ geodiff trade-analysis db-nvrmap ];
 
   # enable core cli packages and settings
