@@ -873,11 +873,11 @@
         "nixpkgs": "nixpkgs_6"
       },
       "locked": {
-        "lastModified": 1773112216,
-        "narHash": "sha256-eULLYalxWiq9YM8199zlZCxUPXb03dgSzoVm/HcVZss=",
+        "lastModified": 1773288987,
+        "narHash": "sha256-PlotJlZkc+zOYSEM5PnnckfUdGxrIHeHD2/ktO+bTpk=",
         "ref": "refs/heads/main",
-        "rev": "5d1d2ef9890768e5c1e1783de8e4f152e16dcca8",
-        "revCount": 50,
+        "rev": "22a088dcdfd30aa49f449713e38bf77fd35200bc",
+        "revCount": 51,
         "type": "git",
         "url": "ssh://git@github.com/bhillermann/title-search"
       },
