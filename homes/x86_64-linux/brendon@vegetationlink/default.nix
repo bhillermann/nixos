@@ -20,21 +20,21 @@
         path = "/mnt/shares/contact_db/secrets/msTenantID";
         owner = "brendon";
         group = "users";
-        mode = "0440";
+        mode = "0640";
       };
       msAppID = {
         reference = "op://nixos-services/receipt_tracker_api/username";
         path = "/mnt/shares/contact_db/secrets/msAppID";
         owner = "brendon";
         group = "users";
-        mode = "0440";
+        mode = "0640";
       };
       msAppSecret = {
         reference = "op://nixos-services/receipt_tracker_api/password";
         path = "/mnt/shares/contact_db/secrets/msAppSecret";
         owner = "brendon";
         group = "users";
-        mode = "0440";
+        mode = "0640";
       };
     };
   };
