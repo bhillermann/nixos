@@ -1,4 +1,4 @@
-{ lib, pkgs, config, ... }:
+{ lib, pkgs, config, inputs, ... }:
 
 let
   gsd = pkgs.fetchFromGitHub {
@@ -34,12 +34,13 @@ in {
     })
 
     (lib.mkIf config.claude-code-gsd.enable {
-      home.activation.installGSD = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        mkdir -p $HOME/.claude/commands/gsd $HOME/.claude/agents $HOME/.claude/hooks
-        cp -r ${gsd}/commands/gsd/* $HOME/.claude/commands/gsd/
-        cp -r ${gsd}/agents/* $HOME/.claude/agents/
-        [ -d ${gsd}/hooks ] && cp -r ${gsd}/hooks/* $HOME/.claude/hooks/ || true
-      '';
+      home.activation.installGSD =
+        inputs.home-manager.lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          mkdir -p $HOME/.claude/commands/gsd $HOME/.claude/agents $HOME/.claude/hooks
+          cp -r ${gsd}/commands/gsd/* $HOME/.claude/commands/gsd/
+          cp -r ${gsd}/agents/* $HOME/.claude/agents/
+          [ -d ${gsd}/hooks ] && cp -r ${gsd}/hooks/* $HOME/.claude/hooks/ || true
+        '';
     })
   ];
 }

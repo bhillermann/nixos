@@ -5,11 +5,10 @@
 { config, pkgs, inputs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      inputs.stylix.nixosModules.stylix
-      ./hardware-configuration.nix
-    ];
+  imports = [ # Include the results of the hardware scan.
+    inputs.stylix.nixosModules.stylix
+    ./hardware-configuration.nix
+  ];
 
   _module.args.hostname = config.networking.hostName;
 
@@ -20,7 +19,8 @@
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  boot.initrd.luks.devices."luks-ea32b3f7-abee-4f1c-88f9-ad70789da4b3".device = "/dev/disk/by-uuid/ea32b3f7-abee-4f1c-88f9-ad70789da4b3";
+  boot.initrd.luks.devices."luks-ea32b3f7-abee-4f1c-88f9-ad70789da4b3".device =
+    "/dev/disk/by-uuid/ea32b3f7-abee-4f1c-88f9-ad70789da4b3";
   networking.hostName = "lenovo"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -56,12 +56,6 @@
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
-
-  # Enable stylix
-  stylix = {
-    enable = true;
-    image = ../../../space.png;
-  };
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -101,9 +95,7 @@
 
   programs.zsh.enable = true;
 
-  fonts.packages = with pkgs; [ 
-    nerd-fonts.jetbrains-mono
-  ];
+  fonts.packages = with pkgs; [ nerd-fonts.jetbrains-mono ];
 
   # Install firefox.
   programs.firefox.enable = true;
@@ -122,11 +114,11 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  wget
-  git
-  stremio
-  vlc
+    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    wget
+    git
+    stremio
+    vlc
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
