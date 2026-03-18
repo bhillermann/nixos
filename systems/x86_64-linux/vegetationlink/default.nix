@@ -264,6 +264,7 @@ in {
 
   # sync VegLink Landowner layer from posgis instance to shapefile for others to use
   systemd.timers."landowner_sync" = {
+    wantedBy = [ "timers.target" ];
     timerConfig = {
       OnCalendar = "*-*-* 05:00:00";
       Persistent = true;
