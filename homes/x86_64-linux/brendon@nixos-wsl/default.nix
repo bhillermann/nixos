@@ -17,6 +17,7 @@
   # enable extra dev packages and settings
   dev.enable = true;
   claude-code.enable = true;
+  claude-code-gsd.enable = true;
 
   # enable nixvim
   nixvim.enable = true;
