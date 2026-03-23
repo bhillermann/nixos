@@ -5,7 +5,7 @@ let
     owner = "gsd-build";
     repo = "get-shit-done";
     rev = "v1.18.0";
-    hash = "";
+    hash = "sha256-PbvmJkFv1NHd7pc+N4lVh/8ZiQHuPpUpCZLQIX3VZxs=";
   };
 
 in {
@@ -29,17 +29,25 @@ in {
   };
 
   config = lib.mkMerge [
-    (lib.mkIf config.claude-code.enable {
-      home.packages = with pkgs; [ claude-code ];
-    })
-
     (lib.mkIf config.claude-code-gsd.enable {
       home.activation.installGSD =
         inputs.home-manager.lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          mkdir -p $HOME/.claude/commands/gsd $HOME/.claude/agents $HOME/.claude/hooks
+          mkdir -p $HOME/.claude/commands/gsd \
+                   $HOME/.claude/agents \
+                   $HOME/.claude/hooks \
+                   $HOME/.claude/get-shit-done
+
+          # Slash commands (the /gsd:* entrypoints)
           cp -r ${gsd}/commands/gsd/* $HOME/.claude/commands/gsd/
+
+          # Agents
           cp -r ${gsd}/agents/* $HOME/.claude/agents/
+
+          # Hooks
           [ -d ${gsd}/hooks ] && cp -r ${gsd}/hooks/* $HOME/.claude/hooks/ || true
+
+          # Core GSD runtime (workflows, templates, references)
+          cp -r ${gsd}/get-shit-done/* $HOME/.claude/get-shit-done/
         '';
     })
   ];
