@@ -337,6 +337,22 @@
         "type": "github"
       }
     },
+    "gsd": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1774203693,
+        "narHash": "sha256-W8ybl2HWyIV9gFnD2vXEmK2AMjPU7+1xfDt7iCrsQEU=",
+        "owner": "gsd-build",
+        "repo": "get-shit-done",
+        "rev": "dab0c471113d7de846f4116d1ed0bbd6f255196e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gsd-build",
+        "repo": "get-shit-done",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -629,6 +645,7 @@
       "inputs": {
         "claude-code": "claude-code",
         "db-nvrmap": "db-nvrmap",
+        "gsd": "gsd",
         "home-manager": "home-manager",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_4",
