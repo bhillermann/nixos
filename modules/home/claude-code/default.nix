@@ -38,16 +38,21 @@ in {
                    $HOME/.claude/get-shit-done
 
           # Slash commands (the /gsd:* entrypoints)
-          cp -r ${gsd}/commands/gsd/* $HOME/.claude/commands/gsd/
+          cp -rf ${gsd}/commands/gsd/* $HOME/.claude/commands/gsd/
 
           # Agents
-          cp -r ${gsd}/agents/* $HOME/.claude/agents/
+          cp -rf ${gsd}/agents/* $HOME/.claude/agents/
 
           # Hooks
-          [ -d ${gsd}/hooks ] && cp -r ${gsd}/hooks/* $HOME/.claude/hooks/ || true
+          [ -d ${gsd}/hooks ] && cp -rf ${gsd}/hooks/* $HOME/.claude/hooks/ || true
 
           # Core GSD runtime (workflows, templates, references)
-          cp -r ${gsd}/get-shit-done/* $HOME/.claude/get-shit-done/
+          cp -rf ${gsd}/get-shit-done/* $HOME/.claude/get-shit-done/
+
+          chmod -R u+w $HOME/.claude/commands/gsd \
+              $HOME/.claude/agents \
+              $HOME/.claude/get-shit-done \
+              $HOME/.claude/hooks
         '';
     })
   ];
