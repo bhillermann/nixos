@@ -44,6 +44,11 @@
 
     # Claude Code
     claude-code.url = "github:sadjow/claude-code-nix";
+    ## GSD integration for Claude Code
+    gsd = {
+      url = "github:gsd-build/get-shit-done";
+      flake = false;
+    };
 
   };
 

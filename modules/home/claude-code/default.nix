@@ -1,14 +1,5 @@
 { lib, pkgs, config, inputs, ... }:
 
-let
-  gsd = pkgs.fetchFromGitHub {
-    owner = "gsd-build";
-    repo = "get-shit-done";
-    rev = "v1.18.0";
-    hash = "sha256-PbvmJkFv1NHd7pc+N4lVh/8ZiQHuPpUpCZLQIX3VZxs=";
-  };
-
-in {
   options = {
     claude-code = {
       enable = lib.mkOption {
@@ -29,6 +20,10 @@ in {
   };
 
   config = lib.mkMerge [
+    (lib.mkIf config.claude-code.enable {
+      home.packages = with pkgs; [ claude-code ];
+    })
+
     (lib.mkIf config.claude-code-gsd.enable {
       home.activation.installGSD =
         inputs.home-manager.lib.hm.dag.entryAfter [ "writeBoundary" ] ''
@@ -38,16 +33,16 @@ in {
                    $HOME/.claude/get-shit-done
 
           # Slash commands (the /gsd:* entrypoints)
-          cp -rf ${gsd}/commands/gsd/* $HOME/.claude/commands/gsd/
+          cp -rf ${inputs.gsd}/commands/gsd/* $HOME/.claude/commands/gsd/
 
           # Agents
-          cp -rf ${gsd}/agents/* $HOME/.claude/agents/
+          cp -rf ${inputs.gsd}/agents/* $HOME/.claude/agents/
 
           # Hooks
-          [ -d ${gsd}/hooks ] && cp -rf ${gsd}/hooks/* $HOME/.claude/hooks/ || true
+          [ -d ${inputs.gsd}/hooks ] && cp -rf ${inputs.gsd}/hooks/* $HOME/.claude/hooks/ || true
 
           # Core GSD runtime (workflows, templates, references)
-          cp -rf ${gsd}/get-shit-done/* $HOME/.claude/get-shit-done/
+          cp -rf ${inputs.gsd}/get-shit-done/* $HOME/.claude/get-shit-done/
 
           chmod -R u+w $HOME/.claude/commands/gsd \
               $HOME/.claude/agents \
