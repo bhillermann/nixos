@@ -1,5 +1,6 @@
 { lib, pkgs, config, inputs, ... }:
 
+{
   options = {
     claude-code = {
       enable = lib.mkOption {
