@@ -519,11 +519,11 @@
     },
     "nixpkgs_6": {
       "locked": {
-        "lastModified": 1749285348,
-        "narHash": "sha256-frdhQvPbmDYaScPFiCnfdh3B/Vh81Uuoo0w5TkWmmjU=",
+        "lastModified": 1774386573,
+        "narHash": "sha256-4hAV26quOxdC6iyG7kYaZcM3VOskcPUrdCQd/nx8obc=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "3e3afe5174c561dee0df6f2c2b2236990146329f",
+        "rev": "46db2e09e1d3f113a13c0d7b81e2f221c63b8ce9",
         "type": "github"
       },
       "original": {
@@ -890,11 +890,11 @@
         "nixpkgs": "nixpkgs_6"
       },
       "locked": {
-        "lastModified": 1774485971,
-        "narHash": "sha256-F17LWvMmm2shr0zsqQD4STu/5YYxoIlPQLDJSxXMu4Q=",
+        "lastModified": 1777271886,
+        "narHash": "sha256-WgJWk5mpdwAM11hF7aWEe/jNVUBmqfCD0qVMhomfFLU=",
         "ref": "refs/heads/main",
-        "rev": "09a46ca1a463d110f3b5ff426d6b7cf609fbef87",
-        "revCount": 55,
+        "rev": "ffe4aa644b7b0d7d43b2d1686dea4698525dadab",
+        "revCount": 65,
         "type": "git",
         "url": "ssh://git@github.com/bhillermann/title-search"
       },
