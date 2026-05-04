@@ -38,6 +38,9 @@ in {
   # enable compute on igpu
   boot.kernelParams = [ "i915.enable_guc=3" ];
 
+  # Copy/Fail mitigation
+  boot.blacklistedKernelModules = [ "algif_aead" ];
+
   # setup intel graphics drivers
   hardware.graphics.enable = true;
   hardware.graphics.extraPackages = with pkgs; [
