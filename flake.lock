@@ -909,11 +909,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1768539298,
-        "narHash": "sha256-Et2p8YO2pDhX6kBT9UhCKYiAsz04p8lBtX29UXs2hho=",
+        "lastModified": 1778043136,
+        "narHash": "sha256-pwjb7KCNIeoH14YtM2CxOe5DA3DMHFnDcL+84HQ2nCk=",
         "owner": "bhillermann",
         "repo": "trade_analysis",
-        "rev": "6eb1d1ebf5cad862d678c3933563420bb46fa511",
+        "rev": "7facf1f797ef3f7c9fc4916a55e2fa3483af39dd",
         "type": "github"
       },
       "original": {
