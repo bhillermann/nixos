@@ -26,7 +26,7 @@ curl -sL "$TARBALL_URL" | tar xz -C "$WORK_DIR"
 # Generate lock file
 echo "Generating package-lock.json..."
 cd "$WORK_DIR/package"
-npm install --package-lock-only --ignore-scripts --silent
+nix-shell -p nodejs_22 --run "npm install --package-lock-only --ignore-scripts --silent"
 
 # Get tarball hash
 echo "Computing tarball hash..."

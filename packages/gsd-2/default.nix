@@ -13,7 +13,7 @@ in pkgs.buildNpmPackage rec {
     hash = "sha256:0907hiz1h5r5k7wqmskqi3pgbzahc7xn24rxj9w8wpnrvkrc28lj";
   };
 
-  npmDepsHash = "sha256-fd9Gbdbqo38in3lXmnN87cuvv2Jp0fksXzsfQf0Jv5I=";
+  npmDepsHash = "sha256-uSnQJqZExR3hz9XI0BKNxBgr8IS49F7kp3VJnkeaBK8=";
 
   prePatch = ''
     cp ${packageLock} package-lock.json
