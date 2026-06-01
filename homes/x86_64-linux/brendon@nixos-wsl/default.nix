@@ -9,7 +9,13 @@
       "$(${pkgs.coreutils}/bin/cat /home/brendon/.config/opnix/secrets/postgisPassword)";
   };
 
-  home.packages = with pkgs; [ geodiff trade-analysis db-nvrmap nodejs_24 ];
+  home.packages = with pkgs; [
+    geodiff
+    trade-analysis
+    db-nvrmap
+    nodejs_24
+    gsd-2
+  ];
 
   # enable core cli packages and settings
   core.enable = true;
