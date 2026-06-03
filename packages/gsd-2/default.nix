@@ -2,16 +2,15 @@
 
 let
   pname = "gsd-pi";
-  version = "3.0.0";
+  # Get current version: curl -s https://registry.npmjs.org/@opengsd/gsd-pi/latest | jq -r .version
+  version = "1.1.1";
 
+  # Scoped package @opengsd/gsd-pi — tarball filename omits the scope.
   src = pkgs.fetchurl {
-    url = "https://registry.npmjs.org/gsd-pi/-/gsd-pi-${version}.tgz";
-    hash = "sha256-kiLB8tzZXo54kj0TYfthUP317oh46or5mSUXGH6EByQ=";
+    url = "https://registry.npmjs.org/@opengsd/gsd-pi/-/gsd-pi-${version}.tgz";
+    hash = "sha256-3QCpiA1tvFJb35GLShSmcbyY/cnGOJIgfwf3G7ucUII=";
   };
 
-  # FOD: real `npm install`, network allowed, result pinned by hash.
-  # Captures the whole prepared tree so the workspace symlinks
-  # (node_modules/@gsd/* -> ../packages/*) stay internally consistent.
   prepared = stdenv.mkDerivation {
     name = "${pname}-${version}-prepared";
     inherit src;
@@ -19,12 +18,29 @@ let
     nativeBuildInputs = [ pkgs.nodejs_22 pkgs.cacert ];
 
     dontConfigure = true;
+
     buildPhase = ''
       runHook preBuild
       export HOME="$TMPDIR"
       npm install --ignore-scripts --omit=dev --no-audit --no-fund
+
+      # 1.1.1 dropped workspace metadata and relies on loader.js linking
+      # packages/@gsd/* into node_modules/@gsd at runtime — but the store is
+      # read-only, so create those links now, at build time.
+      mkdir -p node_modules/@gsd
+      for d in packages/*/; do
+        name=$(${pkgs.jq}/bin/jq -r '.name // empty' "$d/package.json")
+        case "$name" in
+          @gsd/*)
+            target="''${name#@gsd/}"
+            ln -sfn "../../$d" "node_modules/@gsd/$target"
+            ;;
+        esac
+      done
+
       runHook postBuild
     '';
+
     installPhase = ''
       runHook preInstall
       mkdir -p "$out"
@@ -35,7 +51,7 @@ let
 
     outputHashMode = "recursive";
     outputHashAlgo = "sha256";
-    outputHash = "sha256-2d2uIM4Hpy4Bp9rksQg8p3KLC3qXSmuL2Vg337cI3m8=";
+    outputHash = "sha256-/SZ/cb0yehm+7UkvMfxQfcTDlJ3s+lL6cuHMcsvIyng=";
   };
 in stdenv.mkDerivation {
   inherit pname version;
@@ -54,8 +70,8 @@ in stdenv.mkDerivation {
   '';
 
   meta = with lib; {
-    description = "GSD v2 — autonomous coding agent built on the Pi SDK";
-    homepage = "https://github.com/gsd-build/gsd-2";
+    description = "GSD Pi — autonomous coding agent (open-gsd)";
+    homepage = "https://github.com/open-gsd/gsd-pi";
     license = licenses.mit;
     mainProgram = "gsd";
   };

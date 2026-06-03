@@ -1,17 +1,45 @@
 #!/usr/bin/env bash
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-VERSION="${1:-$(curl -s https://registry.npmjs.org/gsd-pi/latest | jq -r .version)}"
+PKG="@opengsd/gsd-pi"
+NAME="gsd-pi"
 
-URL="https://registry.npmjs.org/gsd-pi/-/gsd-pi-${VERSION}.tgz"
+VERSION="${1:-$(curl -s "https://registry.npmjs.org/${PKG}/latest" | jq -r .version)}"
+URL="https://registry.npmjs.org/${PKG}/-/${NAME}-${VERSION}.tgz"
+
+echo "Updating ${PKG} to v${VERSION}..."
 SRC_HASH=$(nix store prefetch-file --json "$URL" | jq -r .hash)
 
-# Reset node_modules hash to fakeHash; bump version + src hash.
-sed -i \
-  -e "s|version = \".*\";|version = \"${VERSION}\";|" \
-  -e "0,/hash = \"sha256-[^\"]*\";/s||hash = \"${SRC_HASH}\";|" \
-  -e "s|outputHash = \"sha256-[^\"]*\";|outputHash = \"${lib_fakeHash:-sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=}\";|" \
+# Bump version + src hash; reset the FOD outputHash so the next build reveals it.
+sed -i -E \
+  -e "s|version = \"[^\"]*\";|version = \"${VERSION}\";|" \
+  -e "s|url = \"https://registry.npmjs.org/@opengsd/gsd-pi/-/gsd-pi-[^\"]*\.tgz\";|url = \"${URL}\";|" \
+  -e "0,/hash = (lib.fakeHash\|\"sha256-[^\"]*\");/s||hash = \"${SRC_HASH}\";|" \
+  -e "s|outputHash = [^;]+;|outputHash = lib.fakeHash;|" \
   "$SCRIPT_DIR/default.nix"
 
-echo "Bumped to ${VERSION}. Now run nixos-rebuild once; copy the 'got:' hash"
-echo "into outputHash for the 'prepared' FOD, then rebuild for real."
+echo ""
+echo "Set version=${VERSION}, src hash=${SRC_HASH}, reset outputHash to fakeHash."
+echo "Now: nixos-rebuild once, copy the FOD 'got:' hash into outputHash, rebuild for real."#!/usr/bin/env bash
+set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PKG="@opengsd/gsd-pi"
+NAME="gsd-pi"
+
+VERSION="${1:-$(curl -s "https://registry.npmjs.org/${PKG}/latest" | jq -r .version)}"
+URL="https://registry.npmjs.org/${PKG}/-/${NAME}-${VERSION}.tgz"
+
+echo "Updating ${PKG} to v${VERSION}..."
+SRC_HASH=$(nix store prefetch-file --json "$URL" | jq -r .hash)
+
+# Bump version + src hash; reset the FOD outputHash so the next build reveals it.
+sed -i -E \
+  -e "s|version = \"[^\"]*\";|version = \"${VERSION}\";|" \
+  -e "s|url = \"https://registry.npmjs.org/@opengsd/gsd-pi/-/gsd-pi-[^\"]*\.tgz\";|url = \"${URL}\";|" \
+  -e "0,/hash = (lib.fakeHash\|\"sha256-[^\"]*\");/s||hash = \"${SRC_HASH}\";|" \
+  -e "s|outputHash = [^;]+;|outputHash = lib.fakeHash;|" \
+  "$SCRIPT_DIR/default.nix"
+
+echo ""
+echo "Set version=${VERSION}, src hash=${SRC_HASH}, reset outputHash to fakeHash."
+echo "Now: nixos-rebuild once, copy the FOD 'got:' hash into outputHash, rebuild for real."

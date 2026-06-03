@@ -203,6 +203,7 @@ in {
           cd = "z";
           nixr = "sudo nixos-rebuild switch --flake ~/.nixos";
           cat = "bat -pp";
+          gsd = "gsd";
         };
 
         autosuggestion.enable = true;
