@@ -3,12 +3,12 @@
 let
   pname = "gsd-pi";
   # Get current version: curl -s https://registry.npmjs.org/@opengsd/gsd-pi/latest | jq -r .version
-  version = "1.1.1";
+  version = "1.2.0";
 
   # Scoped package @opengsd/gsd-pi — tarball filename omits the scope.
   src = pkgs.fetchurl {
     url = "https://registry.npmjs.org/@opengsd/gsd-pi/-/gsd-pi-${version}.tgz";
-    hash = "sha256-3QCpiA1tvFJb35GLShSmcbyY/cnGOJIgfwf3G7ucUII=";
+    hash = "sha256-vIURB5RZbslnG8ULGb9AlcryILMejrgWYqQjEdIlSpk=";
   };
 
   prepared = stdenv.mkDerivation {
@@ -24,18 +24,16 @@ let
       export HOME="$TMPDIR"
       npm install --ignore-scripts --omit=dev --no-audit --no-fund
 
-      # 1.1.1 dropped workspace metadata and relies on loader.js linking
-      # packages/@gsd/* into node_modules/@gsd at runtime — but the store is
-      # read-only, so create those links now, at build time.
-      mkdir -p node_modules/@gsd
+      # 1.1.1 dropped workspace metadata; link every bundled workspace package
+      # into node_modules by its real (scoped) name. Packages span multiple
+      # scopes (@gsd/*, @opengsd/*), so derive the scope from package.json
+      # rather than hardcoding it.
       for d in packages/*/; do
         name=$(${pkgs.jq}/bin/jq -r '.name // empty' "$d/package.json")
-        case "$name" in
-          @gsd/*)
-            target="''${name#@gsd/}"
-            ln -sfn "../../$d" "node_modules/@gsd/$target"
-            ;;
-        esac
+        [ -n "$name" ] || continue
+        scope=$(dirname "$name")          # e.g. @opengsd  (or "." if unscoped)
+        mkdir -p "node_modules/$scope"
+        ln -sfn "$(realpath -m --relative-to="node_modules/$scope" "$d")" "node_modules/$name"
       done
 
       runHook postBuild
@@ -51,7 +49,7 @@ let
 
     outputHashMode = "recursive";
     outputHashAlgo = "sha256";
-    outputHash = "sha256-/SZ/cb0yehm+7UkvMfxQfcTDlJ3s+lL6cuHMcsvIyng=";
+    outputHash = "sha256-gL8Iiw85qqBCoyUbdnAk0N2+EHQisMZxOxuUHJwEwl4=";
   };
 in stdenv.mkDerivation {
   inherit pname version;
@@ -66,6 +64,8 @@ in stdenv.mkDerivation {
     mkdir -p "$out/bin"
     makeWrapper ${pkgs.nodejs_22}/bin/node "$out/bin/gsd" \
       --add-flags "${prepared}/dist/loader.js"
+    makeWrapper ${pkgs.nodejs_22}/bin/node "$out/bin/gsd-mcp-server" \
+      --add-flags "${prepared}/packages/mcp-server/dist/cli.js"
     runHook postInstall
   '';
 
