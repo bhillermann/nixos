@@ -1,55 +1,37 @@
 { lib, pkgs, config, inputs, ... }:
 
-{
+let cfg = config.claude-code-gsd;
+in {
   options = {
-    claude-code = {
-      enable = lib.mkOption {
-        description = "Enable Claude Code cli tool.";
-        type = lib.types.bool;
-        default = false;
-      };
-    };
-
-    claude-code-gsd = {
-      enable = lib.mkOption {
-        description = "Enable Claude Code GSD integration.";
-        type = lib.types.bool;
-        default = false;
-      };
-    };
-
+    claude-code.enable = lib.mkEnableOption "Claude Code CLI tool";
+    claude-code-gsd.enable = lib.mkEnableOption "Claude Code GSD integration";
   };
 
   config = lib.mkMerge [
     (lib.mkIf config.claude-code.enable {
-      home.packages = with pkgs; [ claude-code ];
+      home.packages = [ pkgs.claude-code ];
     })
 
-    (lib.mkIf config.claude-code-gsd.enable {
-      home.activation.installGSD =
-        inputs.home-manager.lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          mkdir -p $HOME/.claude/commands/gsd \
-                   $HOME/.claude/agents \
-                   $HOME/.claude/hooks \
-                   $HOME/.claude/get-shit-done
-
-          # Slash commands (the /gsd:* entrypoints)
-          cp -rf ${inputs.gsd}/commands/gsd/* $HOME/.claude/commands/gsd/
-
-          # Agents
-          cp -rf ${inputs.gsd}/agents/* $HOME/.claude/agents/
-
-          # Hooks
-          [ -d ${inputs.gsd}/hooks ] && cp -rf ${inputs.gsd}/hooks/* $HOME/.claude/hooks/ || true
-
-          # Core GSD runtime (workflows, templates, references)
-          cp -rf ${inputs.gsd}/get-shit-done/* $HOME/.claude/get-shit-done/
-
-          chmod -R u+w $HOME/.claude/commands/gsd \
-              $HOME/.claude/agents \
-              $HOME/.claude/get-shit-done \
-              $HOME/.claude/hooks
-        '';
+    (lib.mkIf cfg.enable {
+      home.file = {
+        ".claude/commands/gsd" = {
+          source = "${inputs.gsd}/commands/gsd";
+          recursive = true;
+        };
+        ".claude/get-shit-done" = {
+          source = "${inputs.gsd}/get-shit-done";
+          recursive = true;
+        };
+        ".claude/agents" = {
+          source = "${inputs.gsd}/agents";
+          recursive = true;
+        };
+      } // lib.optionalAttrs (builtins.pathExists "${inputs.gsd}/hooks") {
+        ".claude/hooks" = {
+          source = "${inputs.gsd}/hooks";
+          recursive = true;
+        };
+      };
     })
   ];
 }
