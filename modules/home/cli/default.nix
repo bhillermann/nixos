@@ -61,7 +61,7 @@ in {
         bat # A better replacement for cat
         pay-respects # Autocorrect cli
         zoxide # A better replacement for cd
-        nixfmt-classic # needed for nix formatting from vscode
+        nixfmt # needed for nix formatting from vscode
 
         # networking tools
         mtr # A network diagnostic tool
