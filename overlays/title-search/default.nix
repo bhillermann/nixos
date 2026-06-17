@@ -1,5 +1,5 @@
 { inputs, ... }:
 
 final: prev: {
-  title-search = inputs.title-search.packages.${prev.system}.default;
+  title-search = inputs.title-search.packages.${prev.stdenv.hostPlatform.system}.default;
 }

@@ -1,5 +1,5 @@
 { inputs, ... }:
 
 final: prev: {
-  opnix = inputs.opnix.packages.${prev.system}.default;
+  opnix = inputs.opnix.packages.${prev.stdenv.hostPlatform.system}.default;
 }
