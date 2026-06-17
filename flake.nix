@@ -11,13 +11,13 @@
 
     # home-manager, user for managing user configuration
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # nixvim: configure neovim in nix
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-25.05";
+      url = "github:nix-community/nixvim/nixos-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -29,7 +29,7 @@
 
     # stylix: system level theming for nix
     stylix = {
-      url = "github:danth/stylix/release-25.05";
+      url = "github:danth/stylix/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -44,12 +44,6 @@
 
     # Claude Code
     claude-code.url = "github:sadjow/claude-code-nix";
-
-    # GSD integration for Claude Code
-    gsd-core-src = {
-      url = "github:open-gsd/gsd-core/v1.4.3";
-      flake = false;
-    };
 
   };
 
@@ -72,7 +66,7 @@
       # Add modules to all homes.
       homes.modules = with inputs; [
         inputs.nixvim.homeModules.nixvim
-        opnix.homeModules.default
+        opnix.homeManagerModules.default
       ];
 
       channels-config = {
