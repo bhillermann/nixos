@@ -59,7 +59,7 @@ in {
         eza # A modern replacement for ‘ls’
         fzf # A command-line fuzzy finder
         bat # A better replacement for cat
-        thefuck # Autocorrect cli
+        pay-respects # Autocorrect cli
         zoxide # A better replacement for cd
         nixfmt-classic # needed for nix formatting from vscode
 
@@ -130,7 +130,7 @@ in {
 
       programs.fzf.enable = true;
 
-      programs.thefuck = {
+      programs.pay-respects = {
         enable = true;
         enableZshIntegration = true;
       };
