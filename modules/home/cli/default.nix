@@ -138,12 +138,9 @@ in {
       programs.git = {
         enable = true;
         package = pkgs.gitFull;
-        # config = {
-        #   credential.helper = "libsecret";
-        # };
-        userName = "bhillermann";
-        userEmail = "bhillermann@gmail.com";
-        extraConfig = {
+        settings = {
+          user.name = "bhillermann";
+          user.email = "bhillermann@gmail.com";
           init.defaultBranch = "main";
           url."git@github.com:".insteadOf = "https://github.com/";
         };
