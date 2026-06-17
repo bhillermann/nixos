@@ -319,23 +319,6 @@
         "type": "github"
       }
     },
-    "gsd-core-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1781027317,
-        "narHash": "sha256-K3y1ru6uh9A+GMBcggp9zw5fjPqFyJR5YLEa1janHxQ=",
-        "owner": "open-gsd",
-        "repo": "gsd-core",
-        "rev": "a735f028f7d8a859bc5c49fa0983bef00b0cfef3",
-        "type": "github"
-      },
-      "original": {
-        "owner": "open-gsd",
-        "ref": "v1.4.3",
-        "repo": "gsd-core",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -576,7 +559,6 @@
       "inputs": {
         "claude-code": "claude-code",
         "db-nvrmap": "db-nvrmap",
-        "gsd-core-src": "gsd-core-src",
         "home-manager": "home-manager",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_4",
