@@ -19,11 +19,18 @@ in pkgs.runCommand "gsd-core-claude-${version}" {
   };
 } ''
   mkdir -p pkg
-  tar xzf ${src} -C pkg --strip-components=1   # npm tarballs nest under package/
+  tar xzf ${src} -C pkg --strip-components=1
   cd pkg
 
   export HOME="$TMPDIR/home";      mkdir -p "$HOME"
   export CLAUDE_CONFIG_DIR="$out"; mkdir -p "$out"
 
   node bin/install.js --claude --global
+
+  # The installer stamps per-run state (timestamps / install id), which makes
+  # the output non-deterministic. We rebuild from scratch every time, so drop it.
+  rm -f "$out/gsd-install-state.json" "$out/gsd-file-manifest.json"
+
+  # Normalise any remaining mtimes the installer may have written as real dates.
+  find "$out" -exec touch -h -d @1 {} +
 ''
