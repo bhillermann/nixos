@@ -20,7 +20,6 @@
   environment.systemPackages = with pkgs; [
     git
     wget
-    podman
     podman-compose
     opnix
     su
