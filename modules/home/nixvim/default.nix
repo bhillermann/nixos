@@ -261,16 +261,14 @@
 
         lspkind = {
           enable = true;
-          cmp = {
-            enable = true;
-            menu = {
-              nvim_lsp = "[LSP]";
-              nvim_lua = "[api]";
-              path = "[path]";
-              luasnip = "[snip]";
-              buffer = "[buffer]";
-              neorg = "[neorg]";
-            };
+          cmp.enable = true;
+          settings.cmp.menu = {
+            nvim_lsp = "[LSP]";
+            nvim_lua = "[api]";
+            path = "[path]";
+            luasnip = "[snip]";
+            buffer = "[buffer]";
+            neorg = "[neorg]";
           };
         };
 
@@ -318,19 +316,21 @@
 
         neo-tree = {
           enable = true;
-          enableGitStatus = true;
-          enableModifiedMarkers = true;
-          enableRefreshOnWrite = true;
-          closeIfLastWindow = true;
-          buffers = {
-            bindToCwd = false;
-            followCurrentFile = { enabled = true; };
-          };
-          filesystem = {
-            filteredItems = {
-              hideDotfiles = false;
-              alwaysShow = [ "node_modules" "dist" "'[A-Z]*'" ];
-              visible = true;
+          settings = {
+            enable_git_status = true;
+            enable_modified_markers = true;
+            enable_refresh_on_write = true;
+            close_if_last_window = true;
+            buffers = {
+              bind_to_cwd = false;
+              follow_current_file = { enabled = true; };
+            };
+            filesystem = {
+              filtered_items = {
+                hide_dotfiles = false;
+                always_show = [ "node_modules" "dist" "'[A-Z]*'" ];
+                visible = true;
+              };
             };
           };
         };
@@ -400,7 +400,7 @@
             highlight.enable = true;
             indent.enable = true;
           };
-          folding = false;
+          folding.enable = false;
         };
 
         colorizer = {
