@@ -92,11 +92,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1781671064,
-        "narHash": "sha256-babdB1sQCZvVO5lql9GvmfFdQ9K/twuQVLf8NvWy4Q8=",
+        "lastModified": 1781674845,
+        "narHash": "sha256-EBvtnTQdvMwhGIJ6JN/QuQ0pUE9jGuQnCKyN1NdlYlE=",
         "owner": "bhillermann",
         "repo": "db-ensym",
-        "rev": "ae28242c8b24bf5c729e81f85af2012129efc079",
+        "rev": "3fc2c26b4c37f58aceafcea529f8a18408259927",
         "type": "github"
       },
       "original": {
