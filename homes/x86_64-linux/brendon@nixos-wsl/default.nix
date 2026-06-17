@@ -18,6 +18,17 @@
   dev.enable = true;
   claude-code.enable = true;
   claude-code-gsd.enable = true;
+  # Personal Claude Code settings, deep-merged over GSD's settings.json.
+  claude-code-gsd.settingsOverride = {
+    model = "opus";
+    statusLine = {
+      type = "command";
+      command = "/bin/bash ${config.home.homeDirectory}/.claude/statusline-command.sh";
+    };
+    enabledPlugins = {
+      "statusline@cc-marketplace" = true;
+    };
+  };
 
   # enable nixvim
   nixvim.enable = true;
