@@ -12,26 +12,12 @@ in {
       home.packages = [ pkgs.claude-code ];
     })
 
-    (lib.mkIf cfg.enable {
-      home.file = {
-        ".claude/commands/gsd" = {
-          source = "${inputs.gsd}/commands/gsd";
-          recursive = true;
-        };
-        ".claude/get-shit-done" = {
-          source = "${inputs.gsd}/get-shit-done";
-          recursive = true;
-        };
-        ".claude/agents" = {
-          source = "${inputs.gsd}/agents";
-          recursive = true;
-        };
-      } // lib.optionalAttrs (builtins.pathExists "${inputs.gsd}/hooks") {
-        ".claude/hooks" = {
-          source = "${inputs.gsd}/hooks";
-          recursive = true;
-        };
+    (lib.mkIf config.claude-code-gsd.enable {
+      home.file.".claude" = {
+        source = pkgs.gsd-core-claude;
+        recursive = true;
       };
     })
+
   ];
 }
