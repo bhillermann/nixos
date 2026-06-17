@@ -1,14 +1,15 @@
-{ lib, inputs, pkgs, ... }:
+{ lib, pkgs, ... }:
 
 let
-  src = pkgs.fetchFromGitHub {
-    owner = "open-gsd";
-    repo = "gsd-core";
-    rev = "v1.4.3";
-    hash = lib.fakeHash; # replace with the real hash after the first build
+  version = "1.4.3";
+
+  src = pkgs.fetchurl {
+    url =
+      "https://registry.npmjs.org/@opengsd/gsd-core/-/gsd-core-${version}.tgz";
+    hash = "sha256-0gW+YyP53Q9Q7DJA9fcerBS+2Tz2o04hj1gjWVjpdJg=";
   };
-in pkgs.runCommand "gsd-core-claude-1.4.3" {
-  nativeBuildInputs = [ pkgs.nodejs_22 ];
+in pkgs.runCommand "gsd-core-claude-${version}" {
+  nativeBuildInputs = [ pkgs.nodejs_22 pkgs.gnutar pkgs.gzip ];
 
   meta = {
     description = "GSD Core preinstalled for Claude Code (declarative)";
@@ -17,14 +18,12 @@ in pkgs.runCommand "gsd-core-claude-1.4.3" {
     platforms = lib.platforms.all;
   };
 } ''
-  cp -r ${src} ./pkg
-  chmod -R +w ./pkg
-  cd ./pkg
+  mkdir -p pkg
+  tar xzf ${src} -C pkg --strip-components=1   # npm tarballs nest under package/
+  cd pkg
 
   export HOME="$TMPDIR/home";      mkdir -p "$HOME"
   export CLAUDE_CONFIG_DIR="$out"; mkdir -p "$out"
 
-  # Sandbox enforces no-network + no-writes-outside-$out. If this throws
-  # MODULE_NOT_FOUND, install.js needs its runtime deps — see note below.
   node bin/install.js --claude --global
 ''
