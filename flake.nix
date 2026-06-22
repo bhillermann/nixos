@@ -34,20 +34,23 @@
     };
 
     # db-nvrmap install
-    db-nvrmap = { url = "github:bhillermann/db-ensym"; };
+    db-nvrmap = {
+      url = "github:bhillermann/db-ensym";
+    };
 
     # trade-analysis install
     trade-analysis.url = "github:bhillermann/trade_analysis";
 
-    # title-search install
-    title-search.url = "git+ssh://git@github.com/bhillermann/title-search";
+    # title-search cli install
+    title-search.url = "git+ssh://git@github.com/bhillermann/title-search/releases/tag/v0.9-cli";
 
     # Claude Code
     claude-code.url = "github:sadjow/claude-code-nix";
 
   };
 
-  outputs = inputs:
+  outputs =
+    inputs:
 
     inputs.snowfall-lib.mkFlake {
       inherit inputs;
@@ -60,8 +63,7 @@
       ];
 
       # Add a module to a specific host.
-      systems.hosts.vegetationlink.modules = with inputs;
-        [ opnix.nixosModules.default ];
+      systems.hosts.vegetationlink.modules = with inputs; [ opnix.nixosModules.default ];
 
       # Add modules to all homes.
       homes.modules = with inputs; [
@@ -76,4 +78,3 @@
 
     };
 }
-
