@@ -42,7 +42,7 @@
     trade-analysis.url = "github:bhillermann/trade_analysis";
 
     # title-search cli install
-    title-search.url = "git+ssh://git@github.com/bhillermann/title-search/v0.9-cli";
+    title-search.url = "git+ssh://git@github.com/bhillermann/title-search?ref=refs/tags/v0.9-cli";
 
     # Claude Code
     claude-code.url = "github:sadjow/claude-code-nix";
