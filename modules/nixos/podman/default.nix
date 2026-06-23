@@ -1,9 +1,9 @@
-{ 
-  config, 
-  lib, 
-  pkgs, 
-  inputs, 
-  ... 
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
 }:
 
 {
@@ -11,9 +11,9 @@
   options = {
     podman = {
       enable = lib.mkOption {
-	      description = "Enable podman and tools.";
-	      type = lib.types.bool;
-	      default = false;
+        description = "Enable podman and tools.";
+        type = lib.types.bool;
+        default = false;
       };
     };
   };
@@ -33,5 +33,11 @@
         defaultNetwork.settings.dns_enabled = true;
       };
     };
+
+    # Add podman-compose to system packages
+    environment.systemPackages = with pkgs; [
+      podman-compose
+    ];
+
   };
 }

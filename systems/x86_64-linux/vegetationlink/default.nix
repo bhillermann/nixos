@@ -5,8 +5,7 @@
 
 let
   postgresUser = "gisuser";
-  postgresSecretPath =
-    "${config.services.onepassword-secrets.secretPaths.postgisPassword}";
+  postgresSecretPath = "${config.services.onepassword-secrets.secretPaths.postgisPassword}";
   postgresDb = "gisdb";
   postgresHost = "localhost";
   tmp = "/var/tmp/landowner_sync";
@@ -23,7 +22,8 @@ let
     ${pkgs.rclone}/bin/rclone --config=${rcloneConfigPath} move ${tmp} ${rcloneRemote}
   '';
 
-in {
+in
+{
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -61,13 +61,18 @@ in {
 
   networking = {
     interfaces.eth0 = {
-      ipv4.addresses = [{
-        address = "192.168.128.99";
-        prefixLength = 24;
-      }];
+      ipv4.addresses = [
+        {
+          address = "192.168.128.99";
+          prefixLength = 24;
+        }
+      ];
     };
     defaultGateway = "192.168.128.1";
-    nameservers = [ "1.1.1.1" "8.8.8.8" ];
+    nameservers = [
+      "1.1.1.1"
+      "8.8.8.8"
+    ];
   };
 
   systemd.tmpfiles.rules = [
@@ -106,7 +111,10 @@ in {
   services.samba-wsdd = {
     enable = true;
     openFirewall = true;
-    extraOptions = [ "--interface" "eth0" ];
+    extraOptions = [
+      "--interface"
+      "eth0"
+    ];
   };
 
   services.avahi = {
@@ -204,7 +212,10 @@ in {
   nixpkgs.config.allowUnfree = true;
 
   # Enable flakes
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -256,7 +267,7 @@ in {
     };
   };
 
-  # rclone setup 
+  # rclone setup
   ## NB!! You have to manually run rclone config for new builds. rclone.conf has to be writable for all users that need it. put the rclone.conf in the /rclone folder
   ## to setup ssh to the remote server with port forwarding
   ## $ ssh -L localhost:53682:localhost:53682 brendon@192.168.128.99
@@ -277,8 +288,7 @@ in {
   };
 
   systemd.services."landowner_sync" = {
-    description =
-      "Sync VegLink Landowner layer from posgis instance to shapefile using rclone";
+    description = "Sync VegLink Landowner layer from posgis instance to shapefile using rclone";
     script = "${landowner_script}";
 
     serviceConfig = {
@@ -289,7 +299,13 @@ in {
   };
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 22 5000 5432 8080 8100 ];
+  networking.firewall.allowedTCPPorts = [
+    22
+    5000
+    5432
+    8080
+    8100
+  ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;

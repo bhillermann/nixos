@@ -1,17 +1,28 @@
-{ config, lib, pkgs, inputs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
   imports = [ ];
 
-  boot.kernelParams =
-    [ "cgroup_no_v1=all" "systemd.unified_cgroup_hierarchy=1" ];
+  boot.kernelParams = [
+    "cgroup_no_v1=all"
+    "systemd.unified_cgroup_hierarchy=1"
+  ];
 
   nix.settings = {
     substituters = [ "https://nix-community.cachix.org" ];
     trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     ];
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
     trusted-users = [ "@wheel" ];
   };
 
@@ -20,12 +31,13 @@
   environment.systemPackages = with pkgs; [
     git
     wget
-    podman-compose
     opnix
     su
   ];
 
-  programs.nix-ld = { enable = true; };
+  programs.nix-ld = {
+    enable = true;
+  };
 
   programs.nh = {
     enable = true;
@@ -49,7 +61,12 @@
   users.users.brendon = {
     isNormalUser = true;
     description = "Brendon Hillermann";
-    extraGroups = [ "networkmanager" "wheel" "podman" "onepassword-secrets" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "podman"
+      "onepassword-secrets"
+    ];
     linger = true;
     uid = 1000;
   };
