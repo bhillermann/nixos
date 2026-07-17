@@ -50,6 +50,9 @@
 
   podman.enable = true;
 
+  # Run the postgis container as a rootless podman system service (as brendon).
+  postgis.enable = true;
+
   # Set the default editor to vim
   environment.variables.EDITOR = "nvim";
 
