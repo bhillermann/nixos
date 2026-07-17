@@ -33,8 +33,6 @@
   # enable nixvim
   nixvim.enable = true;
 
-  postgis.enable = true;
-
   # Enable vscode-server for this user
   vscode-server.enable = false;
 
