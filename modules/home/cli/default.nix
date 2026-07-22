@@ -1,9 +1,13 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 
 let
   # Definte github CLI token secret for home-manager
-  githubTokenSecret =
-    "${config.home.homeDirectory}/.config/opnix/secrets/githubToken";
+  githubTokenSecret = "${config.home.homeDirectory}/.config/opnix/secrets/githubToken";
 
   # Define vscode-server source for home-manager
   vscode-server-src = pkgs.fetchgit {
@@ -11,7 +15,8 @@ let
     rev = "7943271335904017d3fafbf6fea395beebe42239";
     sha256 = "sha256-Bx7DOPLhkr8Z60U9Qw4l0OidzHoqLDKQH5rDV5ef59A=";
   };
-in {
+in
+{
 
   # Import vscode-server for home-manager
   imports = [ "${vscode-server-src}/modules/vscode-server/home.nix" ];
@@ -125,7 +130,9 @@ in {
             file = "/themes/Catppuccin Mocha.tmTheme";
           };
         };
-        config = { theme = "catppuccin-mocha"; };
+        config = {
+          theme = "catppuccin-mocha";
+        };
       };
 
       programs.fzf.enable = true;
@@ -149,7 +156,9 @@ in {
       # GitHub CLI
       programs.gh = {
         enable = true;
-        settings = { git_protocol = "ssh"; };
+        settings = {
+          git_protocol = "ssh";
+        };
       };
 
       # Set GH_TOKEN environment variable for GitHub CLI auth
@@ -162,13 +171,13 @@ in {
         enable = true;
         # custom settings
         settings = lib.mkMerge [
-          (builtins.fromTOML (builtins.readFile
-            "${pkgs.starship}/share/starship/presets/catppuccin-powerline.toml"))
+          (builtins.fromTOML (
+            builtins.readFile "${pkgs.starship}/share/starship/presets/catppuccin-powerline.toml"
+          ))
           {
             line_break.disabled = lib.mkForce false;
 
-            format = lib.mkForce
-              "[](red)$os$username$hostname[](bg:peach fg:red)$directory[](bg:yellow fg:peach)$git_branch$git_status[](fg:yellow bg:green)$c$rust$golang$nodejs$php$java$kotlin$haskell$python[](fg:green bg:sapphire)$conda[](fg:sapphire bg:lavender)$time[ ](fg:lavender)$cmd_duration$line_break$character";
+            format = lib.mkForce "[](red)$os$username$hostname[](bg:peach fg:red)$directory[](bg:yellow fg:peach)$git_branch$git_status[](fg:yellow bg:green)$c$rust$golang$nodejs$php$java$kotlin$haskell$python[](fg:green bg:sapphire)$conda[](fg:sapphire bg:lavender)$time[ ](fg:lavender)$cmd_duration$line_break$character";
 
             username = lib.mkForce {
               format = "[ $user]($style)";
@@ -210,6 +219,11 @@ in {
           MANPAGER = "bat -l man -p ";
         };
 
+        # Silence zoxide's "initialize at end of config" doctor nag
+        envExtra = ''
+          export _ZO_DOCTOR=0
+        '';
+
         oh-my-zsh = {
           enable = true;
           plugins = [
@@ -225,11 +239,9 @@ in {
     })
 
     (lib.mkIf config.dev.enable {
-      home.packages = with pkgs;
-        [
-          # devenv - ony trialling this
-          devenv
-        ];
+      home.packages = with pkgs; [
+        devenv
+      ];
 
       # nix-direnv
       programs.direnv = {
