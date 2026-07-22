@@ -541,15 +541,16 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1779201624,
-        "narHash": "sha256-UwDxtB3D42/OW1kIp/OHoVPlJnoWrRK5E/KbX4yrbPA=",
-        "owner": "brizzbuzz",
+        "lastModified": 1784519841,
+        "narHash": "sha256-JtQFA+JcpwSL0b9olqIl9GAXRZnWnBZelwbDQ3VOMZw=",
+        "owner": "bhillermann",
         "repo": "opnix",
-        "rev": "35344e1cfd060d4af249c8075a4aa58b7650ab95",
+        "rev": "5ab440e359f9038489fac17bc031ad988ae35350",
         "type": "github"
       },
       "original": {
-        "owner": "brizzbuzz",
+        "owner": "bhillermann",
+        "ref": "feat/nixos-cli-systempackages",
         "repo": "opnix",
         "type": "github"
       }

@@ -7,7 +7,7 @@
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
 
     # 1Password nixos secrets management
-    opnix.url = "github:brizzbuzz/opnix";
+    opnix.url = "github:bhillermann/opnix/feat/nixos-cli-systempackages";
 
     # home-manager, user for managing user configuration
     home-manager = {
