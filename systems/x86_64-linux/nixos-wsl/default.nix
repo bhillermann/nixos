@@ -49,6 +49,14 @@
 
   podman.enable = true;
 
+  postgis.enable = true;
+
+  # enable ai coder agent setup
+  services.agent-user = {
+    enable = true;
+    adminUser = "brendon";
+  };
+
   # Set the default editor to vim
   environment.variables.EDITOR = "nvim";
 
