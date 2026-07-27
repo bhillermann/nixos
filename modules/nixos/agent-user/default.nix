@@ -31,14 +31,23 @@
 #   agent-shell                         # work happens as the agent, in its clone
 #   git fetch hub && git diff main...hub/agent/<branch>   # you: REVIEW, then merge
 
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.services.agent-user;
 
   agent-hub = pkgs.writeShellApplication {
     name = "agent-hub";
-    runtimeInputs = [ pkgs.git pkgs.coreutils pkgs.findutils ];
+    runtimeInputs = [
+      pkgs.git
+      pkgs.coreutils
+      pkgs.findutils
+    ];
     text = ''
       hub=${lib.escapeShellArg cfg.hubDir}
       group=${lib.escapeShellArg cfg.shareGroup}
@@ -170,14 +179,19 @@ in
       homeMode = "700";
       extraGroups = [ cfg.shareGroup ];
       # Deliberately NOT in wheel/podman/docker, and not a nix trusted-user.
-      packages = with pkgs; [
-        nodejs_22
-        git
-        gh
-        ripgrep
-        jq
-        fd
-      ] ++ cfg.extraPackages;
+      shell = pkgs.bash;
+      packages =
+        with pkgs;
+        [
+          nodejs_22
+          git
+          gh
+          ripgrep
+          jq
+          fd
+          vim
+        ]
+        ++ cfg.extraPackages;
     };
 
     # The actual wall: the agent can only be locked out of your home if your
@@ -218,5 +232,34 @@ in
       agent-hub
       agent-shell
     ];
+
+    programs.nix-ld.libraries = with pkgs; [
+      alsa-lib
+      at-spi2-atk
+      at-spi2-core
+      atk
+      cairo
+      cups
+      dbus
+      expat
+      glib
+      gtk3
+      libdrm
+      libgbm
+      libxkbcommon
+      mesa
+      nspr
+      nss
+      pango
+      systemd # libudev
+      xorg.libX11
+      xorg.libXcomposite
+      xorg.libXdamage
+      xorg.libXext
+      xorg.libXfixes
+      xorg.libXrandr
+      xorg.libxcb
+    ];
+
   };
 }
