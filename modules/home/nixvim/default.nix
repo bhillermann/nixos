@@ -1,4 +1,9 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 
 {
   options = {
@@ -25,50 +30,59 @@
       nixpkgs.useGlobalPackages = true;
 
       opts = {
-        number = true;
-        shiftwidth = 2;
-        completeopt = [ "menu" "menuone" "noselect" ];
+        completeopt = [
+          "menu"
+          "menuone"
+          "noselect"
+        ];
         termguicolors = true;
+        number = true; # Show line numbers
+        relativenumber = true; # Relative line numbers
+        shiftwidth = 2; # Tab width
+        tabstop = 2;
+        expandtab = true; # Spaces instead of tabs
+        smartindent = true;
       };
 
       colorschemes.catppuccin.enable = true;
 
       extraPackages = with pkgs; [ pylint ];
 
-      keymaps = let
-        normal = lib.mapAttrsToList (key: action: {
-          mode = "n";
-          inherit action key;
-        }) {
-          # navigate between windows
-          "<leader>h" = "<C-w>h";
-          "<leader>l" = "<C-w>l";
-          "-" = "<CMD>Oil<CR>"; # Open Oil Brower
-          # open markdown preview
-          "<leader>m" = ":MarkdownPreview<cr>";
-        };
-        visual = lib.mapAttrsToList (key: action: {
-          mode = "v";
-          inherit action key;
-        }) { };
-      in config.lib.nixvim.keymaps.mkKeymaps { options.silent = true; }
-      (normal ++ visual);
+      keymaps =
+        let
+          normal =
+            lib.mapAttrsToList
+              (key: action: {
+                mode = "n";
+                inherit action key;
+              })
+              {
+                # navigate between windows
+                "<leader>h" = "<C-w>h";
+                "<leader>l" = "<C-w>l";
+                "-" = "<CMD>Oil<CR>"; # Open Oil Brower
+                # open markdown preview
+                "<leader>m" = ":MarkdownPreview<cr>";
+              };
+          visual = lib.mapAttrsToList (key: action: {
+            mode = "v";
+            inherit action key;
+          }) { };
+        in
+        config.lib.nixvim.keymaps.mkKeymaps { options.silent = true; } (normal ++ visual);
 
       plugins = {
         cmp = {
           enable = true;
           settings = {
-            snippet.expand =
-              "function(args) require('luasnip').lsp_expand(args.body) end";
+            snippet.expand = "function(args) require('luasnip').lsp_expand(args.body) end";
             mapping = {
               "<C-d>" = "cmp.mapping.scroll_docs(-4)";
               "<C-f>" = "cmp.mapping.scroll_docs(4)";
               "<C-Space>" = "cmp.mapping.complete()";
               "<C-e>" = "cmp.mapping.close()";
-              "<Tab>" =
-                "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
-              "<S-Tab>" =
-                "cmp.mapping(cmp.mapping.select_prev_item(), {'i', 's'})";
+              "<Tab>" = "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
+              "<S-Tab>" = "cmp.mapping(cmp.mapping.select_prev_item(), {'i', 's'})";
               "<CR>" = "cmp.mapping.confirm({ select = true })";
             };
             sources = [
@@ -101,7 +115,9 @@
                 icon = " ";
               };
             };
-            highlight = { pattern = ".*<(KEYWORDS)\\s*"; };
+            highlight = {
+              pattern = ".*<(KEYWORDS)\\s*";
+            };
           };
         };
 
@@ -110,13 +126,21 @@
           autoLoad = true;
         };
 
-        copilot-chat = { enable = true; };
+        copilot-chat = {
+          enable = true;
+        };
 
-        emmet = { enable = true; };
+        emmet = {
+          enable = true;
+        };
 
-        nvim-autopairs = { enable = true; };
+        nvim-autopairs = {
+          enable = true;
+        };
 
-        ts-autotag = { enable = true; };
+        ts-autotag = {
+          enable = true;
+        };
 
         none-ls = {
           enable = true;
@@ -144,7 +168,10 @@
                 enable = true;
                 disableTsServerFormatter = true;
                 settings = {
-                  extra_filetypes = [ "vue" "json" ];
+                  extra_filetypes = [
+                    "vue"
+                    "json"
+                  ];
                   insert_final_newline = true;
                 };
               };
@@ -158,7 +185,9 @@
               };
               xmllint = {
                 enable = true;
-                settings = { extra_filetypes = [ "svg" ]; };
+                settings = {
+                  extra_filetypes = [ "svg" ];
+                };
               };
             };
             completion = {
@@ -189,7 +218,9 @@
         gitsigns = {
           enable = true;
           autoLoad = true;
-          settings = { current_line_blame = true; };
+          settings = {
+            current_line_blame = true;
+          };
         };
 
         gitmessenger = {
@@ -197,16 +228,24 @@
           autoLoad = true;
         };
 
-        diffview = { enable = true; };
+        diffview = {
+          enable = true;
+        };
 
-        git-conflict = { enable = true; };
+        git-conflict = {
+          enable = true;
+        };
 
         lsp = {
           enable = true;
           servers = {
             ts_ls = {
               enable = true; # TS
-              filetypes = [ "typescript" "typescriptreact" "typescript.tsx" ];
+              filetypes = [
+                "typescript"
+                "typescriptreact"
+                "typescript.tsx"
+              ];
             };
             cssls.enable = true; # CSS
             tailwindcss.enable = true; # TailwindCSS
@@ -255,9 +294,13 @@
           };
         };
 
-        lsp-format = { enable = true; };
+        lsp-format = {
+          enable = true;
+        };
 
-        lsp-status = { enable = true; };
+        lsp-status = {
+          enable = true;
+        };
 
         lspkind = {
           enable = true;
@@ -272,16 +315,22 @@
           };
         };
 
-        lualine = { enable = true; };
+        lualine = {
+          enable = true;
+        };
 
         trouble = {
           enable = true;
-          settings = { multiline = true; };
+          settings = {
+            multiline = true;
+          };
         };
 
         luasnip.enable = true;
 
-        web-devicons = { enable = true; };
+        web-devicons = {
+          enable = true;
+        };
 
         startify = {
           enable = true;
@@ -298,7 +347,7 @@
 
             change_to_dir = false;
             use_unicode = true;
-            lists = [{ type = "dir"; }];
+            lists = [ { type = "dir"; } ];
             files_number = 30;
             autoExpandWidth = true;
             skiplist = [ "flake.lock" ];
@@ -323,12 +372,18 @@
             close_if_last_window = true;
             buffers = {
               bind_to_cwd = false;
-              follow_current_file = { enabled = true; };
+              follow_current_file = {
+                enabled = true;
+              };
             };
             filesystem = {
               filtered_items = {
                 hide_dotfiles = false;
-                always_show = [ "node_modules" "dist" "'[A-Z]*'" ];
+                always_show = [
+                  "node_modules"
+                  "dist"
+                  "'[A-Z]*'"
+                ];
                 visible = true;
               };
             };
@@ -343,11 +398,17 @@
           };
         };
 
-        notify = { enable = true; };
+        notify = {
+          enable = true;
+        };
 
-        nui = { enable = true; };
+        nui = {
+          enable = true;
+        };
 
-        noice = { enable = true; };
+        noice = {
+          enable = true;
+        };
 
         transparent = {
           enable = true;
@@ -379,7 +440,10 @@
               "StatusLineNC"
               "EndOfBuffer"
             ];
-            exclude_groups = [ "LineNr" "SignColumn" ];
+            exclude_groups = [
+              "LineNr"
+              "SignColumn"
+            ];
           };
         };
 
@@ -391,7 +455,9 @@
           };
         };
 
-        image = { enable = true; };
+        image = {
+          enable = true;
+        };
 
         treesitter = {
           enable = true;
@@ -428,7 +494,13 @@
             media-files = {
               enable = true;
               settings = {
-                filetypes = [ "png" "jpg" "jpeg" "webp" "gif" ];
+                filetypes = [
+                  "png"
+                  "jpg"
+                  "jpeg"
+                  "webp"
+                  "gif"
+                ];
                 find_cmd = "rg";
               };
             };
@@ -460,8 +532,12 @@
           };
         };
 
-        oil = { enable = true; };
-        oil-git-status = { enable = true; };
+        oil = {
+          enable = true;
+        };
+        oil-git-status = {
+          enable = true;
+        };
       };
     };
   };
