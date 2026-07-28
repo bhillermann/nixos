@@ -195,7 +195,7 @@ in
             };
 
             command_timeout = lib.mkForce 500;
-            scan_timeout = lib.mkForce 10;
+            scan_timeout = lib.mkForce 50;
             git_status = lib.mkForce { disabled = true; };
           }
         ];
