@@ -1,15 +1,25 @@
-{ lib, pkgs, inputs, config, ... }:
+{
+  lib,
+  pkgs,
+  inputs,
+  config,
+  ...
+}:
 
 {
   imports = [ ../brendon/core.nix ];
 
   home.sessionVariables = {
     NVRMAP_CONFIG = "/home/brendon/.config/nvrmap/";
-    NVRMAP_DB_PASSWORD =
-      "$(${pkgs.coreutils}/bin/cat /home/brendon/.config/opnix/secrets/postgisPassword)";
+    NVRMAP_DB_PASSWORD = "$(${pkgs.coreutils}/bin/cat /home/brendon/.config/opnix/secrets/postgisPassword)";
   };
 
-  home.packages = with pkgs; [ geodiff trade-analysis db-nvrmap nodejs_24 ];
+  home.packages = with pkgs; [
+    geodiff
+    trade-analysis
+    db-nvrmap
+    nodejs_24
+  ];
 
   # enable core cli packages and settings
   core.enable = true;
@@ -18,6 +28,7 @@
   dev.enable = true;
   claude-code.enable = true;
   claude-code-gsd.enable = true;
+  gsd-browser.enable = true;
   # Personal Claude Code settings, deep-merged over GSD's settings.json.
   claude-code-gsd.settingsOverride = {
     model = "opus";
