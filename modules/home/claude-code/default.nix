@@ -8,15 +8,15 @@
 
 let
   cfg = config.claude-code-gsd;
+  jsonFormat = pkgs.formats.json { };
 in
 {
   options = {
-    claude-code.enable = lib.mkEnableOption "Claude Code CLI tool";
     claude-code-gsd.enable = lib.mkEnableOption "Claude Code GSD integration";
     gsd-browser.enable = lib.mkEnableOption "GSD Browser CLI tool";
 
     claude-code-gsd.settingsOverride = lib.mkOption {
-      type = lib.types.attrs;
+      inherit (jsonFormat) type;
       default = { };
       description = ''
         Personal Claude Code settings deep-merged over GSD's settings.json.
@@ -26,15 +26,11 @@ in
   };
 
   config = lib.mkMerge [
-    (lib.mkIf config.claude-code.enable {
-      home.packages = [ pkgs.claude-code ];
-    })
-
     (lib.mkIf config.gsd-browser.enable {
       home.packages = [ pkgs.gsd-browser ];
     })
 
-    (lib.mkIf config.claude-code-gsd.enable (
+    (lib.mkIf cfg.enable (
       let
         # GSD's files minus settings.json. settings.json is mutable runtime
         # state (Claude Code rewrites it), so it can't be a read-only HM
@@ -46,17 +42,28 @@ in
           rm -f $out/settings.json
         '';
 
-        personal = pkgs.writeText "claude-personal-settings.json" (builtins.toJSON cfg.settingsOverride);
+        personal = jsonFormat.generate "claude-personal-settings.json" cfg.settingsOverride;
 
         # Deep-merge GSD's settings with the personal overrides; the personal
         # side wins on conflicting keys (jq's `*` recurses into objects).
-        merged = pkgs.runCommand "claude-settings.json" { } ''
-          ${pkgs.jq}/bin/jq -s '.[0] * .[1]' \
-            ${pkgs.gsd-core-claude}/settings.json \
-            ${personal} > $out
-        '';
+        # Done in a derivation rather than with lib.recursiveUpdate so that
+        # reading GSD's settings.json doesn't force an import-from-derivation
+        # at eval time.
+        merged =
+          pkgs.runCommand "claude-settings.json" { nativeBuildInputs = [ pkgs.jq ]; }
+            ''
+              jq -s '.[0] * .[1]' \
+                ${pkgs.gsd-core-claude}/settings.json \
+                ${personal} > $out
+            '';
       in
       {
+        # Upstream's programs.claude-code.settings writes settings.json as a
+        # read-only store symlink, which Claude Code cannot write back to, so
+        # we leave that option unset and own the file via the activation
+        # script below. Everything else about the CLI comes from upstream.
+        programs.claude-code.enable = true;
+
         home.file.".claude" = {
           source = gsdFiles;
           recursive = true;
@@ -64,10 +71,12 @@ in
 
         # Install the merged settings.json as a real, writable file so Claude
         # Code can keep updating it at runtime. Re-established on every switch.
+        # config.lib.dag, not lib.hm.dag: snowfall passes plain nixpkgs lib to
+        # home modules, so lib.hm is not in scope here.
         home.activation.claudeSettings = config.lib.dag.entryAfter [ "writeBoundary" ] ''
-          $DRY_RUN_CMD mkdir -p "$HOME/.claude"
-          $DRY_RUN_CMD rm -f "$HOME/.claude/settings.json"
-          $DRY_RUN_CMD install -m644 ${merged} "$HOME/.claude/settings.json"
+          run mkdir -p "$HOME/.claude"
+          run rm -f "$HOME/.claude/settings.json"
+          run install -m644 ${merged} "$HOME/.claude/settings.json"
         '';
       }
     ))

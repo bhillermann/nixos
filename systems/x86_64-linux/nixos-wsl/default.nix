@@ -14,6 +14,8 @@
     "systemd.unified_cgroup_hierarchy=1"
   ];
 
+  boot.tmp.cleanOnBoot = true;
+
   nix.settings = {
     substituters = [ "https://nix-community.cachix.org" ];
     trusted-public-keys = [

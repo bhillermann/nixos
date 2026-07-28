@@ -26,7 +26,7 @@
 
   # enable extra dev packages and settings
   dev.enable = true;
-  claude-code.enable = true;
+  programs.claude-code.enable = true;
   claude-code-gsd.enable = true;
   gsd-browser.enable = true;
   # Personal Claude Code settings, deep-merged over GSD's settings.json.
