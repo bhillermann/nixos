@@ -1,10 +1,19 @@
-{ lib, pkgs, config, inputs, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  inputs,
+  ...
+}:
 
-let cfg = config.claude-code-gsd;
-in {
+let
+  cfg = config.claude-code-gsd;
+in
+{
   options = {
     claude-code.enable = lib.mkEnableOption "Claude Code CLI tool";
     claude-code-gsd.enable = lib.mkEnableOption "Claude Code GSD integration";
+    gsd-browser.enable = lib.mkEnableOption "GSD Browser CLI tool";
 
     claude-code-gsd.settingsOverride = lib.mkOption {
       type = lib.types.attrs;
@@ -21,6 +30,10 @@ in {
       home.packages = [ pkgs.claude-code ];
     })
 
+    (lib.mkIf config.gsd-browser.enable {
+      home.packages = [ pkgs.gsd-browser ];
+    })
+
     (lib.mkIf config.claude-code-gsd.enable (
       let
         # GSD's files minus settings.json. settings.json is mutable runtime
@@ -33,8 +46,7 @@ in {
           rm -f $out/settings.json
         '';
 
-        personal = pkgs.writeText "claude-personal-settings.json"
-          (builtins.toJSON cfg.settingsOverride);
+        personal = pkgs.writeText "claude-personal-settings.json" (builtins.toJSON cfg.settingsOverride);
 
         # Deep-merge GSD's settings with the personal overrides; the personal
         # side wins on conflicting keys (jq's `*` recurses into objects).
@@ -43,7 +55,8 @@ in {
             ${pkgs.gsd-core-claude}/settings.json \
             ${personal} > $out
         '';
-      in {
+      in
+      {
         home.file.".claude" = {
           source = gsdFiles;
           recursive = true;
@@ -51,12 +64,11 @@ in {
 
         # Install the merged settings.json as a real, writable file so Claude
         # Code can keep updating it at runtime. Re-established on every switch.
-        home.activation.claudeSettings =
-          config.lib.dag.entryAfter [ "writeBoundary" ] ''
-            $DRY_RUN_CMD mkdir -p "$HOME/.claude"
-            $DRY_RUN_CMD rm -f "$HOME/.claude/settings.json"
-            $DRY_RUN_CMD install -m644 ${merged} "$HOME/.claude/settings.json"
-          '';
+        home.activation.claudeSettings = config.lib.dag.entryAfter [ "writeBoundary" ] ''
+          $DRY_RUN_CMD mkdir -p "$HOME/.claude"
+          $DRY_RUN_CMD rm -f "$HOME/.claude/settings.json"
+          $DRY_RUN_CMD install -m644 ${merged} "$HOME/.claude/settings.json"
+        '';
       }
     ))
 
