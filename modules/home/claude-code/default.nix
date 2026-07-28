@@ -17,7 +17,31 @@ in
 
     claude-code-gsd.settingsOverride = lib.mkOption {
       inherit (jsonFormat) type;
-      default = { };
+      default = {
+        statusLine = {
+          type = "command";
+          command = "/bin/bash /home/brendon/.claude/statusline-command.sh";
+        };
+        permissions = {
+          allow = [
+            "Bash(npx gsd-core *)"
+            "Read(.planning/*)"
+            "Edit(.planning/*)"
+            "Read(STATE.md)"
+            "Edit(STATE.md)"
+          ];
+          deny = [
+            "Read(.env)"
+            "Read(.env.*)"
+            "Read(.secrets)"
+          ];
+        };
+        enabledPlugins = {
+          "statusline@cc-marketplace" = true;
+        };
+        model = "opus";
+      };
+
       description = ''
         Personal Claude Code settings deep-merged over GSD's settings.json.
         These win on any key that also appears in GSD's settings (e.g. statusLine).
@@ -49,13 +73,11 @@ in
         # Done in a derivation rather than with lib.recursiveUpdate so that
         # reading GSD's settings.json doesn't force an import-from-derivation
         # at eval time.
-        merged =
-          pkgs.runCommand "claude-settings.json" { nativeBuildInputs = [ pkgs.jq ]; }
-            ''
-              jq -s '.[0] * .[1]' \
-                ${pkgs.gsd-core-claude}/settings.json \
-                ${personal} > $out
-            '';
+        merged = pkgs.runCommand "claude-settings.json" { nativeBuildInputs = [ pkgs.jq ]; } ''
+          jq -s '.[0] * .[1]' \
+            ${pkgs.gsd-core-claude}/settings.json \
+            ${personal} > $out
+        '';
       in
       {
         # Upstream's programs.claude-code.settings writes settings.json as a
