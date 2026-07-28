@@ -5,7 +5,7 @@ let
 
   src = pkgs.fetchurl {
     url = "https://registry.npmjs.org/@opengsd/gsd-core/-/gsd-core-${version}.tgz";
-    hash = "sha256-cB6BHH6s8NxHB/X3ue3wWsF9mlmubKCOlzI9OrYoBlY=";
+    hash = "sha256-3xP3NphMLDgrDwmcFFZLyADmtp34ijC462lPqrogIrg=";
   };
 in
 pkgs.runCommand "gsd-core-claude-${version}"
