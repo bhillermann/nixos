@@ -40,6 +40,12 @@ in
           "statusline@cc-marketplace" = true;
         };
         model = "opus";
+        tui = "fullscreen";
+        defaultMode = "auto";
+        preferredNotifChannel = "auto";
+        inputNeededNotifEnabled = true;
+        agentPushNotifEnabled = true;
+        remoteControlAtStartup = true;
       };
 
       description = ''
