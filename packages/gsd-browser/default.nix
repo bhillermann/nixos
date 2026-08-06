@@ -11,7 +11,7 @@ stdenv.mkDerivation rec {
 
   src = pkgs.fetchurl {
     url = "https://github.com/open-gsd/gsd-browser/releases/download/v${version}/gsd-browser-linux-x64";
-    hash = "sha256-oe5I90IAvtF9UxTuX6hJ+alVQ8bZWzl0la3Lfdm2J9E=";
+    hash = "sha256-BR69bZuVQweSLXVCkX/fn9+zrE6H6I3NJK90BeI3N1k=";
   };
 
   dontUnpack = true; # single raw binary, nothing to extract

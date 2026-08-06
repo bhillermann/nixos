@@ -1,9 +1,14 @@
-{ lib, pkgs, stdenv, ... }:
+{
+  lib,
+  pkgs,
+  stdenv,
+  ...
+}:
 
 let
   pname = "gsd-pi";
   # Get current version: curl -s https://registry.npmjs.org/@opengsd/gsd-pi/latest | jq -r .version
-  version = "1.2.0";
+  version = "1.12.0";
 
   # Scoped package @opengsd/gsd-pi — tarball filename omits the scope.
   src = pkgs.fetchurl {
@@ -15,7 +20,10 @@ let
     name = "${pname}-${version}-prepared";
     inherit src;
 
-    nativeBuildInputs = [ pkgs.nodejs_22 pkgs.cacert ];
+    nativeBuildInputs = [
+      pkgs.nodejs_22
+      pkgs.cacert
+    ];
 
     dontConfigure = true;
 
@@ -51,7 +59,8 @@ let
     outputHashAlgo = "sha256";
     outputHash = "sha256-gL8Iiw85qqBCoyUbdnAk0N2+EHQisMZxOxuUHJwEwl4=";
   };
-in stdenv.mkDerivation {
+in
+stdenv.mkDerivation {
   inherit pname version;
 
   dontUnpack = true;

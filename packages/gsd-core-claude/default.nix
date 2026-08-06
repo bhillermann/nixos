@@ -1,7 +1,7 @@
 { lib, pkgs, ... }:
 
 let
-  version = "1.8.0";
+  version = "1.9.1";
 
   src = pkgs.fetchurl {
     url = "https://registry.npmjs.org/@opengsd/gsd-core/-/gsd-core-${version}.tgz";
