@@ -13,7 +13,7 @@ let
   # Scoped package @opengsd/gsd-pi — tarball filename omits the scope.
   src = pkgs.fetchurl {
     url = "https://registry.npmjs.org/@opengsd/gsd-pi/-/gsd-pi-${version}.tgz";
-    hash = "sha256-vIURB5RZbslnG8ULGb9AlcryILMejrgWYqQjEdIlSpk=";
+    hash = "sha256-N6Rzc4sz8sCf0NTdrD2kIhQW1Au4KwlzYT0Nn5HnWsg=";
   };
 
   prepared = stdenv.mkDerivation {
