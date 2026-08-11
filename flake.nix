@@ -44,8 +44,10 @@
     # title-search cli install
     title-search.url = "git+ssh://git@github.com/bhillermann/title-search?ref=refs/tags/v0.9-cli";
 
-    # Claude Code
-    claude-code.url = "github:sadjow/claude-code-nix";
+    # Coding agents (Claude Code, Codex, ...) from numtide's monorepo.
+    # No `follows` on nixpkgs: numtide recommends against it so their binary
+    # cache keeps hitting (packages are built against their pinned nixpkgs).
+    llm-agents.url = "github:numtide/llm-agents.nix";
 
   };
 

@@ -27,12 +27,16 @@
 
   # enable extra dev packages and settings
   dev.enable = true;
-  programs.claude-code.enable = true;
-  claude-code-gsd.enable = true;
+  # GSD coding harnesses (each enables the binary + lays down GSD config).
+  gsd.harnesses = [
+    "claude"
+    "codex"
+  ];
   gsd-browser.enable = true;
   # Personal Claude Code settings, deep-merged over GSD's settings.json.
-  claude-code-gsd.settingsOverride = {
-    model = "opus";
+  gsd.claude.settingsOverride = {
+    model = "claude-opus-4-6[1m]";
+    tui = "fullscreen";
     statusLine = {
       type = "command";
       command = "/bin/bash ${config.home.homeDirectory}/.claude/statusline-command.sh";

@@ -2,6 +2,6 @@
 
 import ../gsd-core-builder.nix {
   inherit lib pkgs;
-  runtime = "claude";
-  configDirEnv = "CLAUDE_CONFIG_DIR";
+  runtime = "codex";
+  configDirEnv = "CODEX_HOME";
 }
