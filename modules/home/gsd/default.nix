@@ -58,7 +58,7 @@ let
       # eval time.
       mutableSource = pkgs.runCommand "claude-settings.json" { nativeBuildInputs = [ pkgs.jq ]; } ''
         jq -s '.[0] * .[1] * .[2]' \
-          ${pkgs.gsd-core-claude}/settings.json \
+          ${pkgs.gsd-core-claude}/config/settings.json \
           ${claudeBase} \
           ${claudePersonal} > $out
       '';
@@ -72,7 +72,13 @@ let
       };
       # No personal TOML override layer yet: install GSD's config.toml verbatim.
       # (Deep-merging TOML has no jq equivalent; add a merge step later if needed.)
-      mutableSource = "${pkgs.gsd-core-codex}/config.toml";
+      mutableSource = "${pkgs.gsd-core-codex}/config/config.toml";
+      # Codex discovers user skills from ~/.agents/skills (per OpenAI's skill
+      # docs), and GSD installs its slash-command skills there — not into the
+      # config dir. Lay the whole skills root down as a single directory symlink:
+      # Codex does not follow symlinked SKILL.md files (openai/codex#10470), but
+      # a symlinked containing directory with real files underneath works.
+      agentsSkills = "${pkgs.gsd-core-codex}/agents-skills";
     };
   };
 
@@ -83,7 +89,7 @@ let
     name: def:
     pkgs.runCommand "gsd-core-${name}-files" { } ''
       mkdir -p $out
-      cp -a ${def.package}/. $out/
+      cp -a ${def.package}/config/. $out/
       chmod -R u+w $out
       rm -f $out/${def.mutable}
     '';
@@ -104,9 +110,16 @@ let
       def.enableModule
 
       {
-        home.file.${def.configDir} = {
-          source = gsdFilesFor name def;
-          recursive = true;
+        home.file = {
+          ${def.configDir} = {
+            source = gsdFilesFor name def;
+            recursive = true;
+          };
+        }
+        # Codex-style skills root at ~/.agents/skills: single directory symlink
+        # (recursive = false) so SKILL.md files stay real, not symlinked.
+        // lib.optionalAttrs (def ? agentsSkills) {
+          ".agents/skills".source = def.agentsSkills;
         };
 
         # Install the merged/managed mutable file as a real, writable file so the
