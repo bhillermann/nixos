@@ -17,9 +17,17 @@
   boot.tmp.cleanOnBoot = true;
 
   nix.settings = {
-    substituters = [ "https://nix-community.cachix.org" ];
+    substituters = [
+      "https://nix-community.cachix.org"
+      # numtide llm-agents.nix cache — prebuilt claude-code, codex (codex-rs),
+      # etc. The flake declares this via nixConfig.extra-substituters, but Nix
+      # ignores flake-declared substituters for untrusted invocations, so pin it
+      # here to avoid compiling codex from source.
+      "https://cache.numtide.com"
+    ];
     trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
     ];
     experimental-features = [
       "nix-command"
