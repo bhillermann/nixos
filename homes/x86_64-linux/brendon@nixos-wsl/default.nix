@@ -27,14 +27,14 @@
 
   # enable extra dev packages and settings
   dev.enable = true;
-  # GSD coding harnesses (each enables the binary + lays down GSD config).
-  gsd.harnesses = [
-    "claude"
-    "codex"
-  ];
-  gsd-browser.enable = true;
-  # Personal Claude Code settings, deep-merged over GSD's settings.json.
-  gsd.claude.settingsOverride = {
+
+  # CLI harnesses — installation is independent of GSD.
+  programs.claude-code.enable = true;
+  programs.codex.enable = true;
+
+  # Personal Claude Code settings. These are the top override layer: they win
+  # over GSD's installed settings.json and gsd-core's base defaults.
+  programs.claude-code.settings = {
     model = "claude-opus-4-6[1m]";
     tui = "fullscreen";
     statusLine = {
@@ -45,6 +45,11 @@
       "statusline@cc-marketplace" = true;
     };
   };
+
+  # GSD files, per tool (each requires the matching programs.<tool>.enable above).
+  gsd-core.claude-code.enable = true;
+  gsd-core.codex.enable = true;
+  gsd-browser.enable = true;
 
   # enable nixvim
   nixvim.enable = true;
