@@ -19,7 +19,7 @@
     trade-analysis
     db-nvrmap
     nodejs_24
-    gsd-2
+    gsd-pi
   ];
 
   # enable core cli packages and settings
