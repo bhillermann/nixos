@@ -9,10 +9,7 @@ let
   cfg = config.gsd-core;
   jsonFormat = pkgs.formats.json { };
 
-  # gsd-core's own base defaults for Claude Code: machine-independent GSD policy
-  # (the permission allow/deny list + notification defaults). This is the middle
-  # layer of the settings merge — it sits above GSD's installed settings.json and
-  # below the user's programs.claude-code.settings, which wins on any key.
+  # gsd-core's own base defaults for Claude Code: overides base. Overridden by user
   claudeBaseSettings = {
     permissions = {
       allow = [
@@ -37,18 +34,11 @@ let
 
   claudeBase = jsonFormat.generate "claude-base-settings.json" claudeBaseSettings;
 
-  # The user's override layer comes straight from the standard Home Manager
-  # options, so there's a single place to set settings per tool. gsd-core reads
-  # them as data (IFD is disabled, so it can't read GSD's generated settings into
-  # Nix; instead it merges everything in a derivation and owns the writable file).
+  # The user's override layer comes straight from the standard Home Manager options
   claudeUser = jsonFormat.generate "claude-user-settings.json" config.programs.claude-code.settings;
   codexUser = jsonFormat.generate "codex-user-settings.json" config.programs.codex.settings;
 
-  # Per-tool definitions. Each knows: which CLI it needs (asserted, never enabled
-  # here — installation is decoupled), where its config lives, the mutable runtime
-  # file the tool rewrites, how to build that file (merged, writable), the exact
-  # Home Manager home.file key that writes it (so we can suppress HM's read-only
-  # write and own it ourselves), and the user's settings (override layer).
+  # Per-tool definitions. Each knows: which CLI it needs 
   harnessDefs = {
     "claude-code" = {
       cliEnabled = config.programs.claude-code.enable;
