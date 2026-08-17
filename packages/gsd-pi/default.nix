@@ -32,10 +32,8 @@ let
       export HOME="$TMPDIR"
       npm install --ignore-scripts --omit=dev --no-audit --no-fund
 
-      # 1.1.1 dropped workspace metadata; link every bundled workspace package
-      # into node_modules by its real (scoped) name. Packages span multiple
-      # scopes (@gsd/*, @opengsd/*), so derive the scope from package.json
-      # rather than hardcoding it.
+      # 1.1.1 dropped workspace metadata; link each workspace package into
+      # node_modules under the scoped name from its package.json.
       for d in packages/*/; do
         name=$(${pkgs.jq}/bin/jq -r '.name // empty' "$d/package.json")
         [ -n "$name" ] || continue

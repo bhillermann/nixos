@@ -1,35 +1,15 @@
-# modules/nixos/agent-user/default.nix
+# Unprivileged user for AI coding agents, plus a shared bare-repo "hub" for
+# git-mediated handoff. Enable with:
+#   services.agent-user = { enable = true; adminUser = "brendon"; };
 #
-# Dedicated unprivileged POSIX user for AI coding agents (Claude Code, gsd-pi),
-# with a shared bare-repo "hub" directory for git-mediated handoff between your
-# primary user and the agent. Snowfall-lib auto-discovers this module from
-# modules/nixos/agent-user/. If you keep options under your snowfall namespace,
-# add `namespace` to the arg set and change `services.agent-user` to
-# `${namespace}.services.agent-user` in both places.
-#
-# Enable in your host config (systems/x86_64-linux/<host>/default.nix):
-#
-#   services.agent-user = {
-#     enable = true;
-#     adminUser = "brendon";   # <- your actual username
-#   };
-#
-# One-time bootstrap after `nh os switch` (imperative by design — agent CLIs
-# self-update and stay out of your flakes):
-#
-#   agent-shell                                  # login shell as the agent
+# One-time bootstrap after switch (imperative — agent CLIs self-update):
+#   agent-shell
 #     curl -fsSL https://claude.ai/install.sh | bash
-#     npm config set prefix ~/.npm-global
-#     echo 'export PATH=~/.npm-global/bin:~/.local/bin:$PATH' >> ~/.bashrc
-#     git config --global user.name  "Brendon (agent)"
-#     git config --global user.email "you+agent@example.com"
-#     claude   # then /login
+#     npm config set prefix ~/.npm-global   # add ~/.npm-global/bin to PATH
+#     git config --global user.name/user.email, then `claude` + /login
 #
-# Daily loop:
-#   agent-hub init ~/dev/myproject      # once per project: bare hub + 'hub' remote
-#   git push hub main                   # you: publish current state
-#   agent-shell                         # work happens as the agent, in its clone
-#   git fetch hub && git diff main...hub/agent/<branch>   # you: REVIEW, then merge
+# Daily loop: agent-hub init <repo> once; git push hub main; work in
+# agent-shell; git fetch hub && git diff main...hub/agent/<branch>, then merge.
 
 {
   config,

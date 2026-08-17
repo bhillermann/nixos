@@ -35,9 +35,8 @@ in
 
   config = lib.mkIf config.postgis.enable {
 
-    # opnix stores the password as a bare value; oci-containers' environmentFiles
-    # needs KEY=VALUE lines. Render one at runtime into a tmpfs dir owned by the
-    # container user, so the secret never touches the Nix store.
+    # Render the bare opnix secret into the KEY=VALUE env-file oci-containers
+    # needs, in tmpfs so it never touches the Nix store.
     systemd.services.postgis-secret-env = {
       description = "Render env-file for the postgis container from the opnix secret.";
       after = [ "opnix-secrets.service" ];

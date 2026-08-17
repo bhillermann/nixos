@@ -24,9 +24,8 @@
       viAlias = true;
       vimAlias = true;
 
-      # Reuse the host (home-manager/system) pkgs instead of nixvim building its
-      # own bare nixpkgs with an empty config. The host pkgs already sets
-      # allowUnfree, which the now-unfree transparent.nvim plugin requires.
+      # Host pkgs sets allowUnfree, which transparent.nvim requires; nixvim's
+      # own bare nixpkgs does not.
       nixpkgs.useGlobalPackages = true;
 
       opts = {
