@@ -811,16 +811,16 @@
       "locked": {
         "lastModified": 1781744370,
         "narHash": "sha256-NUkyPyqzp6L3n00lr1PbRCbI6C6tVMKh56+MHdlVZ8g=",
-        "ref": "refs/tags/v0.9-cli",
+        "owner": "bhillermann",
+        "repo": "title-search",
         "rev": "fe60263d2ad5ba9eb4121fe0a13b1da7b1b5a54e",
-        "revCount": 71,
-        "type": "git",
-        "url": "ssh://git@github.com/bhillermann/title-search"
+        "type": "github"
       },
       "original": {
+        "owner": "bhillermann",
         "ref": "refs/tags/v0.9-cli",
-        "type": "git",
-        "url": "ssh://git@github.com/bhillermann/title-search"
+        "repo": "title-search",
+        "type": "github"
       }
     },
     "trade-analysis": {
