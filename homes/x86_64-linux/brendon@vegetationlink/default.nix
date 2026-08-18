@@ -42,6 +42,42 @@
     };
   };
 
+  # 1. Define the service that runs your script
+  systemd.user.services.nvcr_supply = {
+    Unit = {
+      Description = "Run weekly maintenance script";
+    };
+    Service = {
+      Type = "oneshot";
+      # Automatically creates a shell script inside the Nix store
+      ExecStart = "${pkgs.writeShellScript "maintenance-task" ''
+        #${pkgs.bash}/bin/bash
+        echo "Starting weekly NVCR supply download..."
+
+        ${pkgs.trade-analysis}/bin/title-search --download-nvcr ${config.home.homeDirectory}/NVCR-Data/supply_$(date +%Y%m%d).xlsx
+
+        echo "Download complete."
+      ''}";
+    };
+  };
+
+  # 2. Define the timer that triggers the service weekly
+  systemd.user.timers.weekly-maintenance = {
+    Unit = {
+      Description = "Trigger weekly NVCR supply download";
+    };
+    Timer = {
+      # Triggers every Saturday at midnight
+      OnCalendar = "Sat *-*-* 00:00:00";
+      # Ensures the script catches up if the machine was turned off during the scheduled time
+      Persistent = true;
+      Unit = "nvcr_supply.service";
+    };
+    Install = {
+      WantedBy = [ "timers.target" ];
+    };
+  };
+
   # enable core cli packages and settings
   core.enable = true;
 
