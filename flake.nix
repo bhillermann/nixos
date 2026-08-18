@@ -42,7 +42,7 @@
     trade-analysis.url = "github:bhillermann/trade_analysis";
 
     # title-search cli install
-    title-search.url = "git+ssh://git@github.com/bhillermann/title-search?ref=refs/tags/v0.9-cli";
+    title-search.url = "github:bhillermann/title-search?ref=refs/tags/v0.9-cli";
 
     # Coding agents (Claude Code, Codex, ...) from numtide's monorepo.
     # No `follows` on nixpkgs: numtide recommends against it so their binary
