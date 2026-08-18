@@ -264,7 +264,7 @@ in
         group = "users";
         mode = "0600";
       };
-      tailscale_auth = {
+      tailscaleAuth = {
         reference = "op://nixos-services/tailscale_nerdbox/password";
         mode = "0600";
       };
@@ -305,7 +305,13 @@ in
   # Enable tailscale
   services.tailscale = {
     enable = true;
-    authKeyFile = "${config.services.onepassword-secrets.secretPaths.tailscale_auth}";
+    authKeyFile = "${config.services.onepassword-secrets.secretPaths.tailscaleAuth}";
+  };
+
+  # Force tailscaled to start after opnix runs
+  systemd.services.tailscaled = {
+    after = [ "${config.systemd.services.opnix-secrets.name}.service" ];
+    # requires = [ "${config.systemd.services.opnix-secrets.name}.service" ];
   };
 
   # Open ports in the firewall.
