@@ -41,6 +41,36 @@
         tabstop = 2;
         expandtab = true; # Spaces instead of tabs
         smartindent = true;
+        clipboard = "unnamedplus";
+      };
+
+      globals.clipboard = {
+        name = "win32yank-wsl";
+        copy = {
+          "+" = [
+            "win32yank.exe"
+            "-i"
+            "--crlf"
+          ];
+          "*" = [
+            "win32yank.exe"
+            "-i"
+            "--crlf"
+          ];
+        };
+        paste = {
+          "+" = [
+            "win32yank.exe"
+            "-o"
+            "--lf"
+          ];
+          "*" = [
+            "win32yank.exe"
+            "-o"
+            "--lf"
+          ];
+        };
+        cache_enabled = 0;        
       };
 
       colorschemes.catppuccin.enable = true;
