@@ -26,14 +26,14 @@
         mode = "0640";
       };
       msAppID = {
-        reference = "op://nixos-services/o365_app_credentials/app_id";
+        reference = "op://nixos-services/o365_app_credentials/username";
         path = "/mnt/shares/contact_db/secrets/msAppID";
         owner = "brendon";
         group = "users";
         mode = "0640";
       };
       msAppSecret = {
-        reference = "op://nixos-services/o365_app_credentials/app_secret";
+        reference = "op://nixos-services/o365_app_credentials/password";
         path = "/mnt/shares/contact_db/secrets/msAppSecret";
         owner = "brendon";
         group = "users";
