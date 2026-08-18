@@ -264,6 +264,10 @@ in
         group = "users";
         mode = "0600";
       };
+      tailscale_auth = {
+        reference = "op://nixos-services/tailscale_nerdbox/password";
+        mode = "0600";
+      };
     };
   };
 
@@ -298,17 +302,32 @@ in
     enable = true;
   };
 
+  # Enable tailscale
+  services.tailscale = {
+    enable = true;
+    authKeyFile = "${config.services.onepassword-secrets.secretPaths.tailscale_auth}";
+  };
+
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [
-    22
-    5000
-    5432
-    8080
-    8100
+  networking.nftables.enable = true;
+  networking.firewall = {
+    enable = true;
+      allowedTCPPorts = [
+        22
+        5000
+        5432
+        8080
+        8100
+      ];
+    trustedInterfaces = [ config.services.tailscale.interfaceName ];
+    allowedUDPPorts = [ config.services.tailscale.port ];
+  };
+  
+  systemd.services.tailscaled.serviceConfig.Environment = [
+    "TS_DEBUG_FIREWALL_MODE=nftables"
   ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+
+ # networking.firewall.allowedUDPPorts = [ ... ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
