@@ -54,7 +54,7 @@
         #${pkgs.bash}/bin/bash
         echo "Starting weekly NVCR supply download..."
 
-        ${pkgs.trade-analysis}/bin/title-search --download-nvcr ${config.home.homeDirectory}/NVCR-Data/supply_$(date +%Y%m%d).xlsx
+        ${pkgs.trade-analysis}/bin/trade-analysis --download-nvcr ${config.home.homeDirectory}/NVCR-Data/supply_$(date +%Y%m%d).xlsx
 
         echo "Download complete."
       ''}";
