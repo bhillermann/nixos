@@ -83,6 +83,10 @@
     fi
 
     # Wifi before the CPU loop below, which blocks for seconds.
+      echo LID0 > /proc/acpi/wakeup || true
+    fi
+
+    # Wifi before the CPU loop below, which blocks for seconds.
     ${pkgs.util-linux}/bin/rfkill unblock wifi || true
 
     # Each write blocks 1-4.5s; per-CPU || true so one stuck core can't strand the rest.
@@ -130,7 +134,13 @@
   # Enable the open-source firmware extractor
   boot.extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
   boot.kernelModules = [ "wl" ];
-  boot.blacklistedKernelModules = [ "b43" "bcma" "ssb" "brcsmac" "brcmfmac" ];
+  boot.blacklistedKernelModules = [
+    "b43"
+    "bcma"
+    "ssb"
+    "brcsmac"
+    "brcmfmac"
+  ];
 
   nixpkgs.config.permittedInsecurePackages = [
     "broadcom-sta-6.30.223.271-59-6.12.103"
@@ -142,6 +152,18 @@
   services.usbmuxd.enable = true;
 
   # boot.loader.systemd-boot.configuration = 10;
+
+  # Enable OpNix for NixOS
+  services.onepassword-secrets = {
+    enable = true;
+    tokenFile = "/etc/opnix-token";
+    secrets = {
+      tailscaleAuth = {
+        reference = "op://nixos-services/tailscale_nerdbox/password";
+        mode = "0600";
+      };
+    };
+  };
 
   # Set your time zone.
   time.timeZone = "Australia/Melbourne";
@@ -205,8 +227,7 @@
     polkitPolicyOwners = [ "brendon" ];
   };
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
+  # List packages installed in system profile. 
   environment.systemPackages = with pkgs; [
     git
     vim
@@ -275,13 +296,32 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
+  # Enable tailscale
+  services.tailscale = {
+    enable = true;
+    authKeyFile = "${config.services.onepassword-secrets.secretPaths.tailscaleAuth}";
+  };
+
+  # Force tailscaled to start after opnix runs
+  systemd.services.tailscaled = {
+    after = [ "${config.systemd.services.opnix-secrets.name}.service" ];
+    # requires = [ "${config.systemd.services.opnix-secrets.name}.service" ];
+  };
+
+  # Open ports in the firewall.
+  networking.nftables.enable = true;
+  networking.firewall = {
+    enable = true;
+      allowedTCPPorts = [
+        22
+      ];
+    trustedInterfaces = [ config.services.tailscale.interfaceName ];
+    allowedUDPPorts = [ config.services.tailscale.port ];
+  };
+  
+  systemd.services.tailscaled.serviceConfig.Environment = [
+    "TS_DEBUG_FIREWALL_MODE=nftables"
+  ];
 
   # List services that you want to enable:
 
