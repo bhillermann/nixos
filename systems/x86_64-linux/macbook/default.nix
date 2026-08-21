@@ -87,10 +87,6 @@
     fi
 
     # Wifi before the CPU loop below, which blocks for seconds.
-      echo LID0 > /proc/acpi/wakeup || true
-    fi
-
-    # Wifi before the CPU loop below, which blocks for seconds.
     ${pkgs.util-linux}/bin/rfkill unblock wifi || true
 
     # Each write blocks 1-4.5s; per-CPU || true so one stuck core can't strand the rest.
@@ -163,8 +159,8 @@
     tokenFile = "/etc/opnix-token";
     secrets = {
       tailscaleAuth = {
-        reference = "op://nixos-services/tailscale_nerdbox/password";
-        mode = "0600";
+        reference = "op://nixos-services/tailscale_macbook/password";
+        mode = "0640";
       };
     };
   };
