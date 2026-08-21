@@ -64,6 +64,10 @@
         opnix.nixosModules.default
       ];
 
+      systems.hosts.macbook.modules = with inputs; [
+        opnix.nixosModules.default
+      ];
+
       # Add a module to a specific host.
       systems.hosts.vegetationlink.modules = with inputs; [ opnix.nixosModules.default ];
 

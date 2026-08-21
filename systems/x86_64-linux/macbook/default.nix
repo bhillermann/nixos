@@ -2,14 +2,18 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
-
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
   # Enable facetime camera
   hardware.facetimehd = {
@@ -227,7 +231,7 @@
     polkitPolicyOwners = [ "brendon" ];
   };
 
-  # List packages installed in system profile. 
+  # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
     git
     vim
@@ -244,7 +248,7 @@
   # Install firefox.
   programs.firefox.enable = true;
 
-    programs.nix-ld = {
+  programs.nix-ld = {
     enable = true;
   };
 
@@ -312,13 +316,13 @@
   networking.nftables.enable = true;
   networking.firewall = {
     enable = true;
-      allowedTCPPorts = [
-        22
-      ];
+    allowedTCPPorts = [
+      22
+    ];
     trustedInterfaces = [ config.services.tailscale.interfaceName ];
     allowedUDPPorts = [ config.services.tailscale.port ];
   };
-  
+
   systemd.services.tailscaled.serviceConfig.Environment = [
     "TS_DEBUG_FIREWALL_MODE=nftables"
   ];
