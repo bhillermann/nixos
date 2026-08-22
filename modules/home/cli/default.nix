@@ -131,7 +131,7 @@ in
           };
         };
         config = {
-          theme = "catppuccin-mocha";
+          theme = lib.mkDefault "catppuccin-mocha";
         };
       };
 
@@ -171,9 +171,9 @@ in
         enable = true;
         # custom settings
         settings = lib.mkMerge [
-          (builtins.fromTOML (
+          (lib.mkDefault (builtins.fromTOML (
             builtins.readFile "${pkgs.starship}/share/starship/presets/catppuccin-powerline.toml"
-          ))
+          )))
           {
             line_break.disabled = lib.mkForce false;
 

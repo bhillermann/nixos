@@ -21,6 +21,19 @@
     withCalibration = true;
   };
 
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+
+    extraPackages = with pkgs; [
+      intel-vaapi-driver
+    ];
+
+    extraPackages32 = with pkgs.pkgsi686Linux; [
+      intel-vaapi-driver
+    ];
+  };
+
   # Power management (MacBookPro11,2): spurious wakes were over-armed wake
   # sources + level-triggered lid wake; "slow resume" was a broadcom-sta stall
   # before the freeze plus serial CPU re-onlining after it.
@@ -187,9 +200,26 @@
   # You can disable this if you're only using the Wayland session.
   services.xserver.enable = true;
 
-  # Enable the KDE Plasma Desktop Environment.
+  # Enable the KDE Plasma Desktop Environment (kept as fallback session).
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
+
+  # Niri scrollable tiling Wayland compositor (alternative session in SDDM).
+  programs.niri.enable = true;
+
+  # Noctalia v5 desktop shell for niri.
+  programs.noctalia = {
+    enable = true;
+    recommendedServices.enable = true;
+  };
+
+  # Stylix system-wide theming (catppuccin mocha).
+  stylix = {
+    enable = true;
+    image = ../../../assets/space.png;
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+    polarity = "dark";
+  };
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -282,9 +312,13 @@
   };
 
   nix.settings = {
-    substituters = [ "https://nix-community.cachix.org" ];
+    substituters = [
+      "https://nix-community.cachix.org"
+      "https://noctalia.cachix.org"
+    ];
     trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
     ];
     experimental-features = [
       "nix-command"
