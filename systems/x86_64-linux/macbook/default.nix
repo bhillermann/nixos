@@ -330,6 +330,8 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  home-manager.backupFileExtension = ".bak";
+
   # Enable tailscale
   services.tailscale = {
     enable = true;
