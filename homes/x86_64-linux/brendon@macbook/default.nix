@@ -16,6 +16,8 @@
     nodejs_24
     alacritty
     fuzzel
+    stremio-linux-shell
+    vlc
   ];
 
   # enable core cli packages and settings
