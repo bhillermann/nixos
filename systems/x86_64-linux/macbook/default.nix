@@ -198,7 +198,7 @@
 
   # Enable the X11 windowing system.
   # You can disable this if you're only using the Wayland session.
-  services.xserver.enable = true;
+  services.xserver.enable = false;
 
   # Enable the KDE Plasma Desktop Environment (kept as fallback session).
   services.displayManager.sddm.enable = true;
@@ -215,7 +215,7 @@
 
   # Stylix system-wide theming (catppuccin mocha).
   stylix = {
-    enable = true;
+    enable = false;
     image = ../../../assets/space.png;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
     polarity = "dark";
