@@ -13,6 +13,11 @@
         type = lib.types.bool;
         default = false;
       };
+      wsl = lib.mkOption {
+        description = "Enable WSL-specific clipboard (win32yank).";
+        type = lib.types.bool;
+        default = false;
+      };
     };
   };
 
@@ -44,7 +49,7 @@
         clipboard = "unnamedplus";
       };
 
-      globals.clipboard = {
+      globals.clipboard = lib.mkIf config.nixvim.wsl {
         name = "win32yank-wsl";
         copy = {
           "+" = [

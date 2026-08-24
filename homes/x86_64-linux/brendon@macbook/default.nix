@@ -14,14 +14,24 @@
 
   home.packages = with pkgs; [
     nodejs_24
-    alacritty
     fuzzel
+    playerctl
+    brightnessctl
     stremio-linux-shell
     vlc
   ];
 
   # enable core cli packages and settings
   core.enable = true;
+
+  stylix.targets.starship.enable = false;
+  stylix.fonts.monospace = {
+    package = pkgs.nerd-fonts.jetbrains-mono;
+    name = "JetBrainsMono Nerd Font";
+  };
+
+  programs.kitty.enable = true;
+  programs.alacritty.enable = true;
 
   # enable extra dev packages and settings
   dev.enable = true;
@@ -49,7 +59,8 @@
       keyboard.xkb.layout = "au";
       touchpad = {
         natural-scroll = true;
-        tap = true;
+        tap = false;
+        dwt = true;
       };
     };
 
@@ -75,6 +86,9 @@
 
     environment = {
       NIXOS_OZONE_WL = "1";
+      LIBVA_DRIVER_NAME = "i965";
+      VDPAU_DRIVER = "va_gl";
+      MOZ_DISABLE_RDD_SANDBOX = "1";
     };
 
     spawn-at-startup = [
@@ -82,7 +96,7 @@
     ];
 
     binds = {
-      "Mod+Return".action.spawn = [ "alacritty" ];
+      "Mod+Return".action.spawn = [ "kitty" ];
       "Mod+D".action.spawn = [ "fuzzel" ];
       "Mod+Q".action.close-window = [ ];
 
@@ -100,13 +114,48 @@
       "Mod+F".action.maximize-column = [ ];
       "Mod+Shift+F".action.fullscreen-window = [ ];
 
-      "Mod+Space".action.toggle-window-floating = [ ];
+      "Mod+Space".action.spawn = [ "sh" "-c" "noctalia msg panel-toggle launcher" ];
       "Mod+Shift+Space".action.switch-focus-between-floating-and-tiling = [ ];
 
       "Mod+Comma".action.consume-window-into-column = [ ];
       "Mod+Period".action.expel-window-from-column = [ ];
 
       "Mod+Tab".action.toggle-overview = [ ];
+      "Mod+I".action.spawn = [ "sh" "-c" ''
+        cat <<'BINDS' | fuzzel --dmenu --width=60 --lines=35 --prompt="Keybinds > "
+        Super+Return        Open terminal
+        Super+D             App launcher
+        Super+Space         Panel launcher
+        Super+Q             Close window
+        Super+H/L           Focus column left/right
+        Super+J/K           Focus window down/up
+        Super+Shift+H/L     Move column left/right
+        Super+Shift+J/K     Move window down/up
+        Super+R             Cycle preset column width
+        Super+F             Maximize column
+        Super+Shift+F       Fullscreen window
+        Super+Shift+Space   Toggle floating/tiling focus
+        Super+,             Consume window into column
+        Super+.             Expel window from column
+        Super+Tab           Toggle overview
+        Super+I             Show keybinds (this)
+        Super+1-9           Focus workspace 1-9
+        Super+Shift+1-9     Move column to workspace 1-9
+        Super+PageDown/Up   Focus workspace down/up
+        Super+Shift+PgDn/Up Move to workspace down/up
+        Super+ScrollDown/Up Scroll workspaces
+        Super+Shift+E       Quit niri
+        Print               Screenshot (region)
+        Ctrl+Print          Screenshot (screen)
+        Alt+Print           Screenshot (window)
+        VolUp/VolDown       Volume ±5%
+        Mute                Toggle mute
+        Play                Play/pause media
+        Next/Prev           Next/previous track
+        BrightnessUp/Down   Screen brightness ±5%
+        KbdBrightUp/Down    Keyboard backlight ±10%
+        BINDS
+      '' ];
 
       "Mod+1".action.focus-workspace = 1;
       "Mod+2".action.focus-workspace = 2;
@@ -142,11 +191,22 @@
         cooldown-ms = 150;
       };
 
-      "Print".action.screenshot = [ ];
-      "Ctrl+Print".action.screenshot-screen = [ ];
-      "Alt+Print".action.screenshot-window = [ ];
+      "Mod+P".action.screenshot = [ ];
+      "Mod+Shift+P".action.screenshot-screen = [ ];
+      "Mod+Alt+P".action.screenshot-window = [ ];
 
       "Mod+Shift+E".action.quit = [ ];
+      # Media keys
+      "XF86AudioRaiseVolume".action.spawn = [ "wpctl" "set-volume" "-l" "1.0" "@DEFAULT_AUDIO_SINK@" "0.05+" ];
+      "XF86AudioLowerVolume".action.spawn = [ "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05-" ];
+      "XF86AudioMute".action.spawn = [ "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle" ];
+      "XF86AudioPlay".action.spawn = [ "playerctl" "play-pause" ];
+      "XF86AudioNext".action.spawn = [ "playerctl" "next" ];
+      "XF86AudioPrev".action.spawn = [ "playerctl" "previous" ];
+      "XF86MonBrightnessUp".action.spawn = [ "brightnessctl" "set" "5%+" ];
+      "XF86MonBrightnessDown".action.spawn = [ "brightnessctl" "set" "5%-" ];
+      "XF86KbdBrightnessUp".action.spawn = [ "brightnessctl" "-d" "smc::kbd_backlight" "set" "10%+" ];
+      "XF86KbdBrightnessDown".action.spawn = [ "brightnessctl" "-d" "smc::kbd_backlight" "set" "10%-" ];
     };
   };
 

@@ -27,11 +27,18 @@
 
     extraPackages = with pkgs; [
       intel-vaapi-driver
+      libvdpau-va-gl
     ];
 
     extraPackages32 = with pkgs.pkgsi686Linux; [
       intel-vaapi-driver
     ];
+  };
+
+  environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "i965";
+    VDPAU_DRIVER = "va_gl";
+    MOZ_DISABLE_RDD_SANDBOX = "1";
   };
 
   # Power management (MacBookPro11,2): spurious wakes were over-armed wake
@@ -215,7 +222,7 @@
 
   # Stylix system-wide theming (catppuccin mocha).
   stylix = {
-    enable = false;
+    enable = true;
     image = ../../../assets/space.png;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
     polarity = "dark";
@@ -272,7 +279,23 @@
   '';
 
   # Install firefox.
-  programs.firefox.enable = true;
+  programs.firefox = {
+    enable = true;
+    preferences = {
+      "media.ffmpeg.vaapi.enabled" = true;
+      "media.av1.enabled" = false;
+      "gfx.webrender.all" = true;
+      "widget.dmabuf.force-enabled" = true;
+    };
+    policies = {
+      ExtensionSettings = {
+        "{9a41dee2-b924-4161-a971-7fb35c053a4a}" = {
+          install_url = "https://addons.mozilla.org/firefox/downloads/latest/enhanced-h264ify/latest.xpi";
+          installation_mode = "force_installed";
+        };
+      };
+    };
+  };
 
   programs.nix-ld = {
     enable = true;

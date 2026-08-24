@@ -61,7 +61,7 @@ in
 
         # utils
         ripgrep # recursively searches directories for a regex pattern
-        eza # A modern replacement for ‘ls’
+        eza # A modern replacement for 'ls'
         fzf # A command-line fuzzy finder
         bat # A better replacement for cat
         pay-respects # Autocorrect cli
@@ -169,36 +169,87 @@ in
       # starship - an customizable prompt for any shell
       programs.starship = {
         enable = true;
-        # custom settings
-        settings = lib.mkMerge [
-          (lib.mkDefault (builtins.fromTOML (
-            builtins.readFile "${pkgs.starship}/share/starship/presets/catppuccin-powerline.toml"
-          )))
-          {
-            line_break.disabled = lib.mkForce false;
+        settings = {
+          format = "[](red)$os$username$hostname[](bg:peach fg:red)$directory[](bg:yellow fg:peach)$git_branch$git_status[](fg:yellow bg:green)$c$rust$golang$nodejs$php$java$kotlin$haskell$python[](fg:green bg:sapphire)$conda[](fg:sapphire bg:lavender)$time[ ](fg:lavender)$cmd_duration$line_break$character";
+          palette = "catppuccin_mocha";
+          command_timeout = 500;
+          scan_timeout = 50;
 
-            format = lib.mkForce "[](red)$os$username$hostname[](bg:peach fg:red)$directory[](bg:yellow fg:peach)$git_branch$git_status[](fg:yellow bg:green)$c$rust$golang$nodejs$php$java$kotlin$haskell$python[](fg:green bg:sapphire)$conda[](fg:sapphire bg:lavender)$time[ ](fg:lavender)$cmd_duration$line_break$character";
+          line_break.disabled = false;
+          git_status.disabled = true;
 
-            username = lib.mkForce {
-              format = "[ $user]($style)";
-              show_always = true;
-              style_root = "bg:red fg:crust";
-              style_user = "bg:red fg:crust";
-            };
+          os = {
+            disabled = false;
+            style = "bg:red fg:crust";
+          };
 
-            hostname = lib.mkForce {
-              format = "[ $hostname]($style)";
-              style = "bg:red fg:crust";
-              disabled = false;
-              ssh_only = true;
-              ssh_symbol = "🌐";
-            };
+          username = {
+            format = "[ $user]($style)";
+            show_always = true;
+            style_root = "bg:red fg:crust";
+            style_user = "bg:red fg:crust";
+          };
 
-            command_timeout = lib.mkForce 500;
-            scan_timeout = lib.mkForce 50;
-            git_status = lib.mkForce { disabled = true; };
-          }
-        ];
+          hostname = {
+            format = "[ $hostname]($style)";
+            style = "bg:red fg:crust";
+            disabled = false;
+            ssh_only = true;
+            ssh_symbol = "🌐";
+          };
+
+          directory = {
+            format = "[ $path ]($style)";
+            style = "bg:peach fg:crust";
+            truncation_length = 3;
+          };
+
+          git_branch = {
+            format = "[ $branch ]($style)";
+            style = "bg:yellow fg:crust";
+          };
+
+          time = {
+            disabled = false;
+            format = "[  $time ]($style)";
+            style = "bg:lavender fg:crust";
+            time_format = "%R";
+          };
+
+          character = {
+            success_symbol = "[❯](green)";
+            error_symbol = "[❯](red)";
+          };
+
+          palettes.catppuccin_mocha = {
+            rosewater = "#f5e0dc";
+            flamingo = "#f2cdcd";
+            pink = "#f5c2e7";
+            mauve = "#cba6f7";
+            red = "#f38ba8";
+            maroon = "#eba0ac";
+            peach = "#fab387";
+            yellow = "#f9e2af";
+            green = "#a6e3a1";
+            teal = "#94e2d5";
+            sky = "#89dceb";
+            sapphire = "#74c7ec";
+            blue = "#89b4fa";
+            lavender = "#b4befe";
+            text = "#cdd6f4";
+            subtext1 = "#bac2de";
+            subtext0 = "#a6adc8";
+            overlay2 = "#9399b2";
+            overlay1 = "#7f849c";
+            overlay0 = "#6c7086";
+            surface2 = "#585b70";
+            surface1 = "#45475a";
+            surface0 = "#313244";
+            base = "#1e1e2e";
+            mantle = "#181825";
+            crust = "#11111b";
+          };
+        };
       };
 
       programs.zsh = {

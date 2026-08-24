@@ -53,6 +53,7 @@
 
   # enable nixvim
   nixvim.enable = true;
+  nixvim.wsl = true;
 
   # Enable vscode-server for this user
   vscode-server.enable = false;

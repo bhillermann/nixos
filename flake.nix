@@ -55,7 +55,7 @@
 
     # Noctalia v5 desktop shell (bars, launcher, notifications, lock screen).
     # No `follows` on nixpkgs: keeps binary cache hits from noctalia.cachix.org.
-    noctalia.url = "github:noctalia-dev/noctalia";
+    noctalia.url = "github:noctalia-dev/noctalia/cachix";
 
   };
 
