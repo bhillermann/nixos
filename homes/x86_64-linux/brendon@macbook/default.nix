@@ -18,7 +18,14 @@
     playerctl
     brightnessctl
     stremio-linux-shell
-    vlc
+    (pkgs.symlinkJoin {
+      name = "vlc-xwayland";
+      paths = [ pkgs.vlc ];
+      nativeBuildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/vlc --set QT_QPA_PLATFORM xcb
+      '';
+    })
   ];
 
   # enable core cli packages and settings
@@ -55,17 +62,6 @@
 
   # Niri compositor configuration (keybinds, layout, input, startup).
   programs.niri.settings = {
-    window-rules = [
-      {
-        matches = [{ app-id = "^vlc$"; }];
-        open-floating = true;
-      }
-      {
-        matches = [{ app-id = "^com\\.stremio\\.Stremio$"; }];
-        open-floating = true;
-      }
-    ];
-
     input = {
       keyboard.xkb.layout = "au";
       touchpad = {
@@ -77,7 +73,7 @@
 
     layout = {
       gaps = 8;
-      center-focused-column = "on-overflow";
+      center-focused-column = "always";
       border = {
         enable = true;
         width = 2;
@@ -86,9 +82,9 @@
       };
       focus-ring.enable = false;
       preset-column-widths = [
-        { proportion = 1.0 / 3.0; }
+        { proportion = 4.0 / 5.0; }
         { proportion = 1.0 / 2.0; }
-        { proportion = 2.0 / 3.0; }
+        { proportion = 1.0 / 3.0; }
       ];
     };
 
@@ -168,9 +164,9 @@
         cooldown-ms = 150;
       };
 
-      "Mod+P".action.screenshot = [ ];
-      "Mod+Shift+P".action.screenshot-screen = [ ];
-      "Mod+Alt+P".action.screenshot-window = [ ];
+      "Mod+P".action.spawn-sh = [ "noctalia msg screenshot-region" ];
+      "Mod+Shift+P".action.spawn-sh = [ "noctalia msg screenshot-fullscreen pick" ];
+      "Mod+Alt+P".action.spawn-sh = [ "noctalia msg screenshot-fullscreen all" ];
 
       "Mod+Shift+E".action.quit = [ ];
       # Media keys
@@ -226,6 +222,20 @@
         show_undescribed = true;
       };
     };
+  };
+
+  systemd.user.services.stremio-server = {
+    Unit = {
+      Description = "Stremio streaming server";
+      After = [ "network-online.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.nodejs_24}/bin/node ${pkgs.stremio-linux-shell}/libexec/stremio/server.js";
+      Environment = [ "PATH=${pkgs.lib.makeBinPath [ pkgs.ffmpeg pkgs.procps ]}" ];
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
+    Install.WantedBy = [ "default.target" ];
   };
 
   # Enable vscode-server for this user

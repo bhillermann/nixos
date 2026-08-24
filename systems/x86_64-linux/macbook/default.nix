@@ -15,6 +15,22 @@
     ./hardware-configuration.nix
   ];
 
+  boot = {
+    plymouth.enable = true;
+    consoleLogLevel = 3;
+    initrd = {
+      verbose = false;
+      systemd.enable = true;
+      kernelModules = [ "i915" ];
+    };
+    kernelParams = [
+      "quiet"
+      "splash"
+      "rd.udev.log_level=3"
+      "rd.systemd.show_status=auto"
+    ];
+  };
+
   # Enable facetime camera
   hardware.facetimehd = {
     enable = true;
@@ -269,6 +285,7 @@
     git
     vim
     wget
+    xwayland-satellite
   ];
 
   # GitHub PAT for private flake inputs, kept out of git: seed a root-owned
