@@ -55,6 +55,17 @@
 
   # Niri compositor configuration (keybinds, layout, input, startup).
   programs.niri.settings = {
+    window-rules = [
+      {
+        matches = [{ app-id = "^vlc$"; }];
+        open-floating = true;
+      }
+      {
+        matches = [{ app-id = "^com\\.stremio\\.Stremio$"; }];
+        open-floating = true;
+      }
+    ];
+
     input = {
       keyboard.xkb.layout = "au";
       touchpad = {
@@ -121,41 +132,7 @@
       "Mod+Period".action.expel-window-from-column = [ ];
 
       "Mod+Tab".action.toggle-overview = [ ];
-      "Mod+I".action.spawn = [ "sh" "-c" ''
-        cat <<'BINDS' | fuzzel --dmenu --width=60 --lines=35 --prompt="Keybinds > "
-        Super+Return        Open terminal
-        Super+D             App launcher
-        Super+Space         Panel launcher
-        Super+Q             Close window
-        Super+H/L           Focus column left/right
-        Super+J/K           Focus window down/up
-        Super+Shift+H/L     Move column left/right
-        Super+Shift+J/K     Move window down/up
-        Super+R             Cycle preset column width
-        Super+F             Maximize column
-        Super+Shift+F       Fullscreen window
-        Super+Shift+Space   Toggle floating/tiling focus
-        Super+,             Consume window into column
-        Super+.             Expel window from column
-        Super+Tab           Toggle overview
-        Super+I             Show keybinds (this)
-        Super+1-9           Focus workspace 1-9
-        Super+Shift+1-9     Move column to workspace 1-9
-        Super+PageDown/Up   Focus workspace down/up
-        Super+Shift+PgDn/Up Move to workspace down/up
-        Super+ScrollDown/Up Scroll workspaces
-        Super+Shift+E       Quit niri
-        Print               Screenshot (region)
-        Ctrl+Print          Screenshot (screen)
-        Alt+Print           Screenshot (window)
-        VolUp/VolDown       Volume ±5%
-        Mute                Toggle mute
-        Play                Play/pause media
-        Next/Prev           Next/previous track
-        BrightnessUp/Down   Screen brightness ±5%
-        KbdBrightUp/Down    Keyboard backlight ±10%
-        BINDS
-      '' ];
+      "Mod+I".action.spawn = [ "noctalia" "msg" "panel-toggle" "kenn/keybind-cheatsheet:cheatsheet" ];
 
       "Mod+1".action.focus-workspace = 1;
       "Mod+2".action.focus-workspace = 2;
@@ -197,14 +174,14 @@
 
       "Mod+Shift+E".action.quit = [ ];
       # Media keys
-      "XF86AudioRaiseVolume".action.spawn = [ "wpctl" "set-volume" "-l" "1.0" "@DEFAULT_AUDIO_SINK@" "0.05+" ];
-      "XF86AudioLowerVolume".action.spawn = [ "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05-" ];
-      "XF86AudioMute".action.spawn = [ "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle" ];
-      "XF86AudioPlay".action.spawn = [ "playerctl" "play-pause" ];
-      "XF86AudioNext".action.spawn = [ "playerctl" "next" ];
-      "XF86AudioPrev".action.spawn = [ "playerctl" "previous" ];
-      "XF86MonBrightnessUp".action.spawn = [ "brightnessctl" "set" "5%+" ];
-      "XF86MonBrightnessDown".action.spawn = [ "brightnessctl" "set" "5%-" ];
+      "XF86AudioRaiseVolume".action.spawn-sh = [ "noctalia msg volume-up" ];
+      "XF86AudioLowerVolume".action.spawn-sh = [ "noctalia msg volume-down" ];
+      "XF86AudioMute".action.spawn-sh = [ "noctalia msg volume-mute" ];
+      "XF86AudioPlay".action.spawn-sh = [ "playerctl play-pause" ];
+      "XF86AudioNext".action.spawn-sh = [ "playerctl next" ];
+      "XF86AudioPrev".action.spawn-sh = [ "playerctl previous" ];
+      "XF86MonBrightnessUp".action.spawn-sh = [ "noctalia msg brightness-up" ];
+      "XF86MonBrightnessDown".action.spawn-sh = [ "noctalia msg brightness-down" ];
       "XF86KbdBrightnessUp".action.spawn = [ "brightnessctl" "-d" "smc::kbd_backlight" "set" "10%+" ];
       "XF86KbdBrightnessDown".action.spawn = [ "brightnessctl" "-d" "smc::kbd_backlight" "set" "10%-" ];
     };
@@ -239,6 +216,15 @@
       };
       notification.daemon = true;
       lockscreen.enabled = true;
+      plugins = {
+        enabled = [ "kenn/keybind-cheatsheet" ];
+        auto_update = "all";
+      };
+      plugin_settings."kenn/keybind-cheatsheet" = {
+        compositor = "niri";
+        columns = 3;
+        show_undescribed = true;
+      };
     };
   };
 
