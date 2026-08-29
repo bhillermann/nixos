@@ -14,13 +14,30 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # use latest kernal package
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   boot.initrd.luks.devices."luks-ec7d83b0-dbc5-4e46-acf3-791cccbbc4e9".device = "/dev/disk/by-uuid/ec7d83b0-dbc5-4e46-acf3-791cccbbc4e9";
+
+  # Enable plymouth
+  boot = {
+    plymouth.enable = true;
+    consoleLogLevel = 3;
+    initrd = {
+      verbose = false;
+      systemd.enable = true;
+      kernelModules = [ "i915" ];
+    };
+    kernelParams = [
+      "quiet"
+      "splash"
+      "rd.udev.log_level=3"
+      "rd.systemd.show_status=auto"
+    ];
+  };
+
   networking.hostName = "lenovo"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   nix.settings = {
     substituters = [
@@ -79,8 +96,23 @@
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
 
+  # Niri scrollable tiling Wayland compositor (alternative session in SDDM).
+  programs.niri.enable = true;
+
+  # Noctalia v5 desktop shell for niri.
+  programs.noctalia = {
+    enable = true;
+    recommendedServices.enable = true;
+  };
+
   # Enable CUPS to print documents.
   services.printing.enable = true;
+
+  # thermal management
+  services.thermald.enable = true;
+
+  # Enable power-profiles-daemon (coordinates with Noctalia & KDE)
+  services.power-profiles-daemon.enable = true;
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
@@ -137,11 +169,12 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
+  # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    wget
     git
-    stremio-linux-shell
+    vim
+    wget
+    xwayland-satellite
   ];
 
   # Enable 1Password CLI and GUI
@@ -150,6 +183,20 @@
     enable = true;
     polkitPolicyOwners = [ "brendon" ];
   };
+
+  # Enable OpNix for NixOS
+  services.onepassword-secrets = {
+    enable = true;
+    tokenFile = "/etc/opnix-token";
+    secrets = {
+      tailscaleAuth = {
+        reference = "op://nixos-services/tailscale_lenovo/password";
+        mode = "0640";
+      };
+    };
+  };
+
+  home-manager.backupFileExtension = ".bak";
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
