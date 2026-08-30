@@ -2,7 +2,31 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
+
+let
+  noctalia-sddm-theme = pkgs.stdenvNoCC.mkDerivation {
+    pname = "noctalia-sddm-theme";
+    version = "0-unstable-2025-06-09";
+    src = pkgs.fetchFromGitHub {
+      owner = "mda-dev";
+      repo = "noctalia-sddm-theme";
+      rev = "3a717c31d3f7afb6575ae9684042edd36858a005";
+      hash = "sha256-xCMARTDCMVvnMFb6/le7jTn9kjBXngk6pVpE50g/Q0w=";
+    };
+    dontWrapQtApps = true;
+    postPatch = ''
+      substituteInPlace Main.qml \
+        --replace-fail "import QtGraphicalEffects 1.12" "import Qt5Compat.GraphicalEffects"
+    '';
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out/share/sddm/themes/noctalia
+      cp -r . $out/share/sddm/themes/noctalia
+      runHook postInstall
+    '';
+  };
+in
 
 {
   imports =
@@ -51,6 +75,7 @@
     trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+      "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
     ];
     experimental-features = [
       "nix-command"
@@ -92,9 +117,10 @@
   # You can disable this if you're only using the Wayland session.
   services.xserver.enable = false;
 
-  # Enable the KDE Plasma Desktop Environment.
-  services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
+  # services.desktopManager.plasma6.enable = true;
+  programs.noctalia-greeter = {
+    enable = true;
+  };
 
   # Niri scrollable tiling Wayland compositor (alternative session in SDDM).
   programs.niri.enable = true;
@@ -104,6 +130,16 @@
     enable = true;
     recommendedServices.enable = true;
   };
+
+  # Stylix system-wide theming (catppuccin mocha).
+  stylix = {
+    enable = true;
+    image = ../../../assets/space.png;
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+    polarity = "dark";
+  };
+
+
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -175,6 +211,7 @@
     vim
     wget
     xwayland-satellite
+    noctalia-sddm-theme
   ];
 
   # Enable 1Password CLI and GUI
@@ -195,6 +232,9 @@
       };
     };
   };
+
+  # enable polkit
+  security.polkit.enable = true;
 
   home-manager.backupFileExtension = ".bak";
 
