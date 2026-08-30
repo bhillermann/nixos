@@ -56,6 +56,10 @@
     # Noctalia v5 desktop shell (bars, launcher, notifications, lock screen).
     # No `follows` on nixpkgs: keeps binary cache hits from noctalia.cachix.org.
     noctalia.url = "github:noctalia-dev/noctalia/cachix";
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
   };
 
@@ -76,6 +80,14 @@
         opnix.nixosModules.default
         niri.nixosModules.niri
         noctalia.nixosModules.default
+        stylix.nixosModules.stylix
+      ];
+
+      systems.hosts.lenovo.modules = with inputs; [
+        opnix.nixosModules.default
+        niri.nixosModules.niri
+        noctalia.nixosModules.default
+        noctalia-greeter.nixosModules.default
         stylix.nixosModules.stylix
       ];
 
