@@ -18,7 +18,6 @@
     playerctl
     brightnessctl
     stremio-linux-shell
-    lxqt.lxqt-policykit
   ];
 
   # enable core cli packages and settings
@@ -89,7 +88,7 @@
     screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
 
     spawn-at-startup = [
-      { command = [ "noctalia" "lxqt-policykit-agent"]; }
+      { command = [ "noctalia" ]; }
     ];
 
     binds = {
