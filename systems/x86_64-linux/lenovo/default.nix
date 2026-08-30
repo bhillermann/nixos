@@ -125,6 +125,9 @@ in
   # Niri scrollable tiling Wayland compositor (alternative session in SDDM).
   programs.niri.enable = true;
 
+  # Disable niri's polkit service so noctalia can handle it
+  systemd.user.services.niri-flake-polkit.enable = false;
+
   # Noctalia v5 desktop shell for niri.
   programs.noctalia = {
     enable = true;
