@@ -2,31 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, ... }:
-
-let
-  noctalia-sddm-theme = pkgs.stdenvNoCC.mkDerivation {
-    pname = "noctalia-sddm-theme";
-    version = "0-unstable-2025-06-09";
-    src = pkgs.fetchFromGitHub {
-      owner = "mda-dev";
-      repo = "noctalia-sddm-theme";
-      rev = "3a717c31d3f7afb6575ae9684042edd36858a005";
-      hash = "sha256-xCMARTDCMVvnMFb6/le7jTn9kjBXngk6pVpE50g/Q0w=";
-    };
-    dontWrapQtApps = true;
-    postPatch = ''
-      substituteInPlace Main.qml \
-        --replace-fail "import QtGraphicalEffects 1.12" "import Qt5Compat.GraphicalEffects"
-    '';
-    installPhase = ''
-      runHook preInstall
-      mkdir -p $out/share/sddm/themes/noctalia
-      cp -r . $out/share/sddm/themes/noctalia
-      runHook postInstall
-    '';
-  };
-in
+{ config, pkgs, lib, inputs, ... }:
 
 {
   imports =
@@ -43,20 +19,24 @@ in
 
   boot.initrd.luks.devices."luks-ec7d83b0-dbc5-4e46-acf3-791cccbbc4e9".device = "/dev/disk/by-uuid/ec7d83b0-dbc5-4e46-acf3-791cccbbc4e9";
 
+  systemd.services.greetd.after = [ "plymouth-quit.service" "plymouth-quit-wait.service" ];
+
   # Enable plymouth
   boot = {
     plymouth.enable = true;
-    consoleLogLevel = 3;
+    consoleLogLevel = 0;
     initrd = {
       verbose = false;
       systemd.enable = true;
       kernelModules = [ "i915" ];
     };
     kernelParams = [
-      "quiet"
-      "splash"
+      "quiet" "splash"
+      "loglevel=3"
+      "rd.systemd.show_status=false"
       "rd.udev.log_level=3"
-      "rd.systemd.show_status=auto"
+      "udev.log_priority=3"
+      "vt.global_cursor_default=0""quiet"
     ];
   };
 
@@ -124,6 +104,26 @@ in
 
   # Niri scrollable tiling Wayland compositor (alternative session in SDDM).
   programs.niri.enable = true;
+
+  # Temporary wrapper to hide niri 'deprecated' ouput until an upstream fix
+  programs.niri.package =
+  let
+    base = inputs.niri.packages.${pkgs.stdenv.hostPlatform.system}.niri-stable; 
+  in
+  (pkgs.symlinkJoin {
+    name = "niri-quiet-session";
+    paths = [ base ];
+    passthru = { inherit (base.passthru) providedSessions; };
+    postBuild = ''
+      rm $out/bin/niri-session
+      sed -e 's|systemctl --user import-environment|& 2>/dev/null|' \
+          -e 's|dbus-update-activation-environment --all|& 2>/dev/null|' \
+          ${base}/bin/niri-session > $out/bin/niri-session
+      chmod +x $out/bin/niri-session
+    '';
+  }) // {
+    inherit (base) cargoBuildNoDefaultFeatures cargoBuildFeatures;
+  };
 
   # Disable niri's polkit service so noctalia can handle it
   systemd.user.services.niri-flake-polkit.enable = false;
@@ -214,7 +214,6 @@ in
     vim
     wget
     xwayland-satellite
-    noctalia-sddm-theme
   ];
 
   # Enable 1Password CLI and GUI
@@ -249,7 +248,34 @@ in
   #   enableSSHSupport = true;
   # };
 
-  # List services that you want to enable:
+  # Enable tailscale
+  services.tailscale = {
+    enable = true;
+    authKeyFile = "${config.services.onepassword-secrets.secretPaths.tailscaleAuth}";
+  };
+
+  # Force tailscaled to start after opnix runs
+  systemd.services.tailscaled = {
+    after = [ "${config.systemd.services.opnix-secrets.name}.service" ];
+    # requires = [ "${config.systemd.services.opnix-secrets.name}.service" ];
+  };
+
+  # Open ports in the firewall.
+  networking.nftables.enable = true;
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [
+      22
+    ];
+    trustedInterfaces = [ config.services.tailscale.interfaceName ];
+    allowedUDPPorts = [ config.services.tailscale.port ];
+  };
+
+  systemd.services.tailscaled.serviceConfig.Environment = [
+    "TS_DEBUG_FIREWALL_MODE=nftables"
+  ];
+
+ # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
