@@ -18,6 +18,7 @@
     playerctl
     brightnessctl
     stremio-linux-shell
+    lxqt.lxqt-policykit
   ];
 
   # enable core cli packages and settings
@@ -47,6 +48,14 @@
 
   # enable nixvim
   nixvim.enable = true;
+
+  stylix.targets.starship.enable = false;
+  stylix.fonts.monospace = {
+    package = pkgs.nerd-fonts.jetbrains-mono;
+    name = "JetBrainsMono Nerd Font";
+  };
+
+
 
   # Niri compositor configuration (keybinds, layout, input, startup).
   programs.niri.settings = {
@@ -80,7 +89,7 @@
     screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
 
     spawn-at-startup = [
-      { command = [ "noctalia" ]; }
+      { command = [ "noctalia" "lxqt-policykit-agent"]; }
     ];
 
     binds = {
