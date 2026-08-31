@@ -216,6 +216,56 @@ in
             time_format = "%R";
           };
 
+          c = {
+            format = "[ via $symbol($version) ]($style)";
+            style = "bg:green fg:crust";
+          };
+
+          rust = {
+            format = "[ via $symbol($version) ]($style)";
+            style = "bg:green fg:crust";
+          };
+
+          golang = {
+            format = "[ via $symbol($version) ]($style)";
+            style = "bg:green fg:crust";
+          };
+
+          nodejs = {
+            format = "[ via $symbol($version) ]($style)";
+            style = "bg:green fg:crust";
+          };
+
+          php = {
+            format = "[ via $symbol($version) ]($style)";
+            style = "bg:green fg:crust";
+          };
+
+          java = {
+            format = "[ via $symbol($version) ]($style)";
+            style = "bg:green fg:crust";
+          };
+
+          kotlin = {
+            format = "[ via $symbol($version) ]($style)";
+            style = "bg:green fg:crust";
+          };
+
+          haskell = {
+            format = "[ via $symbol($version) ]($style)";
+            style = "bg:green fg:crust";
+          };
+
+          python = {
+            format = "[ via $symbol($version) (\\($virtualenv\\)) ]($style)";
+            style = "bg:green fg:crust";
+          };
+
+          conda = {
+            format = "[ $symbol$environment ]($style)";
+            style = "bg:sapphire fg:crust";
+          };
+
           character = {
             success_symbol = "[❯](green)";
             error_symbol = "[❯](red)";
