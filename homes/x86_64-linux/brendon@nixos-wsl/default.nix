@@ -6,6 +6,36 @@
   ...
 }:
 
+let
+  claudeCommitMsg = pkgs.writeShellScript "claude-commit-msg" ''
+    # Enforce only for commits made from inside Claude Code
+    [ -n "''${CLAUDECODE:-}" ] || exit 0
+
+    grep=${pkgs.gnugrep}/bin/grep
+    sed=${pkgs.gnused}/bin/sed
+    wc=${pkgs.coreutils}/bin/wc
+
+    file="$1"
+    subject=$($sed -n '1p' "$file")
+    # Body = everything after line 1, minus comments, blanks, and trailers
+    body=$($sed '1d' "$file" \
+      | $grep -v '^#' \
+      | $grep -Ev '^[A-Za-z-]+: ' \
+      | $sed '/^[[:space:]]*$/d')
+    body_lines=$(printf '%s' "$body" | $grep -c . || true)
+
+    fail() { echo "commit-msg: $1" >&2; exit 1; }
+
+    [ "''${#subject}" -le 72 ] || fail "subject is ''${#subject} chars, max 72"
+    [ "$body_lines" -le 3 ]     || fail "body has $body_lines lines, max 3 one-line bullets"
+    printf '%s\n' "$body" | $grep -q '^[^-]' \
+      && fail "body lines must be bullets starting with '- '"
+    printf '%s\n' "$body" | $grep -Eq '.{101,}' \
+      && fail "body line over 100 chars; describe the change, not the process"
+    exit 0
+  '';
+in
+
 {
   imports = [ ../brendon/core.nix ];
 
@@ -30,11 +60,12 @@
 
   # CLI harnesses — installation is independent of GSD.
   programs.claude-code.enable = true;
-  programs.codex.enable = true;
+  programs.git.hooks.commit-msg = claudeCommitMsg;
 
   # Personal Claude Code settings. These are the top override layer: they win
   # over GSD's installed settings.json and gsd-core's base defaults.
   programs.claude-code.settings = {
+    includeCoAuthoredBy = false;
     model = "claude-opus-4-6[1m]";
     tui = "fullscreen";
     statusLine = {
@@ -43,6 +74,28 @@
     };
     enabledPlugins = {
       "statusline@cc-marketplace" = true;
+    };
+  };
+
+  programs.codex = {
+    enable = true;
+    # Optional: enable Model Context Protocol integration from programs.mcp
+    enableMcpIntegration = true;
+    settings = {
+      model_provider = "openai";
+      model = "gpt-5.6-sol";
+      model_reasoning_effort = "low";
+      approvals_reviewer = "auto_review";
+      tui = {
+        status-line = [
+          "model-with-reasoning"
+          "current-dir"
+          "project-name"
+          "git-branch"
+          "approval-mode"
+          "context-used"
+        ];
+      };
     };
   };
 
