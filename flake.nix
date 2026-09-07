@@ -49,6 +49,18 @@
     # cache keeps hitting (packages are built against their pinned nixpkgs).
     llm-agents.url = "github:numtide/llm-agents.nix";
 
+    # Niri scrollable tiling Wayland compositor.
+    # No `follows` on nixpkgs: niri-flake recommends against it for binary cache hits.
+    niri.url = "github:sodiboo/niri-flake";
+
+    # Noctalia v5 desktop shell (bars, launcher, notifications, lock screen).
+    # No `follows` on nixpkgs: keeps binary cache hits from noctalia.cachix.org.
+    noctalia.url = "github:noctalia-dev/noctalia/cachix";
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
   outputs =
@@ -66,12 +78,25 @@
 
       systems.hosts.macbook.modules = with inputs; [
         opnix.nixosModules.default
+        niri.nixosModules.niri
+        noctalia.nixosModules.default
+        stylix.nixosModules.stylix
+      ];
+
+      systems.hosts.lenovo.modules = with inputs; [
+        opnix.nixosModules.default
+        niri.nixosModules.niri
+        noctalia.nixosModules.default
+        noctalia-greeter.nixosModules.default
+        stylix.nixosModules.stylix
       ];
 
       # Add a module to a specific host.
       systems.hosts.vegetationlink.modules = with inputs; [ opnix.nixosModules.default ];
 
       # Add modules to all homes.
+      # niri HM module is auto-injected by niri's NixOS module on macbook.
+      # noctalia HM module is imported in macbook's home config directly.
       homes.modules = with inputs; [
         inputs.nixvim.homeModules.nixvim
         opnix.homeManagerModules.default

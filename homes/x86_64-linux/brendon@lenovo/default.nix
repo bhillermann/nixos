@@ -18,24 +18,10 @@
     playerctl
     brightnessctl
     stremio-linux-shell
-    (pkgs.symlinkJoin {
-      name = "vlc-xwayland";
-      paths = [ pkgs.vlc ];
-      nativeBuildInputs = [ pkgs.makeWrapper ];
-      postBuild = ''
-        wrapProgram $out/bin/vlc --set QT_QPA_PLATFORM xcb
-      '';
-    })
   ];
 
   # enable core cli packages and settings
   core.enable = true;
-
-  stylix.targets.starship.enable = false;
-  stylix.fonts.monospace = {
-    package = pkgs.nerd-fonts.jetbrains-mono;
-    name = "JetBrainsMono Nerd Font";
-  };
 
   programs.kitty.enable = true;
   programs.alacritty.enable = true;
@@ -44,6 +30,8 @@
   dev.enable = true;
   programs.claude-code.enable = true;
   gsd-browser.enable = true;
+  gsd-core.claude-code.enable = true;
+
   # Personal Claude Code settings.
   programs.claude-code.settings = {
     model = "claude-opus-4-6[1m]";
@@ -60,13 +48,21 @@
   # enable nixvim
   nixvim.enable = true;
 
+  stylix.targets.starship.enable = false;
+  stylix.fonts.monospace = {
+    package = pkgs.nerd-fonts.jetbrains-mono;
+    name = "JetBrainsMono Nerd Font";
+  };
+
+
+
   # Niri compositor configuration (keybinds, layout, input, startup).
   programs.niri.settings = {
     input = {
       keyboard.xkb.layout = "au";
       touchpad = {
         natural-scroll = true;
-        tap = false;
+        tap = true;
         dwt = true;
       };
     };
@@ -82,7 +78,7 @@
       };
       focus-ring.enable = false;
       preset-column-widths = [
-        { proportion = 4.0 / 5.0; }
+        { proportion = 7.0 / 8.0; }
         { proportion = 1.0 / 2.0; }
         { proportion = 1.0 / 3.0; }
       ];
@@ -90,13 +86,6 @@
 
     prefer-no-csd = true;
     screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
-
-    environment = {
-      NIXOS_OZONE_WL = "1";
-      LIBVA_DRIVER_NAME = "i965";
-      VDPAU_DRIVER = "va_gl";
-      MOZ_DISABLE_RDD_SANDBOX = "1";
-    };
 
     spawn-at-startup = [
       { command = [ "noctalia" ]; }

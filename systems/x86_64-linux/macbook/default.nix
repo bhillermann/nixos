@@ -15,10 +15,46 @@
     ./hardware-configuration.nix
   ];
 
+  boot = {
+    plymouth.enable = true;
+    consoleLogLevel = 3;
+    initrd = {
+      verbose = false;
+      systemd.enable = true;
+      kernelModules = [ "i915" ];
+    };
+    kernelParams = [
+      "quiet"
+      "splash"
+      "rd.udev.log_level=3"
+      "rd.systemd.show_status=auto"
+    ];
+  };
+
   # Enable facetime camera
   hardware.facetimehd = {
     enable = true;
     withCalibration = true;
+  };
+
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+
+    extraPackages = with pkgs; [
+      intel-vaapi-driver
+      libvdpau-va-gl
+    ];
+
+    extraPackages32 = with pkgs.pkgsi686Linux; [
+      intel-vaapi-driver
+    ];
+  };
+
+  environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "i965";
+    VDPAU_DRIVER = "va_gl";
+    MOZ_DISABLE_RDD_SANDBOX = "1";
   };
 
   # Power management (MacBookPro11,2): spurious wakes were over-armed wake
@@ -185,11 +221,28 @@
 
   # Enable the X11 windowing system.
   # You can disable this if you're only using the Wayland session.
-  services.xserver.enable = true;
+  services.xserver.enable = false;
 
-  # Enable the KDE Plasma Desktop Environment.
+  # Enable the KDE Plasma Desktop Environment (kept as fallback session).
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
+
+  # Niri scrollable tiling Wayland compositor (alternative session in SDDM).
+  programs.niri.enable = true;
+
+  # Noctalia v5 desktop shell for niri.
+  programs.noctalia = {
+    enable = true;
+    recommendedServices.enable = true;
+  };
+
+  # Stylix system-wide theming (catppuccin mocha).
+  stylix = {
+    enable = true;
+    image = ../../../assets/space.png;
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+    polarity = "dark";
+  };
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -232,6 +285,7 @@
     git
     vim
     wget
+    xwayland-satellite
   ];
 
   # GitHub PAT for private flake inputs, kept out of git: seed a root-owned
@@ -242,7 +296,23 @@
   '';
 
   # Install firefox.
-  programs.firefox.enable = true;
+  programs.firefox = {
+    enable = true;
+    preferences = {
+      "media.ffmpeg.vaapi.enabled" = true;
+      "media.av1.enabled" = false;
+      "gfx.webrender.all" = true;
+      "widget.dmabuf.force-enabled" = true;
+    };
+    policies = {
+      ExtensionSettings = {
+        "{9a41dee2-b924-4161-a971-7fb35c053a4a}" = {
+          install_url = "https://addons.mozilla.org/firefox/downloads/latest/enhanced-h264ify/latest.xpi";
+          installation_mode = "force_installed";
+        };
+      };
+    };
+  };
 
   programs.nix-ld = {
     enable = true;
@@ -282,9 +352,13 @@
   };
 
   nix.settings = {
-    substituters = [ "https://nix-community.cachix.org" ];
+    substituters = [
+      "https://nix-community.cachix.org"
+      "https://noctalia.cachix.org"
+    ];
     trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
     ];
     experimental-features = [
       "nix-command"
@@ -295,6 +369,8 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+
+  home-manager.backupFileExtension = ".bak";
 
   # Enable tailscale
   services.tailscale = {
