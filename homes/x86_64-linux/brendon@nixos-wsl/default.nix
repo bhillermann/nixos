@@ -7,6 +7,7 @@
 }:
 
 let
+
   claudeCommitMsg = pkgs.writeShellScript "claude-commit-msg" ''
     # Enforce only for commits made from inside Claude Code
     [ -n "''${CLAUDECODE:-}" ] || exit 0
@@ -34,6 +35,29 @@ let
       && fail "body line over 100 chars; describe the change, not the process"
     exit 0
   '';
+
+  stripRedundantCd = pkgs.writers.writePython3Bin "strip-redundant-cd" { } ''
+    import json
+    import os
+    import re
+    import sys
+
+    data = json.load(sys.stdin)
+    cmd = data.get("tool_input", {}).get("command", "")
+    cwd = os.path.realpath(data.get("cwd", ""))
+
+    m = re.match(r"^\s*cd\s+(['\"]?)([^'\"\s;&|]+)\1\s*(&&|;)\s*", cmd)
+    if m and os.path.realpath(os.path.expanduser(m.group(2))) == cwd:
+        new_cmd = cmd[m.end():]
+        out = {
+            "hookSpecificOutput": {
+                "hookEventName": "PreToolUse",
+                "updatedInput": {**data["tool_input"], "command": new_cmd},
+            }
+        }
+        print(json.dumps(out))
+  '';
+
 in
 
 {
@@ -72,6 +96,18 @@ in
       type = "command";
       command = "bash ${config.home.homeDirectory}/.claude/statusline-command.sh";
     };
+    hooks.PreToolUse = [
+      {
+        matcher = "Bash";
+        hooks = [
+          {
+            type = "command";
+            command = "${stripRedundantCd}/bin/strip-redundant-cd";
+            timeout = 5;
+          }
+        ];
+      }
+    ];
     enabledPlugins = {
       "statusline@cc-marketplace" = true;
     };
@@ -87,7 +123,7 @@ in
       model_reasoning_effort = "low";
       approvals_reviewer = "auto_review";
       tui = {
-        status-line = [
+        status_line = [
           "model-with-reasoning"
           "current-dir"
           "project-name"
