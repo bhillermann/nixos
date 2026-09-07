@@ -42,12 +42,12 @@ let
     import re
     import sys
 
-    with open("/tmp/strip-cd.log", "a") as f:
-    f.write(json.dumps({"cwd": data.get("cwd"), "cmd": cmd[:120]}) + "\n")
-
     data = json.load(sys.stdin)
     cmd = data.get("tool_input", {}).get("command", "")
     cwd = os.path.realpath(data.get("cwd", ""))
+
+    with open("/tmp/strip-cd.log", "a") as f:
+        f.write(json.dumps({"cwd": data.get("cwd"), "cmd": cmd[:120]}) + "\n")
 
     m = re.match(r"^[ \t]*cd\s+(['\"]?)([^'\"\s;&|]+)\1[ \t]*(&&|;|\n)\s*", cmd)
     if m and os.path.realpath(os.path.expanduser(m.group(2))) == cwd:
