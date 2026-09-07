@@ -82,12 +82,20 @@ let
       # Codex does not follow symlinked SKILL.md files (openai/codex#10470), but
       # a symlinked containing directory with real files underneath works.
       agentsSkills = "${pkgs.gsd-core-codex}/agents-skills";
+      # Codex reads custom agent role files with O_NOFOLLOW (exec-server's
+      # read_sensitive_file_to_string): a symlinked agents/*.toml is rejected
+      # with ELOOP and the agent reports "currently not available". Lay agents/
+      # down as one directory symlink so the .toml files underneath stay real.
+      dirSymlinks = [ "agents" ];
     };
   };
 
-  # GSD's files minus the mutable runtime file. That file is mutable runtime
-  # state (the tool rewrites it), so it can't be a read-only HM symlink; we
-  # manage it separately as a real writable file in the activation script below.
+  # GSD's files minus the mutable runtime file and any dirSymlinks subdirs. The
+  # mutable file is runtime state (the tool rewrites it), so it can't be a
+  # read-only HM symlink; we manage it separately as a real writable file in the
+  # activation script below. dirSymlinks subdirs are linked whole in home.file;
+  # leaving them in this recursive tree too would make HM keep the per-file
+  # links and silently drop the directory link.
   gsdFilesFor =
     name: def:
     pkgs.runCommand "gsd-core-${name}-files" { } ''
@@ -95,6 +103,7 @@ let
       cp -a ${def.package}/config/. $out/
       chmod -R u+w $out
       rm -f $out/${def.mutable}
+      ${lib.concatMapStringsSep "\n" (d: "rm -rf $out/${d}") (def.dirSymlinks or [ ])}
     '';
 
   # Guarded per-tool config. Iterate the full, static set of known tools and gate
@@ -133,6 +142,20 @@ let
           // lib.optionalAttrs (def ? agentsSkills) {
             ".agents/skills".source = def.agentsSkills;
           }
+          # Subdirs of the config dir that must be a single directory symlink
+          # (see dirSymlinks on the harness def). force: on hosts without
+          # backupFileExtension, HM would otherwise refuse to replace the real
+          # directory of per-file links left by an earlier generation; with it,
+          # HM's cleanup removes those links and rmdirs the empty dir first.
+          // lib.listToAttrs (
+            map (d: {
+              name = "${def.configDir}/${d}";
+              value = {
+                source = "${def.package}/config/${d}";
+                force = true;
+              };
+            }) (def.dirSymlinks or [ ])
+          )
           # When the user sets programs.<tool>.settings, HM would write the
           # mutable file itself as a read-only store symlink, clobbering the
           # writable file we install below. Disable HM's write on that exact key;
@@ -151,6 +174,25 @@ let
           run rm -f "$HOME/${def.configDir}/${def.mutable}"
           run install -m644 ${def.mutableSource} "$HOME/${def.configDir}/${def.mutable}"
         '';
+
+        # Transition a dirSymlinks target from a real directory of per-file HM
+        # links (an earlier recursive generation) to a directory symlink. HM's
+        # own cleanup won't do it: it keeps any old link whose relative path
+        # still exists in the new generation, and every one of them does — via
+        # the new directory link — so linkGeneration then fails with "ln: cannot
+        # overwrite directory". Drop only links owned by HM, then rmdir; a dir
+        # holding anything else is left alone and ln fails loudly as before.
+        home.activation."gsd-core-${name}-dirsymlinks" =
+          config.lib.dag.entryBetween [ "linkGeneration" ] [ "writeBoundary" ] ''
+            for d in ${lib.escapeShellArgs (def.dirSymlinks or [ ])}; do
+              target="$HOME/${def.configDir}/$d"
+              if [[ -d "$target" && ! -L "$target" ]]; then
+                run find "$target" -mindepth 1 -maxdepth 1 -type l \
+                  -lname '${builtins.storeDir}/*-home-manager-files/*' -delete
+                run rmdir --ignore-fail-on-non-empty "$target"
+              fi
+            done
+          '';
       }
     ]);
 in
