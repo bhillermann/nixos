@@ -973,11 +973,11 @@
         "nixpkgs": "nixpkgs_9"
       },
       "locked": {
-        "lastModified": 1779246722,
-        "narHash": "sha256-g3qJgLnhnJDmgqDzFIIkjo3fx/m6hnNQ0Hnw2Daaljg=",
+        "lastModified": 1788768653,
+        "narHash": "sha256-hYtkn9Pyz5gILHEgOUxduvZe4mDfGdLLh9zUPHJrzwY=",
         "owner": "bhillermann",
         "repo": "trade_analysis",
-        "rev": "f9963f7cba086b202f570a54855a1e41e00b2b14",
+        "rev": "e3dd081773344d4b1ca9f5339f6b996bb867d3aa",
         "type": "github"
       },
       "original": {
