@@ -37,6 +37,7 @@
       "rd.udev.log_level=3"
       "udev.log_priority=3"
       "vt.global_cursor_default=0""quiet"
+      "pcie_aspm.policy=powersupersave"
     ];
   };
 
@@ -152,6 +153,94 @@
 
   # Enable power-profiles-daemon (coordinates with Noctalia & KDE)
   services.power-profiles-daemon.enable = true;
+
+  # Sleep on this machine (Yoga Slim 7 Carbon 13ITL5, Tiger Lake, BIOS
+  # F7CN41WW): s2idle is entered but the PCH never asserts SLP_S0, so S0ix
+  # residency is 0 % and lid-closed sleep drains ~0.9 W (~2 %/h). Verified
+  # Sep 2026 on kernels 7.2.0 and 7.2.2 with TBT/USB/WiFi/ISH/DPTF disabled
+  # one by one and all together; the firmware publishes no S0ix requirement
+  # table and the NVMe root port has no D3cold methods. S3 ("deep") hangs.
+  #
+  # Mitigation: suspend-then-hibernate. s2idle for HibernateDelaySec, then
+  # write the image to the LUKS swap (17 GB > 16 GB RAM) and power off.
+  boot.resumeDevice = "/dev/mapper/luks-ec7d83b0-dbc5-4e46-acf3-791cccbbc4e9";
+  services.logind.settings.Login = {
+    HandleLidSwitch = "suspend-then-hibernate";
+    HandleLidSwitchExternalPower = "suspend";
+  };
+  systemd.sleep.settings.Sleep.HibernateDelaySec = "2h";
+
+  # Sleep diagnostics: log per-sleep energy and S0ix residency around every
+  # suspend and let pmc_core warn when SLP_S0 was not reached.
+  #
+  # After a sleep, read the verdict with:
+  #   journalctl -k | grep -E "lenovo-pm|SLP_S0|S0ix"
+  #
+  # Runs under `set -e` with other modules' hooks appended after, so nothing
+  # here may fail.
+  boot.extraModprobeConfig = ''
+    # Print "CPU did not enter SLP_S0" plus the blocking PCH IPs on resume
+    # when the SLP_S0 residency counter did not advance during the sleep.
+    options intel_pmc_core warn_on_s0ix_failures=1
+  '';
+
+  # Wakeup-source and PM-phase messages in the journal for every suspend.
+  systemd.services.pm-debug-instrumentation = {
+    description = "Enable kernel PM debug messages";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      # Wakeup source ("PM: Triggering wakeup from IRQ n") per resume.
+      echo 1 > /sys/power/pm_debug_messages
+      # modprobe.d only applies at module load; set it live too so a switch
+      # without reboot picks it up.
+      echo 1 > /sys/module/intel_pmc_core/parameters/warn_on_s0ix_failures || true
+      # For deeper digging, per-device D-states at suspend can be had with:
+      #   echo 'file drivers/pci/pci-driver.c +p' > /sys/kernel/debug/dynamic_debug/control
+      # (drivers/acpi/device_pm.c too, but it logs every touchpad runtime-PM cycle).
+    '';
+  };
+
+  powerManagement.powerDownCommands = ''
+    {
+      pmc=/sys/kernel/debug/pmc_core
+      slp=$(cat $pmc/slp_s0_residency_usec 2>/dev/null || echo 0)
+      energy=$(cat /sys/class/power_supply/BAT0/energy_now 2>/dev/null || echo 0)
+      echo "$(date +%s) $energy $slp" > /run/lenovo-pm-presleep
+      echo "lenovo-pm: pre-sleep energy_uwh=$energy slp_s0_us=$slp bat=$(cat /sys/class/power_supply/BAT0/status) lid=$(${pkgs.gawk}/bin/awk '{print $2}' /proc/acpi/button/lid/LID0/state)" > /dev/kmsg
+      # S0ix substate residencies before sleep (S0i2.x / S0i3.x on Tiger Lake).
+      if [ -r $pmc/substate_residencies ]; then
+        tail -n +2 $pmc/substate_residencies | while read -r name val; do
+          echo "lenovo-pm: pre-sleep $name=$val" > /dev/kmsg
+        done
+      fi
+    } || true
+  '';
+
+  powerManagement.resumeCommands = ''
+    {
+      pmc=/sys/kernel/debug/pmc_core
+      slp=$(cat $pmc/slp_s0_residency_usec 2>/dev/null || echo 0)
+      energy=$(cat /sys/class/power_supply/BAT0/energy_now 2>/dev/null || echo 0)
+      if [ -r /run/lenovo-pm-presleep ]; then
+        read t0 e0 s0 < /run/lenovo-pm-presleep
+        ${pkgs.gawk}/bin/awk -v t0="$t0" -v t1="$(date +%s)" -v e0="$e0" -v e1="$energy" -v s0="$s0" -v s1="$slp" 'BEGIN {
+          dt = t1 - t0; if (dt < 1) dt = 1;
+          dwh = (e0 - e1) / 1e6;
+          printf "lenovo-pm: post-sleep slept=%dm%02ds used=%.2fWh avg=%.2fW s0ix_residency=%.1f%%\n", dt/60, dt%60, dwh, dwh / (dt/3600), (s1 - s0) / (dt * 1e6) * 100
+        }' > /dev/kmsg
+      fi
+      echo "lenovo-pm: post-sleep energy_uwh=$energy slp_s0_us=$slp bat=$(cat /sys/class/power_supply/BAT0/status)" > /dev/kmsg
+      if [ -r $pmc/substate_residencies ]; then
+        tail -n +2 $pmc/substate_residencies | while read -r name val; do
+          echo "lenovo-pm: post-sleep $name=$val" > /dev/kmsg
+        done
+      fi
+    } || true
+  '';
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;

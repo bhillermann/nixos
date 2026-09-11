@@ -18,6 +18,8 @@
     playerctl
     brightnessctl
     stremio-linux-shell
+    vlc
+    mpv
   ];
 
   # enable core cli packages and settings
