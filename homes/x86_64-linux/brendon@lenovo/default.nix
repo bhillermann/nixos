@@ -203,6 +203,15 @@
       };
       notification.daemon = true;
       lockscreen.enabled = true;
+      idle = {
+        behavior_order = [ "lock" "screen-off" "suspend" ];
+        behavior = {
+          lock = { timeout = 600; action = "lock"; enabled = true; };
+          "screen-off" = { timeout = 660; action = "screen_off"; enabled = true; };
+          # Native suspend action runs plain `systemctl suspend`; go through the lid path instead.
+          suspend = { timeout = 1200; action = "command"; command = "systemctl suspend-then-hibernate"; };
+        };
+      };
       plugins = {
         enabled = [ "kenn/keybind-cheatsheet" ];
         auto_update = "all";
