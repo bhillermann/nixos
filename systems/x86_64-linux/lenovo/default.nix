@@ -154,15 +154,7 @@
   # Enable power-profiles-daemon (coordinates with Noctalia & KDE)
   services.power-profiles-daemon.enable = true;
 
-  # Sleep on this machine (Yoga Slim 7 Carbon 13ITL5, Tiger Lake, BIOS
-  # F7CN41WW): s2idle is entered but the PCH never asserts SLP_S0, so S0ix
-  # residency is 0 % and lid-closed sleep drains ~0.9 W (~2 %/h). Verified
-  # Sep 2026 on kernels 7.2.0 and 7.2.2 with TBT/USB/WiFi/ISH/DPTF disabled
-  # one by one and all together; the firmware publishes no S0ix requirement
-  # table and the NVMe root port has no D3cold methods. S3 ("deep") hangs.
-  #
-  # Mitigation: suspend-then-hibernate. s2idle for HibernateDelaySec, then
-  # write the image to the LUKS swap (17 GB > 16 GB RAM) and power off.
+  # S0ix never engages on this firmware (s2idle drains ~0.9 W) and S3 hangs, so hibernate after 2h.
   boot.resumeDevice = "/dev/mapper/luks-ec7d83b0-dbc5-4e46-acf3-791cccbbc4e9";
   services.logind.settings.Login = {
     HandleLidSwitch = "suspend-then-hibernate";
@@ -170,21 +162,20 @@
   };
   systemd.sleep.settings.Sleep.HibernateDelaySec = "2h";
 
-  # Sleep diagnostics: log per-sleep energy and S0ix residency around every
-  # suspend and let pmc_core warn when SLP_S0 was not reached.
-  #
-  # After a sleep, read the verdict with:
-  #   journalctl -k | grep -E "lenovo-pm|SLP_S0|S0ix"
-  #
-  # Runs under `set -e` with other modules' hooks appended after, so nothing
-  # here may fail.
+  # Hibernate at 5% instead of the HybridSleep default, which drained the battery to death in s2idle.
+  services.upower = {
+    enable = true;
+    criticalPowerAction = "Hibernate";
+    percentageLow = 20;
+    percentageCritical = 10;
+    percentageAction = 5;
+  };
+
+  # Sleep diagnostics: journalctl -k | grep -E "lenovo-pm|SLP_S0"
   boot.extraModprobeConfig = ''
-    # Print "CPU did not enter SLP_S0" plus the blocking PCH IPs on resume
-    # when the SLP_S0 residency counter did not advance during the sleep.
     options intel_pmc_core warn_on_s0ix_failures=1
   '';
 
-  # Wakeup-source and PM-phase messages in the journal for every suspend.
   systemd.services.pm-debug-instrumentation = {
     description = "Enable kernel PM debug messages";
     wantedBy = [ "multi-user.target" ];
@@ -193,14 +184,9 @@
       RemainAfterExit = true;
     };
     script = ''
-      # Wakeup source ("PM: Triggering wakeup from IRQ n") per resume.
       echo 1 > /sys/power/pm_debug_messages
-      # modprobe.d only applies at module load; set it live too so a switch
-      # without reboot picks it up.
+      # Set live too, since modprobe.d only applies at module load.
       echo 1 > /sys/module/intel_pmc_core/parameters/warn_on_s0ix_failures || true
-      # For deeper digging, per-device D-states at suspend can be had with:
-      #   echo 'file drivers/pci/pci-driver.c +p' > /sys/kernel/debug/dynamic_debug/control
-      # (drivers/acpi/device_pm.c too, but it logs every touchpad runtime-PM cycle).
     '';
   };
 
@@ -211,7 +197,6 @@
       energy=$(cat /sys/class/power_supply/BAT0/energy_now 2>/dev/null || echo 0)
       echo "$(date +%s) $energy $slp" > /run/lenovo-pm-presleep
       echo "lenovo-pm: pre-sleep energy_uwh=$energy slp_s0_us=$slp bat=$(cat /sys/class/power_supply/BAT0/status) lid=$(${pkgs.gawk}/bin/awk '{print $2}' /proc/acpi/button/lid/LID0/state)" > /dev/kmsg
-      # S0ix substate residencies before sleep (S0i2.x / S0i3.x on Tiger Lake).
       if [ -r $pmc/substate_residencies ]; then
         tail -n +2 $pmc/substate_residencies | while read -r name val; do
           echo "lenovo-pm: pre-sleep $name=$val" > /dev/kmsg
