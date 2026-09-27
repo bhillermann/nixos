@@ -93,7 +93,7 @@ in
   # over GSD's installed settings.json and gsd-core's base defaults.
   programs.claude-code.settings = {
     includeCoAuthoredBy = false;
-    model = "claude-opus-4-6[1m]";
+    model = "opus";
     tui = "fullscreen";
     statusLine = {
       type = "command";
