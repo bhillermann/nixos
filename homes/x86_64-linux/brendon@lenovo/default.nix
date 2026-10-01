@@ -19,6 +19,7 @@
     brightnessctl
     stremio-linux-shell
     darktable
+    rapidraw
     vlc
     mpv
   ];

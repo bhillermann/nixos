@@ -4,6 +4,8 @@
   inputs = {
     # NixOS official package source, using the nixos-26.05 branch here
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+    # Unstable for a few packages that move faster than the release (see overlays/).
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
 
     # 1Password nixos secrets management
