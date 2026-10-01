@@ -21,6 +21,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # lanzaboote: Secure Boot signing of UKIs (lenovo)
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v1.2.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # snowfall-lib for modularising nix config
     snowfall-lib = {
       url = "github:snowfallorg/lib";
@@ -84,6 +90,7 @@
       ];
 
       systems.hosts.lenovo.modules = with inputs; [
+        lanzaboote.nixosModules.lanzaboote
         opnix.nixosModules.default
         niri.nixosModules.niri
         noctalia.nixosModules.default

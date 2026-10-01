@@ -10,9 +10,19 @@
       ./hardware-configuration.nix
     ];
 
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
+  # Bootloader: lanzaboote signs UKIs with the sbctl keys for Secure Boot.
+  boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.lanzaboote = {
+    enable = true;
+    pkiBundle = "/var/lib/sbctl";
+  };
+
+  # TPM2 unlock of both LUKS volumes (root and swap, for hibernate resume); passphrase stays as fallback.
+  boot.initrd.availableKernelModules = [ "tpm_tis" "tpm_crb" ];
+  boot.initrd.luks.devices."luks-d2623a8c-8bae-4f5d-9d52-a87a0b6b119c".crypttabExtraOpts = [ "tpm2-device=auto" ];
+  boot.initrd.luks.devices."luks-ec7d83b0-dbc5-4e46-acf3-791cccbbc4e9".crypttabExtraOpts = [ "tpm2-device=auto" ];
+  security.tpm2.enable = true;
 
   # use latest kernal package
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -288,6 +298,7 @@
     vim
     wget
     xwayland-satellite
+    sbctl
   ];
 
   # Enable 1Password CLI and GUI
