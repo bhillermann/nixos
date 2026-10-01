@@ -83,6 +83,11 @@
     flake = "/home/brendon/.nixos";
   };
 
+  # enable dconf for gtk apps
+  programs.dconf.enable = true;
+  programs.xfconf.enable = true;
+  services.tumbler.enable = true;
+
   # Enable networking
   networking.networkmanager.enable = true;
 
@@ -107,6 +112,8 @@
   # Enable the X11 windowing system.
   # You can disable this if you're only using the Wayland session.
   services.xserver.enable = false;
+  services.udisks2.enable = true;
+  services.gvfs.enable = true; 
 
   # services.desktopManager.plasma6.enable = true;
   programs.noctalia-greeter = {
@@ -151,6 +158,13 @@
     image = ../../../assets/space.png;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
     polarity = "dark";
+    # GTK apps (thunar) fall back to bare hicolor without an icon theme; stylix copies this to home-manager.
+    icons = {
+      enable = true;
+      package = pkgs.papirus-icon-theme;
+      dark = "Papirus-Dark";
+      light = "Papirus-Light";
+    };
   };
 
 
@@ -171,6 +185,9 @@
     HandleLidSwitchExternalPower = "suspend";
   };
   systemd.sleep.settings.Sleep.HibernateDelaySec = "2h";
+
+  # After resume, DNS lookups jam all nsncd workers for ~10s and the lockscreen's passwd lookup queues behind them.
+  systemd.services.nscd.environment.NSNCD_IGNORE_HOSTS = "true";
 
   # Hibernate at 5% instead of the HybridSleep default, which drained the battery to death in s2idle.
   services.upower = {

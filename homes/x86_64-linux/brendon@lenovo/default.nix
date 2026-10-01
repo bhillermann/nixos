@@ -22,6 +22,7 @@
     rapidraw
     vlc
     mpv
+    thunar
   ];
 
   # enable core cli packages and settings
@@ -239,6 +240,11 @@
       RestartSec = 5;
     };
     Install.WantedBy = [ "default.target" ];
+  };
+
+  services.udiskie = {
+    enable = true;
+    automount = true;
   };
 
   # Enable vscode-server for this user
