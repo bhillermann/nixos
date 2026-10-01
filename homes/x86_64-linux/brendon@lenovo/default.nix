@@ -18,6 +18,7 @@
     playerctl
     brightnessctl
     stremio-linux-shell
+    darktable
     vlc
     mpv
   ];
@@ -206,10 +207,11 @@
       idle = {
         behavior_order = [ "lock" "screen-off" "suspend" ];
         behavior = {
-          lock = { timeout = 600; action = "lock"; enabled = true; };
-          "screen-off" = { timeout = 660; action = "screen_off"; enabled = true; };
+          # Locking restarts the other idle timers, so locked_timeout counts from the lock instead.
+          lock = { timeout = 300; action = "lock"; enabled = true; };
+          "screen-off" = { timeout = 330; locked_timeout = 30; action = "screen_off"; enabled = true; };
           # Native suspend action runs plain `systemctl suspend`; go through the lid path instead.
-          suspend = { timeout = 1200; action = "command"; command = "systemctl suspend-then-hibernate"; };
+          suspend = { timeout = 600; locked_timeout = 300; action = "command"; command = "systemctl suspend-then-hibernate"; };
         };
       };
       plugins = {
