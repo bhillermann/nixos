@@ -20,11 +20,11 @@
 }:
 
 let
-  version = "1.15.0";
+  version = "1.19.0";
 
   src = pkgs.fetchurl {
     url = "https://registry.npmjs.org/@opengsd/gsd-core/-/gsd-core-${version}.tgz";
-    hash = "sha256-M8v8QIUj40pwEgm/V8L0sOAaIPeiKJdo6mpW+mb+RZA=";
+    hash = "sha256-CgW26wDKjBrJIAKES53EzioBVGVQqvI4f+cpeuw6TTI=";
   };
 in
 pkgs.runCommand "gsd-core-${runtime}-${version}"
