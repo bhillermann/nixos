@@ -23,6 +23,8 @@
     vlc
     mpv
     thunar
+    calibre
+    wtype
   ];
 
   # enable core cli packages and settings
@@ -174,6 +176,12 @@
       "XF86MonBrightnessDown".action.spawn-sh = [ "noctalia msg brightness-down" ];
       "XF86KbdBrightnessUp".action.spawn = [ "brightnessctl" "-d" "smc::kbd_backlight" "set" "10%+" ];
       "XF86KbdBrightnessDown".action.spawn = [ "brightnessctl" "-d" "smc::kbd_backlight" "set" "10%-" ];
+
+      # Pressing the key normally simulates typing '='
+      "Ctrl+Alt+Tab".action.spawn = [ "wtype" "=" ];
+
+      # Pressing Shift + the key simulates typing '+'
+      "Shift+Ctrl+Alt+Tab".action.spawn = [ "wtype" "+" ];
     };
   };
 
